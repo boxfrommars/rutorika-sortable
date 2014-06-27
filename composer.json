@@ -1,0 +1,21 @@
+{
+    "name": "rutorika/sortable",
+    "description": "Adds sortable behavior to Eloquent models",
+    "authors": [
+        {
+            "name": "Dmitry Groza",
+            "email": "boxfrommars@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/support": "~4",
+        "illuminate/database": "~4"
+    },
+    "autoload": {
+        "psr-0": {
+            "Rutorika\\Sortable": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
