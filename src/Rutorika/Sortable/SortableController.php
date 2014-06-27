@@ -5,20 +5,22 @@ namespace Rutorika\Sortable;
 class SortableController extends \Controller
 {
 
-    protected $_sortableTables = array('articles' => '\Article'); // @TODO think about this
-
     public function sort()
     {
+        $sortableEntities = \Config::get('sortable::entities');
+
+        \Log::debug($sortableEntities);
+
         $validator = \Validator::make(\Input::all(), array(
             'type' => array('required', 'in:moveAfter,moveBefore'),
-            'table' => array('required', 'in:' . implode(',', array_keys($this->_sortableTables))),
+            'table' => array('required', 'in:' . implode(',', array_keys($sortableEntities))),
             'positionEntityId' => 'required|numeric',
             'id' => 'required|numeric',
         ));
 
         if ($validator->passes()) {
             /** @var \Eloquent $entityClass */
-            $entityClass = $this->_sortableTables[\Input::get('table')];
+            $entityClass = $sortableEntities[\Input::get('table')];
             if (!class_exists($entityClass)) {
                 return array(
                     'success' => false,

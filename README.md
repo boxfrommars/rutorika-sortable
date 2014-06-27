@@ -2,7 +2,7 @@
 
 ## Sortable Trait 
 
-Adds sortable behavior to Eloquent models
+Adds sortable behavior to Eloquent (Laravel) models
 
 ### Usage
 
@@ -49,6 +49,21 @@ $articles = Article::sorted()->get();
 Also this package provides `\Rutorika\Sortable\SortableController`, which handle requests to sort entities
 
 ### Usage
+
+Add `Rutorika\Sortable\SortableServiceProvider` to your providers in `app/config/app.php`:
+```php
+'providers' => array(
+    // providers...
+    
+    'Rutorika\Sortable\SortableServiceProvider',
+)
+```
+
+publish sortable config
+ 
+```bash
+php artisan config:publish rutorika/sortable
+```
 
 Add route to `sort` method of controller
 ```php
