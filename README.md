@@ -23,7 +23,7 @@ $entity->moveAfter($positionEntity);
 // if $positionEntity->position is 14, then $entity->position is 15 now
 ```
 
-Also this trait automatically defines position entity on create event, so you shouldn't add position value by hand, just create it as usually 
+Also this trait automatically defines entity position on create event, so you shouldn't add `position` value by hands, just create it as usually 
 
 ```php
 $article = new Article();
@@ -32,7 +32,7 @@ $article->description = $faker->paragraph();
 $article->save();
 ```
 
-This entity will have maximum + 1 position in table;
+This entity will have `entitiesMaximumPosition + 1` position;
 
 To get ordered entities use `sorted` scope:
 
