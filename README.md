@@ -1,6 +1,10 @@
+
+
+## Sortable Trait 
+
 Adds sortable behavior to Eloquent models
 
-# Usage
+### Usage
 
 Add `\Rutorika\Sortable\SortableTrait` to your Eloquent model. Your model must have `position` field.
 
@@ -40,13 +44,11 @@ To get ordered entities use `sorted` scope:
 $articles = Article::sorted()->get();
 ```
 
-
-
-# Controller
+## Sortable Controller
 
 Also this package provides `\Rutorika\Sortable\SortableController`, which handle requests to sort entities
 
-## Usage
+### Usage
 
 Add route to `sort` method of controller
 ```php
