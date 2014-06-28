@@ -116,5 +116,107 @@ positionEntityId:14
 ```
 then the article with id 3 will be moved after the article with id 14. 
 
+### With jquery UI sortable
 
+HTML (+bootstrap)
+
+```html
+<table class="table table-striped table-hover">
+    <thead>
+    <tr>
+        <th></th>
+        <th>#</th>
+        <th>title</th>
+    </tr>
+    </thead>
+    <tbody class="sortable" data-entityname="articles">
+    @foreach ($articles as $article)
+    <tr data-itemId="{{{ $article->id }}}">
+        <td class="sortable-handle"><span class="glyphicon glyphicon-sort"></span></td>
+        <td class="id-column">{{{ $article->id }}}</td>
+        <td>{{{ $article->title }}}</td>
+    </tr>
+    @endforeach
+    </tbody>
+</table>
+```
+
+JS
+```js
+    /**
+     *
+     * @param type string 'insertAfter' or 'insertBefore'
+     * @param entityName
+     * @param id
+     * @param positionId
+     */
+    var changePosition = function(type, entityName, id, positionId){
+        var deferred = $.Deferred();
+        $.ajax({
+            'url': '/sort',
+            'type': 'POST',
+            'data': {
+                'type': type,
+                'entityName': entityName,
+                'id': id,
+                'positionEntityId': positionId
+            },
+            'success': function(data) {
+                if (data.success) {
+                    console.log('Saved!');
+                } else {
+                    console.error(data.errors);
+                }
+            },
+            'error': function(){
+                console.error('Something wrong!');
+            },
+            'complete': function(){
+                deferred.resolve(true);
+            }
+        });
+
+        return deferred.promise();
+    };
+
+    $(document).ready(function(){
+        var $sortableTable = $('.sortable');
+        if ($sortableTable.length > 0) {
+            $sortableTable.sortable({
+                handle: '.sortable-handle',
+                axis: 'y',
+                update: function(a, b){
+                
+                    var entityName = $(this).data('entityname');
+                    var $sorted = b.item;
+
+                    var $previous = $sorted.prev();
+                    var $next = $sorted.next();
+
+                    var promise;
+
+                    if ($previous.length > 0) {
+                        promise = changePosition('moveAfter', entityName, $sorted.data('itemid'), $previous.data('itemid'));
+                        $.when(promise).done(function(){
+                            // do smth
+                        });
+                    } else if ($next.length > 0) {
+                        promise = changePosition('moveBefore', entityName, $sorted.data('itemid'), $next.data('itemid'));
+                        $.when(promise).done(function(){
+                            // do smth
+                        });
+                    } else {
+                        console.error('Something wrong!');
+                    }
+                },
+                cursor: "move"
+            });
+        }
+        $('.sortable td').each(function(){ // fix jquery ui sortable table row width issue
+            $(this).css('width', $(this).width() +'px');
+        });
+    });
+```
+
+[Live demo](http://sortable-demo.boxfrommars.ru/)
 
