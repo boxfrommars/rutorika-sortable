@@ -1,3 +1,9 @@
+## Demo
+
+http://sortable-demo.boxfrommars.ru/
+
+(demo repo: https://github.com/boxfrommars/rutorika-sortable-demo)
+
 ## Install
 
 Install package through Composer
@@ -108,7 +114,7 @@ entityName:articles
 id:3
 positionEntityId:14
 ```
-then the article with id will be moved after the article with id 14. 
+then the article with id 3 will be moved after the article with id 14. 
 
 
 
