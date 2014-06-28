@@ -24,7 +24,7 @@ class SortableController extends \Controller
             if (!class_exists($entityClass)) {
                 return array(
                     'success' => false,
-                    'errors' => ["Невозможно найти класс модели {$entityClass}, отвечающую данной таблице: " . \Input::get('table')],
+                    'errors' => ["Class {$entityClass} with sortable type " . \Input::get('table') . ', not found'],
                 );
             }
             /** @var SortableTrait $entity */
@@ -34,7 +34,7 @@ class SortableController extends \Controller
             if ($entity === null || $postionEntity === null) {
                 return array(
                     'success' => false,
-                    'errors' => ['Одна из сущностей, участвующих в изменении порядка, не найдена: #' . \Input::get('id') . ' или #' . \Input::get('positionEntityId')],
+                    'errors' => ['Entity with id #' . \Input::get('id') . ' or #' . \Input::get('positionEntityId') . ' not found'],
                 );
             }
 
