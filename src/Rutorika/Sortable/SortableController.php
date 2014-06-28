@@ -20,11 +20,11 @@ class SortableController extends \Controller
 
         if ($validator->passes()) {
             /** @var \Eloquent $entityClass */
-            $entityClass = $sortableEntities[\Input::get('table')];
+            $entityClass = $sortableEntities[\Input::get('entityName')];
             if (!class_exists($entityClass)) {
                 return array(
                     'success' => false,
-                    'errors' => ["Class {$entityClass} with sortable entity type " . \Input::get('table') . ', not found'],
+                    'errors' => ["Class {$entityClass} with sortable entity type " . \Input::get('entityName') . ', not found'],
                 );
             }
             /** @var SortableTrait $entity */
