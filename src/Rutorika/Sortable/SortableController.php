@@ -13,7 +13,7 @@ class SortableController extends \Controller
 
         $validator = \Validator::make(\Input::all(), array(
             'type' => array('required', 'in:moveAfter,moveBefore'),
-            'table' => array('required', 'in:' . implode(',', array_keys($sortableEntities))),
+            'entityName' => array('required', 'in:' . implode(',', array_keys($sortableEntities))),
             'positionEntityId' => 'required|numeric',
             'id' => 'required|numeric',
         ));
@@ -24,7 +24,7 @@ class SortableController extends \Controller
             if (!class_exists($entityClass)) {
                 return array(
                     'success' => false,
-                    'errors' => ["Class {$entityClass} with sortable type " . \Input::get('table') . ', not found'],
+                    'errors' => ["Class {$entityClass} with sortable entity type " . \Input::get('table') . ', not found'],
                 );
             }
             /** @var SortableTrait $entity */
