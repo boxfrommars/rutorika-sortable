@@ -31,10 +31,10 @@ trait SortableTrait
     public function moveAfter($entity)
     {
         /** @var \Eloquent $this */
-        $this->connection->beginTransaction();
+        \DB::beginTransaction();
 
         if ($this->position > $entity->position) {
-            $this->connection->table($this->getTable())->where('position', '>', $entity->position)->where(
+            \DB::table($this->getTable())->where('position', '>', $entity->position)->where(
                 'position',
                 '<',
                 $this->position
@@ -42,7 +42,7 @@ trait SortableTrait
             $this->position = $entity->position + 1;
         } else {
             if ($this->position < $entity->position) {
-                $this->connection->table($this->getTable())->where('position', '<=', $entity->position)->where(
+                \DB::table($this->getTable())->where('position', '<=', $entity->position)->where(
                     'position',
                     '>',
                     $this->position
@@ -53,19 +53,16 @@ trait SortableTrait
 
         $this->save();
 
-        $this->connection->commit();
+        \DB::commit();
     }
 
     public function moveBefore($entity)
     {
-
-
-
         /** @var \Eloquent $this */
-        $this->connection->beginTransaction();
+        \DB::beginTransaction();
 
         if ($this->position > $entity->position) {
-            $this->connection->table($this->getTable())->where('position', '>=', $entity->position)->where(
+            \DB::table($this->getTable())->where('position', '>=', $entity->position)->where(
                 'position',
                 '<',
                 $this->position
@@ -73,7 +70,7 @@ trait SortableTrait
             $this->position = $entity->position;
         } else {
             if ($this->position < $entity->position) {
-                $this->connection->table($this->getTable())->where('position', '<', $entity->position)->where(
+                \DB::table($this->getTable())->where('position', '<', $entity->position)->where(
                     'position',
                     '>',
                     $this->position
@@ -84,6 +81,6 @@ trait SortableTrait
 
         $this->save();
 
-        $this->connection->commit();
+        \DB::commit();
     }
 }
