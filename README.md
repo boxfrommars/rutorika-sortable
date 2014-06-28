@@ -2,7 +2,7 @@
 
 http://sortable-demo.boxfrommars.ru/
 
-(demo repo: https://github.com/boxfrommars/rutorika-sortable-demo)
+(demo repo code: https://github.com/boxfrommars/rutorika-sortable-demo)
 
 ## Install
 
