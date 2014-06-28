@@ -1,6 +1,6 @@
 {
     "name": "rutorika/sortable",
-    "description": "Adds sortable behavior to Eloquent models",
+    "description": "Adds sortable behavior to Eloquent (Laravel) models",
     "keywords": ["laravel", "sort", "sortable"],
     "license": "MIT",
     "authors": [
