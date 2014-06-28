@@ -116,7 +116,7 @@ positionEntityId:14
 ```
 then the article with id 3 will be moved after the article with id 14. 
 
-### With jquery UI sortable
+### jQuery UI sortable example
 
 HTML (+bootstrap)
 
