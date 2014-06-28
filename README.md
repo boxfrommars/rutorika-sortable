@@ -118,8 +118,6 @@ then the article with id 3 will be moved after the article with id 14.
 
 ### jQuery UI sortable example
 
-HTML (+bootstrap)
-
 ```html
 <table class="table table-striped table-hover">
     <thead>
@@ -141,7 +139,7 @@ HTML (+bootstrap)
 </table>
 ```
 
-JS
+
 ```js
     /**
      *
