@@ -2,7 +2,7 @@
 
 require_once 'stubs/SortableEntity.php';
 
-class SortableTest extends Orchestra\Testbench\TestCase
+class SortableTraitTest extends Orchestra\Testbench\TestCase
 {
 
     public function setUp()
