@@ -37,7 +37,8 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase {
         );
 
         $app['config']->set('sortable::entities', array(
-            'sortable_entity' => '\SortableEntity'
+            'sortable_entity' => '\SortableEntity',
+            'sortable_entity_without_class' => '\SortableEntityNotExist'
         ));
 
         $app['router']->post('sort', '\Rutorika\Sortable\SortableController@sort');
@@ -101,7 +102,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase {
         $this->assertObjectHasAttribute('errors', $responseData);
         $errors = $responseData->errors;
 
-        $this->assertContains($error, ['invalidEntityId', 'invalidPositionEntityId', 'invalidEntityName', 'invalidType']);
+        $this->assertContains($error, ['invalidEntityId', 'invalidPositionEntityId', 'invalidEntityName', 'invalidType', 'invalidEntityClass']);
 
         switch ($error) {
             case 'invalidEntityId':
@@ -114,6 +115,10 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase {
 
             case 'invalidEntityName':
                 $this->assertContains('validation.in', $errors->entityName);
+                $this->assertContains('validation.required', $errors->entityClass);
+                break;
+
+            case 'invalidEntityClass':
                 $this->assertContains('validation.required', $errors->entityClass);
                 break;
 
