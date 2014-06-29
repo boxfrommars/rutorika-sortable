@@ -28,6 +28,9 @@ trait SortableTrait
         return $query->orderBy('position');
     }
 
+    /**
+     * @param $entity
+     */
     public function moveAfter($entity)
     {
         /** @var \Eloquent $this */
@@ -59,6 +62,9 @@ trait SortableTrait
         $this->getConnection()->commit();
     }
 
+    /**
+     * @param $entity
+     */
     public function moveBefore($entity)
     {
         /** @var \Eloquent $this */
