@@ -49,6 +49,9 @@ class SortableTraitTest extends Orchestra\Testbench\TestCase
 
     public function testPosition()
     {
+
+        /** @var SortableEntity[] $entities */
+        $entities = array();
         for ($i = 1; $i <= 30; $i++) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
@@ -290,6 +293,31 @@ class SortableTraitTest extends Orchestra\Testbench\TestCase
 
         for ($i = 1; $i <= $countTotal; $i++) {
             $this->assertEquals($i, SortableEntity::find($i)->position);
+        }
+    }
+
+    public function testSortedScope()
+    {
+        /** @var SortableEntity[] $entities */
+        $entities = array();
+        for ($i = 1; $i <= 30; $i++) {
+            $entities[$i] = new SortableEntity();
+            $entities[$i]->save();
+        }
+
+        $entities[7]->moveAfter($entities[9]);
+        $entities[6]->moveAfter($entities[12]);
+        $entities[5]->moveBefore($entities[2]);
+
+        $sortedEntities = SortableEntity::sorted()->get();
+
+        $prevEntityPosition = null;
+
+        foreach ($sortedEntities as $sortedEntity) {
+            if ($prevEntityPosition !== null) {
+                $this->assertGreaterThan($prevEntityPosition, $sortedEntity->position);
+            }
+            $prevEntityPosition = $sortedEntity->position;
         }
     }
 

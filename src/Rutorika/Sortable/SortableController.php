@@ -10,7 +10,6 @@ class SortableController extends \Controller
 
         $sortableEntities = \Config::get('sortable::entities');
 
-
         $validator = $this->getValidator($sortableEntities);
 
         if ($validator->passes()) {
@@ -43,11 +42,11 @@ class SortableController extends \Controller
     }
 
     /**
-     * @param $sortableEntities
+     * @param array $sortableEntities
      * @return mixed
      */
-    protected function getValidator($sortableEntities){
-
+    protected function getValidator($sortableEntities)
+    {
         $rules = array(
             'type' => array('required', 'in:moveAfter,moveBefore'),
             'entityName' => array('required', 'in:' . implode(',', array_keys($sortableEntities))),
@@ -55,8 +54,12 @@ class SortableController extends \Controller
             'positionEntityId' => 'required|numeric',
         );
 
-        /** @var \Eloquent $entityClass */
-        $entityClass = array_key_exists(\Input::get('entityName'), $sortableEntities) ? $sortableEntities[\Input::get('entityName')] : false;
+        /** @var \Eloquent|bool $entityClass */
+        if (array_key_exists(\Input::get('entityName'), $sortableEntities)) {
+            $entityClass = $sortableEntities[\Input::get('entityName')];
+        } else {
+            $entityClass = false;
+        }
 
         if (!$entityClass || !class_exists($entityClass)) {
             $rules['entityClass'] = 'required'; // fake rule for not exist field

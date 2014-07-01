@@ -9,6 +9,9 @@ namespace Rutorika\Sortable;
 trait SortableTrait
 {
 
+    /**
+     * Adds position to model on creating event
+     */
     public static function bootSortableTrait()
     {
         static::creating(
@@ -29,7 +32,9 @@ trait SortableTrait
     }
 
     /**
-     * @param $entity
+     * moves $this model after $entity model (and rearrange all entities)
+     *
+     * @param \Eloquent $entity
      */
     public function moveAfter($entity)
     {
@@ -63,7 +68,9 @@ trait SortableTrait
     }
 
     /**
-     * @param $entity
+     * moves $this model before $entity model (and rearrange all entities)
+     *
+     * @param \Eloquent $entity
      */
     public function moveBefore($entity)
     {

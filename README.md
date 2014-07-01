@@ -31,7 +31,8 @@ class Article extends Eloquent {
 }
 ```
 
-Now you can move your entities with methods `moveBefore($entity)` and `moveAfter($entity)`:
+Now you can move your entities with methods `moveBefore($entity)` and `moveAfter($entity)` (you dont need to save 
+model after that, it has saved already):
 
 ```php
 $entity = Article::find(1);

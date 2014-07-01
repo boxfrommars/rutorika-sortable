@@ -2,7 +2,8 @@
 
 require_once 'stubs/SortableEntity.php';
 
-class SortableControllerTest extends Orchestra\Testbench\TestCase {
+class SortableControllerTest extends Orchestra\Testbench\TestCase
+{
 
     public function setUp()
     {
@@ -36,14 +37,16 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase {
             )
         );
 
-        $app['config']->set('sortable::entities', array(
-            'sortable_entity' => '\SortableEntity',
-            'sortable_entity_without_class' => '\SortableEntityNotExist'
-        ));
+        $app['config']->set(
+            'sortable::entities',
+            array(
+                'sortable_entity' => '\SortableEntity',
+                'sortable_entity_without_class' => '\SortableEntityNotExist'
+            )
+        );
 
         $app['router']->post('sort', '\Rutorika\Sortable\SortableController@sort');
     }
-
 
     public function testOK()
     {
@@ -74,7 +77,6 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase {
         $this->assertContains('validation.required', $errors->id);
     }
 
-
     /**
      * @param
      * @dataProvider validParamsProvider
@@ -83,7 +85,6 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase {
     {
         $response = $this->call('POST', 'sort', $parameters);
         $responseData = $this->parseJSON($response);
-
 
         $this->assertTrue($responseData->success);
     }
@@ -102,7 +103,10 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase {
         $this->assertObjectHasAttribute('errors', $responseData);
         $errors = $responseData->errors;
 
-        $this->assertContains($error, ['invalidEntityId', 'invalidPositionEntityId', 'invalidEntityName', 'invalidType', 'invalidEntityClass']);
+        $this->assertContains(
+            $error,
+            ['invalidEntityId', 'invalidPositionEntityId', 'invalidEntityName', 'invalidType', 'invalidEntityClass']
+        );
 
         switch ($error) {
             case 'invalidEntityId':
@@ -125,7 +129,6 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase {
             case 'invalidType':
                 $this->assertContains('validation.in', $errors->type);
                 break;
-
         }
     }
 
@@ -133,11 +136,13 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase {
      * @param \Symfony\Component\HttpFoundation\Response $response
      * @return mixed
      */
-    protected function parseJSON($response){
+    protected function parseJSON($response)
+    {
         return json_decode($response->getContent());
     }
 
-    public function validParamsProvider() {
+    public function validParamsProvider()
+    {
 
         return array(
             array(
@@ -167,9 +172,8 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase {
         );
     }
 
-
-
-    public function invalidParamsProvider() {
+    public function invalidParamsProvider()
+    {
 
         return array(
             array(
@@ -219,5 +223,4 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase {
             ),
         );
     }
-
 }
