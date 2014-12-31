@@ -16,7 +16,15 @@ trait SortableTrait
     {
         static::creating(
             function ($model) {
-                $maxPosition = static::max('position');
+
+                $sortableGroupField = $model->getSortableGroupField();
+
+                if ($sortableGroupField) {
+                    $maxPosition = static::where($sortableGroupField, $model->$sortableGroupField)->max('position');
+                } else {
+                    $maxPosition = static::max('position');
+                }
+
                 $model->position = $maxPosition + 1;
             }
         );
@@ -35,31 +43,33 @@ trait SortableTrait
      * moves $this model after $entity model (and rearrange all entities)
      *
      * @param \Eloquent $entity
+     * @throws \Exception
      */
     public function moveAfter($entity)
     {
-        /** @var \Eloquent $this */
         $this->getConnection()->beginTransaction();
+
+        $query = $this->getConnection()->table($this->getTable());
+        $query = $this->_applySortableGroup($query, $entity);
 
         if ($this->position > $entity->position) {
 
-            $this->getConnection()->table($this->getTable())
+            $query
                 ->where('position', '>', $entity->position)
                 ->where('position', '<', $this->position)
                 ->increment('position');
 
             $this->position = $entity->position + 1;
-        } else {
-            if ($this->position < $entity->position) {
 
-                $this->getConnection()->table($this->getTable())
-                    ->where('position', '<=', $entity->position)
-                    ->where('position', '>', $this->position)
-                    ->decrement('position');
+        } elseif ($this->position < $entity->position) {
 
-                $this->position = $entity->position;
-                $entity->position = $entity->position - 1;
-            }
+            $query
+                ->where('position', '<=', $entity->position)
+                ->where('position', '>', $this->position)
+                ->decrement('position');
+
+            $this->position = $entity->position;
+            $entity->position = $entity->position - 1;
         }
 
         $this->save();
@@ -71,34 +81,54 @@ trait SortableTrait
      * moves $this model before $entity model (and rearrange all entities)
      *
      * @param \Eloquent $entity
+     * @throws \Exception
      */
     public function moveBefore($entity)
     {
-        /** @var \Eloquent $this */
         $this->getConnection()->beginTransaction();
 
+        $query = $this->getConnection()->table($this->getTable());
+        $query = $this->_applySortableGroup($query, $entity);
+
         if ($this->position > $entity->position) {
-            $this->getConnection()->table($this->getTable())->where('position', '>=', $entity->position)->where(
-                'position',
-                '<',
-                $this->position
-            )->increment('position');
+            $query
+                ->where('position', '>=', $entity->position)
+                ->where('position', '<', $this->position)
+                ->increment('position');
+
             $this->position = $entity->position;
 
             $entity->position = $entity->position + 1;
-        } else {
-            if ($this->position < $entity->position) {
-                $this->getConnection()->table($this->getTable())->where('position', '<', $entity->position)->where(
-                    'position',
-                    '>',
-                    $this->position
-                )->decrement('position');
-                $this->position = $entity->position - 1;
-            }
+
+        } elseif ($this->position < $entity->position) {
+            $query
+                ->where('position', '<', $entity->position)
+                ->where('position', '>', $this->position)
+                ->decrement('position');
+
+            $this->position = $entity->position - 1;
         }
 
         $this->save();
 
         $this->getConnection()->commit();
+    }
+
+    protected function _applySortableGroup($query, $entity)
+    {
+        $sortableGroupField = $this->getSortableGroupField();
+        if ($sortableGroupField) {
+            if ($this->$sortableGroupField !== $entity->$sortableGroupField) {
+                throw new SortableException($this->$sortableGroupField, $entity->$sortableGroupField);
+            }
+
+            $query->where($sortableGroupField, '=', $this->$sortableGroupField);
+        }
+        return $query;
+    }
+
+    public static function getSortableGroupField()
+    {
+        return isset(static::$sortableGroupField) ? static::$sortableGroupField : null;
     }
 }

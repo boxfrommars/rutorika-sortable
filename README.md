@@ -61,6 +61,16 @@ To get ordered entities use the `sorted` scope:
 $articles = Article::sorted()->get();
 ```
 
+### Sortable groups
+
+if you want group entity ordering by field, add to your model
+
+```php
+protected static $sortableGroupField = 'fieldName';
+```
+
+now moving and ordering will be encapsulated by this field.
+
 ## Sortable Controller
 
 Also this package provides `\Rutorika\Sortable\SortableController`, which handle requests to sort entities

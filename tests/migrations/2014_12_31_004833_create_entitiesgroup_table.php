@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEntitiesTable extends Migration
+class CreateEntitiesGroupTable extends Migration
 {
 
     /**
@@ -13,9 +13,10 @@ class CreateEntitiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('sortable_entities', function (Blueprint $table) {
+        Schema::create('sortable_entities_group', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('position')->default(1);
+            $table->string('category');
 
             $table->timestamps();
         });
