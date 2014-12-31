@@ -13,7 +13,7 @@ Install package through Composer
 
 ```bash
 require: {
-    "rutorika/sortable": "dev-master"
+    "rutorika/sortable": "~1.2"
 }
 ```
 
