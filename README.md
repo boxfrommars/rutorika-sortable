@@ -22,8 +22,20 @@ require: {
 Adds sortable behavior to Eloquent (Laravel) models
 
 ### Usage
+Your model must have `position` field:
 
-Add `\Rutorika\Sortable\SortableTrait` to your Eloquent model. Your model must have `position` field:
+```php
+// schema builder example
+public function up()
+{
+    Schema::create('articles', function (Blueprint $table) {
+        // ... other fields ...
+        $table->integer('position'); // Your model must have position field:
+    });
+}
+```
+
+Add `\Rutorika\Sortable\SortableTrait` to your Eloquent model.
 
 ```php
 class Article extends Eloquent {
