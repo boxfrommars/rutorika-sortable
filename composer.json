@@ -1,6 +1,6 @@
 {
     "name": "rutorika/sortable",
-    "description": "Adds sortable behavior and ordering to Eloquent (Laravel) models. Grouping supported.",
+    "description": "Adds sortable behavior and ordering to Eloquent (Laravel 4) models. Grouping supported.",
     "keywords": ["laravel", "sort", "sortable", "eloquent"],
     "license": "MIT",
     "authors": [
