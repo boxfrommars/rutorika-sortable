@@ -1,39 +1,17 @@
 <?php
 
 require_once 'stubs/SortableEntity.php';
+require_once 'SortableTestBase.php';
 
-class SortableTraitTest extends Orchestra\Testbench\TestCase
+class SortableTraitTest extends SortableTestBase
 {
 
     public function setUp()
     {
         parent::setUp();
-        $artisan = $this->app->make('artisan');
-        $artisan->call(
-            'migrate',
-            array(
-                '--database' => 'testbench',
-                '--path' => '../tests/migrations',
-            )
-        );
 
         // fix for "Eloquent model events are not triggered when testing" https://github.com/laravel/framework/issues/1181
         SortableEntity::boot();
-    }
-
-    protected function getEnvironmentSetUp($app)
-    {
-        $app['path.base'] = __DIR__ . '/../src';
-
-        $app['config']->set('database.default', 'testbench');
-        $app['config']->set(
-            'database.connections.testbench',
-            array(
-                'driver' => 'sqlite',
-                'database' => ':memory:',
-                'prefix' => '',
-            )
-        );
     }
 
     public function testPositionOnCreate()
