@@ -2,32 +2,26 @@
 
 namespace Rutorika\Sortable;
 
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Request;
 
 class SortableController extends Controller
 {
-    protected $request;
-
-    public function __construct(Request $request){
-        $this->request = $request;
-    }
 
     public function sort()
     {
-
-        $sortableEntities = config('sortable.entities');
+        $sortableEntities = app('config')->get('sortable.entities', []);
 
         $validator = $this->getValidator($sortableEntities);
 
         if ($validator->passes()) {
 
             /** @var \Eloquent $entityClass */
-            $entityClass = $sortableEntities[$this->request->get('entityName')];
+            $entityClass = $sortableEntities[Request::get('entityName')];
 
             /** @var SortableTrait $entity */
-            $entity = $entityClass::find($this->request->get('id'));
-            $postionEntity = $entityClass::find($this->request->get('positionEntityId'));
+            $entity = $entityClass::find(Request::get('id'));
+            $postionEntity = $entityClass::find(Request::get('positionEntityId'));
 
             switch (\Input::get('type')) {
                 case 'moveAfter':
@@ -68,8 +62,8 @@ class SortableController extends Controller
         /** @var \Eloquent|bool $entityClass */
         $entityClass = false;
 
-        if (array_key_exists($this->request->get('entityName'), $sortableEntities)) {
-            $entityClass = $sortableEntities[$this->request->get('entityName')];
+        if (array_key_exists(Request::get('entityName'), $sortableEntities)) {
+            $entityClass = $sortableEntities[Request::get('entityName')];
         }
 
         if (!class_exists($entityClass)) {
@@ -80,6 +74,6 @@ class SortableController extends Controller
             $rules['positionEntityId'] .= '|exists:' . $tableName . ',id';
         }
 
-        return $validator->make($this->request->all(), $rules);
+        return $validator->make(Request::all(), $rules);
     }
 }
