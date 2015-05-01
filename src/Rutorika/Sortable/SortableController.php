@@ -2,24 +2,33 @@
 
 namespace Rutorika\Sortable;
 
-class SortableController extends \Controller
-{
+use Illuminate\Contracts\Config\Repository as Config;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
-    public function sort()
+class SortableController extends Controller
+{
+    protected $request;
+
+    public function __construct(Request $request){
+        $this->request = $request;
+    }
+
+    public function sort(Config $config)
     {
 
-        $sortableEntities = \Config::get('sortable::entities');
+        $sortableEntities = $config->get('sortable.entities');
 
         $validator = $this->getValidator($sortableEntities);
 
         if ($validator->passes()) {
 
             /** @var \Eloquent $entityClass */
-            $entityClass = $sortableEntities[\Input::get('entityName')];
+            $entityClass = $sortableEntities[$this->request->get('entityName')];
 
             /** @var SortableTrait $entity */
-            $entity = $entityClass::find(\Input::get('id'));
-            $postionEntity = $entityClass::find(\Input::get('positionEntityId'));
+            $entity = $entityClass::find($this->request->get('id'));
+            $postionEntity = $entityClass::find($this->request->get('positionEntityId'));
 
             switch (\Input::get('type')) {
                 case 'moveAfter':
@@ -30,14 +39,14 @@ class SortableController extends \Controller
                     break;
             }
 
-            return array(
+            return [
                 'success' => true
-            );
+            ];
         } else {
-            return array(
+            return [
                 'success' => false,
                 'errors' => $validator->errors(),
-            );
+            ];
         }
     }
 
@@ -47,21 +56,24 @@ class SortableController extends \Controller
      */
     protected function getValidator($sortableEntities)
     {
-        $rules = array(
-            'type' => array('required', 'in:moveAfter,moveBefore'),
-            'entityName' => array('required', 'in:' . implode(',', array_keys($sortableEntities))),
+        /** @var  \Illuminate\Validation\Factory $validator */
+        $validator = app('validator');
+
+        $rules = [
+            'type' => ['required', 'in:moveAfter,moveBefore'],
+            'entityName' => ['required', 'in:' . implode(',', array_keys($sortableEntities))],
             'id' => 'required|numeric',
             'positionEntityId' => 'required|numeric',
-        );
+        ];
 
         /** @var \Eloquent|bool $entityClass */
-        if (array_key_exists(\Input::get('entityName'), $sortableEntities)) {
-            $entityClass = $sortableEntities[\Input::get('entityName')];
-        } else {
-            $entityClass = false;
+        $entityClass = false;
+
+        if (array_key_exists($this->request->get('entityName'), $sortableEntities)) {
+            $entityClass = $sortableEntities[$this->request->get('entityName')];
         }
 
-        if (!$entityClass || !class_exists($entityClass)) {
+        if (!class_exists($entityClass)) {
             $rules['entityClass'] = 'required'; // fake rule for not exist field
         } else {
             $tableName = with(new $entityClass)->getTable();
@@ -69,6 +81,6 @@ class SortableController extends \Controller
             $rules['positionEntityId'] .= '|exists:' . $tableName . ',id';
         }
 
-        return \Validator::make(\Input::all(), $rules);
+        return $validator->make($this->request->all(), $rules);
     }
 }

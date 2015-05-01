@@ -1,7 +1,6 @@
 <?php
 
 namespace Rutorika\Sortable;
-
 /**
  * Class SortableTrait
  * @traitUses \Eloquent
@@ -16,7 +15,6 @@ trait SortableTrait
     {
         static::creating(
             function ($model) {
-
                 $sortableGroupField = $model->getSortableGroupField();
 
                 if ($sortableGroupField) {
@@ -42,78 +40,97 @@ trait SortableTrait
     /**
      * moves $this model after $entity model (and rearrange all entities)
      *
-     * @param \Eloquent $entity
+     * @param \Illuminate\Database\Eloquent\Model $entity
      * @throws \Exception
      */
     public function moveAfter($entity)
     {
-        $this->getConnection()->beginTransaction();
+        /** @var \Illuminate\Database\Connection $connection */
 
-        $query = $this->getConnection()->table($this->getTable());
-        $query = $this->_applySortableGroup($query, $entity);
+        $connection = $this->getConnection();
 
-        if ($this->position > $entity->position) {
+        $this->_transaction(function() use($this, $connection, $entity){
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = $connection->table($this->getTable());
 
-            $query
-                ->where('position', '>', $entity->position)
-                ->where('position', '<', $this->position)
-                ->increment('position');
+            $query = $this->_applySortableGroup($query, $entity);
 
-            $this->position = $entity->position + 1;
+            if ($this->position > $entity->position) {
+                $query
+                    ->where('position', '>', $entity->position)
+                    ->where('position', '<', $this->position)
+                    ->increment('position');
 
-        } elseif ($this->position < $entity->position) {
+                $this->position = $entity->position + 1;
+            } elseif ($this->position < $entity->position) {
 
-            $query
-                ->where('position', '<=', $entity->position)
-                ->where('position', '>', $this->position)
-                ->decrement('position');
+                $query
+                    ->where('position', '<=', $entity->position)
+                    ->where('position', '>', $this->position)
+                    ->decrement('position');
 
-            $this->position = $entity->position;
-            $entity->position = $entity->position - 1;
-        }
+                $this->position = $entity->position;
+                $entity->position = $entity->position - 1;
+            }
 
-        $this->save();
-
-        $this->getConnection()->commit();
+            $this->save();
+        });
     }
 
     /**
      * moves $this model before $entity model (and rearrange all entities)
      *
-     * @param \Eloquent $entity
+     * @param \Illuminate\Database\Eloquent\Model $entity
      * @throws \Exception
      */
     public function moveBefore($entity)
     {
-        $this->getConnection()->beginTransaction();
+        /** @var \Illuminate\Database\Connection $connection */
+        $connection = $this->getConnection();
 
-        $query = $this->getConnection()->table($this->getTable());
-        $query = $this->_applySortableGroup($query, $entity);
+        $this->_transaction(function() use($this, $connection, $entity){
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = $connection->table($this->getTable());
 
-        if ($this->position > $entity->position) {
-            $query
-                ->where('position', '>=', $entity->position)
-                ->where('position', '<', $this->position)
-                ->increment('position');
+            $query = $this->_applySortableGroup($query, $entity);
 
-            $this->position = $entity->position;
+            if ($this->position > $entity->position) {
+                $query
+                    ->where('position', '>=', $entity->position)
+                    ->where('position', '<', $this->position)
+                    ->increment('position');
 
-            $entity->position = $entity->position + 1;
+                $this->position = $entity->position;
 
-        } elseif ($this->position < $entity->position) {
-            $query
-                ->where('position', '<', $entity->position)
-                ->where('position', '>', $this->position)
-                ->decrement('position');
+                $entity->position = $entity->position + 1;
 
-            $this->position = $entity->position - 1;
-        }
+            } elseif ($this->position < $entity->position) {
+                $query
+                    ->where('position', '<', $entity->position)
+                    ->where('position', '>', $this->position)
+                    ->decrement('position');
 
-        $this->save();
+                $this->position = $entity->position - 1;
+            }
 
-        $this->getConnection()->commit();
+            $this->save();
+        });
     }
 
+    /**
+     * @param callable $callback
+     * @return mixed
+     */
+    protected function _transaction(\Closure $callback){
+        return $this->getConnection()->transaction($callback);
+    }
+
+    /**
+     * @param $query
+     * @param $entity
+     * @return mixed
+     * @throws SortableException
+     */
     protected function _applySortableGroup($query, $entity)
     {
         $sortableGroupField = $this->getSortableGroupField();
@@ -127,6 +144,9 @@ trait SortableTrait
         return $query;
     }
 
+    /**
+     * @return null
+     */
     public static function getSortableGroupField()
     {
         return isset(static::$sortableGroupField) ? static::$sortableGroupField : null;

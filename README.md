@@ -1,21 +1,17 @@
 [![Build Status](https://travis-ci.org/boxfrommars/rutorika-sortable.svg?branch=master)](https://travis-ci.org/boxfrommars/rutorika-sortable)
 
-## Demo
+## Laravel 5 - Demo
 
-* http://sortable-demo.boxfrommars.ru/
-* http://sortable-demo.boxfrommars.ru/grouped (sortable groups demo)
-
-(demo repo code: https://github.com/boxfrommars/rutorika-sortable-demo)
+Coming soon...
 
 ## Install
 
 Install package through Composer
 
 ```bash
-require: {
-    "rutorika/sortable": "~1.2"
-}
+composer require rutorika/sortable
 ```
+> Note: For **Laravel 4** please see the branch [1.2@laravel4](https://github.com/boxfrommars/rutorika-sortable/tree/laravel4)
 
 ## Sortable Trait 
 
@@ -102,10 +98,10 @@ Add the service provider to `app/config/app.php`
 publish the config:
  
 ```bash
-php artisan config:publish rutorika/sortable
+php artisan vendor:publish
 ```
 
-Add models you need to sort in the config `app/config/packages/rutorika/sortable/config.php`:
+Add models you need to sort in the config `app/config/sortable.php`:
 
 ```php
 'entities' => array(
@@ -241,6 +237,4 @@ then the article with id 3 will be moved after the article with id 14.
         });
     });
 ```
-
-[Live demo](http://sortable-demo.boxfrommars.ru/)
 
