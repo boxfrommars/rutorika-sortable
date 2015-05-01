@@ -49,7 +49,7 @@ trait SortableTrait
 
         $connection = $this->getConnection();
 
-        $this->_transaction(function() use($this, $connection, $entity){
+        $this->_transaction(function() use($connection, $entity){
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = $connection->table($this->getTable());
 
@@ -88,7 +88,7 @@ trait SortableTrait
         /** @var \Illuminate\Database\Connection $connection */
         $connection = $this->getConnection();
 
-        $this->_transaction(function() use($this, $connection, $entity){
+        $this->_transaction(function() use($connection, $entity){
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = $connection->table($this->getTable());
 
