@@ -2,7 +2,6 @@
 
 namespace Rutorika\Sortable;
 
-use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
@@ -14,10 +13,10 @@ class SortableController extends Controller
         $this->request = $request;
     }
 
-    public function sort(Config $config)
+    public function sort()
     {
 
-        $sortableEntities = $config->get('sortable.entities');
+        $sortableEntities = config('sortable.entities');
 
         $validator = $this->getValidator($sortableEntities);
 
