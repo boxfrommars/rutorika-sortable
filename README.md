@@ -85,7 +85,7 @@ now moving and ordering will be encapsulated by this field.
 Also this package provides `\Rutorika\Sortable\SortableController`, which handle requests to sort entities
 
 ### Usage
-Add the service provider to `app/config/app.php`
+Add the service provider to `config/app.php`
 
 ```php
 'providers' => array(
@@ -101,7 +101,7 @@ publish the config:
 php artisan vendor:publish
 ```
 
-Add models you need to sort in the config `app/config/sortable.php`:
+Add models you need to sort in the config `config/sortable.php`:
 
 ```php
 'entities' => array(
