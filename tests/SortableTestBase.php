@@ -5,14 +5,11 @@ class SortableTestBase extends Orchestra\Testbench\TestCase
     public function setUp()
     {
         parent::setUp();
-        $artisan = $this->app->make('artisan');
-        $artisan->call(
-            'migrate',
-            array(
-                '--database' => 'testbench',
-                '--path' => '../tests/migrations',
-            )
-        );
+
+        $this->artisan('migrate', [
+            '--database' => 'testbench',
+            '--path' => '../tests/migrations',
+        ]);
     }
 
     protected function getEnvironmentSetUp($app)

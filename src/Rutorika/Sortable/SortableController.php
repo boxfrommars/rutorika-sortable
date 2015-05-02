@@ -39,6 +39,7 @@ class SortableController extends Controller
             return [
                 'success' => false,
                 'errors' => $validator->errors(),
+                'failed' => $validator->failed(),
             ];
         }
     }
