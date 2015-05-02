@@ -2,7 +2,10 @@
 
 ## Laravel 5 - Demo
 
-Coming soon...
+* http://sortable5-demo.boxfrommars.ru/
+* http://sortable5-demo.boxfrommars.ru/grouped (sortable groups demo)
+
+(demo repo code: https://github.com/boxfrommars/rutorika-sortable-demo5)
 
 ## Install
 
@@ -105,7 +108,7 @@ Add models you need to sort in the config `config/sortable.php`:
 
 ```php
 'entities' => array(
-     'articles' => '\Article', // entityNameForUseInRequest => ModelName
+     'articles' => '\App\Article', // entityNameForUseInRequest => ModelName
 ),
 ```
 
@@ -139,6 +142,8 @@ positionEntityId:14
 then the article with id 3 will be moved after the article with id 14. 
 
 ### jQuery UI sortable example
+
+> Note: Laravel 5 has csrf middleware enabled by default, so you should setup ajax requests: http://laravel.com/docs/5.0/routing#csrf-protection
 
 ```html
 <table class="table table-striped table-hover">
