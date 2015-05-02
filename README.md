@@ -37,7 +37,7 @@ public function up()
 Add `\Rutorika\Sortable\SortableTrait` to your Eloquent model.
 
 ```php
-class Article extends Eloquent {
+class Article extends Model {
 
     use \Rutorika\Sortable\SortableTrait;
 }
@@ -108,7 +108,7 @@ Add models you need to sort in the config `config/sortable.php`:
 
 ```php
 'entities' => array(
-     'articles' => '\App\Article', // entityNameForUseInRequest => ModelName
+     'articles' => '\Article', // entityNameForUseInRequest => ModelName
 ),
 ```
 
