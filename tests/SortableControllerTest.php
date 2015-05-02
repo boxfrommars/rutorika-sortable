@@ -8,14 +8,10 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
     public function setUp()
     {
         parent::setUp();
-        $artisan = $this->app->make('artisan');
-        $artisan->call(
-            'migrate',
-            array(
-                '--database' => 'testbench',
-                '--path' => '../tests/migrations',
-            )
-        );
+        $this->artisan('migrate', [
+            '--database' => 'testbench',
+            '--path' => '../tests/migrations',
+        ]);
 
         for ($i = 1; $i <= 30; $i++) {
             $entities[$i] = new SortableEntity();
@@ -38,7 +34,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
         );
 
         $app['config']->set(
-            'sortable::entities',
+            'sortable.entities',
             array(
                 'sortable_entity' => '\SortableEntity',
                 'sortable_entity_without_class' => '\SortableEntityNotExist'
@@ -64,17 +60,17 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
 
         $this->assertFalse($responseData->success);
 
-        $errors = $responseData->errors;
+        $failed = $responseData->failed;
 
-        $this->assertObjectHasAttribute('type', $errors);
-        $this->assertObjectHasAttribute('entityName', $errors);
-        $this->assertObjectHasAttribute('positionEntityId', $errors);
-        $this->assertObjectHasAttribute('id', $errors);
+        $this->assertObjectHasAttribute('type', $failed);
+        $this->assertObjectHasAttribute('entityName', $failed);
+        $this->assertObjectHasAttribute('positionEntityId', $failed);
+        $this->assertObjectHasAttribute('id', $failed);
 
-        $this->assertContains('validation.required', $errors->type);
-        $this->assertContains('validation.required', $errors->entityName);
-        $this->assertContains('validation.required', $errors->positionEntityId);
-        $this->assertContains('validation.required', $errors->id);
+        $this->assertObjectHasAttribute('Required', $failed->type);
+        $this->assertObjectHasAttribute('Required', $failed->entityName);
+        $this->assertObjectHasAttribute('Required', $failed->positionEntityId);
+        $this->assertObjectHasAttribute('Required', $failed->id);
     }
 
     /**
@@ -102,6 +98,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
 
         $this->assertObjectHasAttribute('errors', $responseData);
         $errors = $responseData->errors;
+        $failed = $responseData->failed;
 
         $this->assertContains(
             $error,
@@ -110,24 +107,24 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
 
         switch ($error) {
             case 'invalidEntityId':
-                $this->assertContains('validation.exists', $errors->id);
+                $this->assertObjectHasAttribute('Exists', $failed->id);
                 break;
 
             case 'invalidPositionEntityId':
-                $this->assertContains('validation.exists', $errors->positionEntityId);
+                $this->assertObjectHasAttribute('Exists', $failed->positionEntityId);
                 break;
 
             case 'invalidEntityName':
-                $this->assertContains('validation.in', $errors->entityName);
-                $this->assertContains('validation.required', $errors->entityClass);
+                $this->assertObjectHasAttribute('In', $failed->entityName);
+                $this->assertObjectHasAttribute('Required', $failed->entityClass);
                 break;
 
             case 'invalidEntityClass':
-                $this->assertContains('validation.required', $errors->entityClass);
+                $this->assertObjectHasAttribute('Required', $failed->entityClass);
                 break;
 
             case 'invalidType':
-                $this->assertContains('validation.in', $errors->type);
+                $this->assertObjectHasAttribute('In', $failed->type);
                 break;
         }
     }
