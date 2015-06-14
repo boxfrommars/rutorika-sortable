@@ -6,6 +6,6 @@ class M2mEntity extends \Illuminate\Database\Eloquent\Model
 
     public function relatedEntities()
     {
-        return $this->belongsToSortedMany('M2mRelatedEntity', 'm2m_related_entity_position')->withPivot('m2m_related_entity_position');
+        return $this->belongsToSortedMany('M2mRelatedEntity', 'm2m_related_entity_position');
     }
 }

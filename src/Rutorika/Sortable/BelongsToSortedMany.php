@@ -32,6 +32,7 @@ class BelongsToSortedMany extends BelongsToMany
     {
         $this->orderColumn = $orderColumn;
         parent::__construct($query, $parent, $table, $foreignKey, $otherKey, $relationName);
+        $this->withPivot($orderColumn);
         $this->orderBy($orderColumn, 'ASC');
     }
 
