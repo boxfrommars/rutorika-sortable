@@ -2,8 +2,9 @@
 
 ## Laravel 5 - Demo
 
-* http://sortable5-demo.boxfrommars.ru/
-* http://sortable5-demo.boxfrommars.ru/grouped (sortable groups demo)
+* http://sortable5.boxfrommars.ru/
+* http://sortable5.boxfrommars.ru/grouped (sortable groups demo)
+* http://sortable5.boxfrommars.ru/posts (many to many demo)
 
 (demo repo code: https://github.com/boxfrommars/rutorika-sortable-demo5)
 
@@ -105,6 +106,7 @@ post_tag
 and you want to order *tags* for each *post*
 
 Add `position` column to the pivot table (you can use any name you want, but this column name is used by default)
+
 Add `\Rutorika\Sortable\BelongsToSortedManyTrait` to your `Post` model and define `belongsToSortedMany` relation provided by this trait:
 
 ```php
@@ -118,6 +120,8 @@ class Post extends Model {
     }
 }
 ```
+
+> Note: `$this->belongsToSortedMany` has different signature then `$this->belongsToMany` -- the second argument for this method is `$orderColumn` (`position` by default), next arguments are the same
 
 Attaching tags to post with `save`/`sync`/`attach` methods will set proper position
 
@@ -139,6 +143,9 @@ You can reorder tags for given post
     $post->tags()->moveBefore($entityToMove, $whereToMoveEntity); // or
     $post->tags()->moveAfter($entityToMove, $whereToMoveEntity);
 ```
+
+
+Many to many demo: http://sortable5.boxfrommars.ru/posts ([code](https://github.com/boxfrommars/rutorika-sortable-demo5))
 
 ## Sortable Controller
 
