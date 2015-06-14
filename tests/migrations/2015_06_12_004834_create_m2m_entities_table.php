@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEntitiesGroupTable extends Migration
+class CreateM2mEntitiesTable extends Migration
 {
 
     /**
@@ -13,11 +13,8 @@ class CreateEntitiesGroupTable extends Migration
      */
     public function up()
     {
-        Schema::create('sortable_entities_group', function (Blueprint $table) {
+        Schema::create('m2m_entities', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('position')->default(1);
-            $table->string('category');
-
             $table->timestamps();
         });
     }
@@ -29,7 +26,7 @@ class CreateEntitiesGroupTable extends Migration
      */
     public function down()
     {
-        Schema::table('sortable_entities_group', function (Blueprint $table) {
+        Schema::table('m2m_entities', function (Blueprint $table) {
             $table->drop();
         });
     }
