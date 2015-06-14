@@ -96,7 +96,6 @@ posts
 tags
     id
     title
-    position
 
 post_tag
     post_id
@@ -105,7 +104,14 @@ post_tag
 
 and you want to order *tags* for each *post*
 
-Add `position` column to the pivot table (you can use any name you want, but this column name is used by default)
+Add `position` column to the pivot table (you can use any name you want, but `position` is used by default)
+
+```
+post_tag
+    post_id
+    tag_id
+    position
+```
 
 Add `\Rutorika\Sortable\BelongsToSortedManyTrait` to your `Post` model and define `belongsToSortedMany` relation provided by this trait:
 
@@ -121,7 +127,7 @@ class Post extends Model {
 }
 ```
 
-> Note: `$this->belongsToSortedMany` has different signature then `$this->belongsToMany` -- the second argument for this method is `$orderColumn` (`position` by default), next arguments are the same
+> Note: `$this->belongsToSortedMany` has different signature then `$this->belongsToMany` -- the second argument for this method is `$orderColumn` (`'position'` by default), next arguments are the same
 
 Attaching tags to post with `save`/`sync`/`attach` methods will set proper position
 
