@@ -83,6 +83,63 @@ protected static $sortableGroupField = 'fieldName';
 
 now moving and ordering will be encapsulated by this field.
 
+### Sortable many to many
+
+Let's assume your database structure is
+
+```
+posts
+    id
+    title
+
+tags
+    id
+    title
+    position
+
+post_tag
+    post_id
+    tag_id
+```
+
+and you want to order *tags* for each *post*
+
+Add `position` column to the pivot table (you can use any name you want, but this column name is used by default)
+Add `\Rutorika\Sortable\BelongsToSortedManyTrait` to your `Post` model and define `belongsToSortedMany` relation provided by this trait:
+
+```php
+class Post extends Model {
+
+    use BelongsToSortedManyTrait;
+
+    public function tags()
+    {
+        return $this->belongsToSortedMany('\App\Tag');
+    }
+}
+```
+
+Attaching tags to post with `save`/`sync`/`attach` methods will set proper position
+
+```php
+    $post->tags()->save($tag) // or
+    $post->tags()->attach($tag->id) // or
+    $post->tags()->sync([$tagId1, $tagId2, /* ...tagIds */])
+```
+
+Getting related model is sorted by position
+
+```php
+$post->tags; // ordered by position by default
+```
+
+You can reorder tags for given post
+
+```php
+    $post->tags()->moveBefore($entityToMove, $whereToMoveEntity); // or
+    $post->tags()->moveAfter($entityToMove, $whereToMoveEntity);
+```
+
 ## Sortable Controller
 
 Also this package provides `\Rutorika\Sortable\SortableController`, which handle requests to sort entities
@@ -108,7 +165,14 @@ Add models you need to sort in the config `config/sortable.php`:
 
 ```php
 'entities' => array(
-     'articles' => '\Article', // entityNameForUseInRequest => ModelName
+     'articles' => '\App\Article', // entityNameForUseInRequest => ModelName
+     // or
+     'articles' => ['entity' => '\App\Article'],
+     // or for many to many
+     'posts' => [
+        'entity' => '\App\Post',
+        'relation' => 'tags' // relation name (method name which returns $this->belongsToSortedMany)
+     ]
 ),
 ```
 
@@ -127,6 +191,17 @@ $validator = \Validator::make(\Input::all(), array(
     'positionEntityId' => 'required|numeric', // id of relative entity
     'id' => 'required|numeric', // entity id
 ));
+
+// or for many to many
+
+$validator = \Validator::make(\Input::all(), array(
+    'type' => array('required', 'in:moveAfter,moveBefore'), // type of move, moveAfter or moveBefore
+    'entityName' => array('required', 'in:' . implode(',', array_keys($sortableEntities))), // entity name, 'articles' in this example
+    'positionEntityId' => 'required|numeric', // id of relative entity
+    'id' => 'required|numeric', // entity id
+    'parentId' => 'required|numeric', // parent entity id
+));
+
 ```
 
 Then entity with `\Input::get('id')` id will be moved relative by entity with `\Input::get('positionEntityId')` id.
@@ -145,21 +220,32 @@ then the article with id 3 will be moved after the article with id 14.
 
 > Note: Laravel 5 has csrf middleware enabled by default, so you should setup ajax requests: http://laravel.com/docs/5.0/routing#csrf-protection
 
+Template
+
 ```html
 <table class="table table-striped table-hover">
-    <thead>
-    <tr>
-        <th></th>
-        <th>#</th>
-        <th>title</th>
-    </tr>
-    </thead>
     <tbody class="sortable" data-entityname="articles">
     @foreach ($articles as $article)
     <tr data-itemId="{{{ $article->id }}}">
         <td class="sortable-handle"><span class="glyphicon glyphicon-sort"></span></td>
         <td class="id-column">{{{ $article->id }}}</td>
         <td>{{{ $article->title }}}</td>
+    </tr>
+    @endforeach
+    </tbody>
+</table>
+```
+
+Template for many to many ordering
+
+```html
+<table class="table table-striped table-hover">
+    <tbody class="sortable" data-entityname="posts">
+    @foreach ($post->tags as $tag)
+    <tr data-itemId="{{ $tag->id }}" data-parentId="{{ $post->id }}">
+        <td class="sortable-handle"><span class="glyphicon glyphicon-sort"></span></td>
+        <td class="id-column">{{ $tag->id }}</td>
+        <td>{{ $tag->title }}</td>
     </tr>
     @endforeach
     </tbody>
@@ -175,17 +261,11 @@ then the article with id 3 will be moved after the article with id 14.
      * @param id
      * @param positionId
      */
-    var changePosition = function(type, entityName, id, positionId){
-        var deferred = $.Deferred();
+    var changePosition = function(requestData){
         $.ajax({
             'url': '/sort',
             'type': 'POST',
-            'data': {
-                'type': type,
-                'entityName': entityName,
-                'id': id,
-                'positionEntityId': positionId
-            },
+            'data': requestData,
             'success': function(data) {
                 if (data.success) {
                     console.log('Saved!');
@@ -195,13 +275,8 @@ then the article with id 3 will be moved after the article with id 14.
             },
             'error': function(){
                 console.error('Something wrong!');
-            },
-            'complete': function(){
-                deferred.resolve(true);
             }
         });
-
-        return deferred.promise();
     };
 
     $(document).ready(function(){
@@ -211,32 +286,37 @@ then the article with id 3 will be moved after the article with id 14.
                 handle: '.sortable-handle',
                 axis: 'y',
                 update: function(a, b){
-                
+
                     var entityName = $(this).data('entityname');
                     var $sorted = b.item;
 
                     var $previous = $sorted.prev();
                     var $next = $sorted.next();
 
-                    var promise;
-
                     if ($previous.length > 0) {
-                        promise = changePosition('moveAfter', entityName, $sorted.data('itemid'), $previous.data('itemid'));
-                        $.when(promise).done(function(){
-                            // do smth
+                        changePosition({
+                            parentId: $sorted.data('parentid'),
+                            type: 'moveAfter',
+                            entityName: entityName,
+                            id: $sorted.data('itemid'),
+                            positionEntityId: $previous.data('itemid')
                         });
                     } else if ($next.length > 0) {
-                        promise = changePosition('moveBefore', entityName, $sorted.data('itemid'), $next.data('itemid'));
-                        $.when(promise).done(function(){
-                            // do smth
+                        changePosition({
+                            parentId: $sorted.data('parentid'),
+                            type: 'moveBefore',
+                            entityName: entityName,
+                            id: $sorted.data('itemid'),
+                            positionEntityId: $next.data('itemid')
                         });
                     } else {
-                        console.error('Something wrong!');
+                        App.notify.danger('Something wrong!');
                     }
                 },
                 cursor: "move"
             });
         }
+
         $('.sortable td').each(function(){ // fix jquery ui sortable table row width issue
             $(this).css('width', $(this).width() +'px');
         });
