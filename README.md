@@ -323,7 +323,7 @@ Template for many to many ordering
                             positionEntityId: $next.data('itemid')
                         });
                     } else {
-                        App.notify.danger('Something wrong!');
+                        console.error('Something wrong!');
                     }
                 },
                 cursor: "move"
