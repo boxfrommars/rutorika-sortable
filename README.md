@@ -217,18 +217,10 @@ then the article with id 3 will be moved after the article with id 14.
                     var $previous = $sorted.prev();
                     var $next = $sorted.next();
 
-                    var promise;
-
                     if ($previous.length > 0) {
-                        promise = changePosition('moveAfter', entityName, $sorted.data('itemid'), $previous.data('itemid'));
-                        $.when(promise).done(function(){
-                            // do smth
-                        });
+                        changePosition('moveAfter', entityName, $sorted.data('itemid'), $previous.data('itemid'));
                     } else if ($next.length > 0) {
-                        promise = changePosition('moveBefore', entityName, $sorted.data('itemid'), $next.data('itemid'));
-                        $.when(promise).done(function(){
-                            // do smth
-                        });
+                        changePosition('moveBefore', entityName, $sorted.data('itemid'), $next.data('itemid'));
                     } else {
                         console.error('Something wrong!');
                     }
@@ -236,9 +228,6 @@ then the article with id 3 will be moved after the article with id 14.
                 cursor: "move"
             });
         }
-        $('.sortable td').each(function(){ // fix jquery ui sortable table row width issue
-            $(this).css('width', $(this).width() +'px');
-        });
     });
 ```
 
