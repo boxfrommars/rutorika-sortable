@@ -2,8 +2,8 @@
 
 ## Demo
 
-* http://sortable-demo.boxfrommars.ru/
-* http://sortable-demo.boxfrommars.ru/grouped (sortable groups demo)
+* http://rutorika-sortable.boxfrommars.ru/
+* http://rutorika-sortable.boxfrommars.ru/grouped (sortable groups demo)
 
 (demo repo code: https://github.com/boxfrommars/rutorika-sortable-demo)
 
