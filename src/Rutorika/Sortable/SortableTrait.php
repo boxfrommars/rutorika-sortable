@@ -128,6 +128,42 @@ trait SortableTrait
     }
 
     /**
+     * @param int $limit
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public function getPrevious($limit = 0)
+    {
+        /** @var Builder $query */
+        $query = $this->newQuery();
+        $query = $this->_applySortableGroup($query);
+        $query->where('position', '<', $this->position);
+        $query->orderBy('position', 'desc');
+        $query->limit($limit);
+
+        $result = $query->get();
+
+        return $result->reverse();
+    }
+
+    /**
+     * @param int $limit
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public function getNext($limit = 0)
+    {
+        /** @var Builder $query */
+        $query = $this->newQuery();
+        $query = $this->_applySortableGroup($query);
+        $query->where('position', '>', $this->position);
+        $query->orderBy('position', 'asc');
+        $query->limit($limit);
+
+        $result = $query->get();
+
+        return $result;
+    }
+
+    /**
      * @param callable|\Closure $callback
      * @return mixed
      */

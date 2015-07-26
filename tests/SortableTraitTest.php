@@ -300,6 +300,129 @@ class SortableTraitTest extends SortableTestBase
     }
 
     /**
+     *
+     * @param
+     * @param
+     * @param
+     * @dataProvider getPreviousNextEntityProvider
+     */
+    public function testGetPrevious($entityId, $limit)
+    {
+        /** @var SortableEntity[] $entities */
+        $entities = array();
+        for ($i = 1; $i <= 30; $i++) {
+            $entities[$i] = new SortableEntity();
+            $entities[$i]->save();
+        }
+        /** @var SortableEntity $entity */
+        $entity = $entities[$entityId];
+
+        $previous = $entity->getPrevious($limit);
+
+        $expectedCount = $limit ? min($limit, $entityId - 1) : $entityId - 1;
+        $this->assertEquals($expectedCount, $previous->count());
+
+        /** @var SortableEntity|null $curr */
+        $curr = null;
+
+        $startId = $entityId - $expectedCount;
+
+        foreach ($previous as $prev) {
+            $this->assertEquals($startId, $prev->id);
+            if ($curr) $this->assertEquals($curr->position + 1, $prev->position);
+            $curr = $prev;
+            $startId++;
+        }
+    }
+
+    /**
+     *
+     * @param
+     * @param
+     * @param
+     * @dataProvider getPreviousNextEntityProvider
+     */
+    public function testGetNext($entityId, $limit)
+    {
+        /** @var SortableEntity[] $entities */
+        $entities = array();
+        for ($i = 1; $i <= 30; $i++) {
+            $entities[$i] = new SortableEntity();
+            $entities[$i]->save();
+        }
+        /** @var SortableEntity $entity */
+        $entity = $entities[$entityId];
+
+        $next = $entity->getNext($limit);
+
+        $totalNext = count($entities) - $entityId;
+        $expectedCount = $limit ? min($totalNext, $limit) : $totalNext;
+        $this->assertEquals($expectedCount, $next->count());
+
+        /** @var SortableEntity|null $curr */
+        $curr = null;
+
+        $startId = $entityId + 1;
+
+        foreach ($next as $ent) {
+            $this->assertEquals($startId, $ent->id);
+            if ($curr) $this->assertEquals($curr->position + 1, $ent->position);
+            $curr = $ent;
+            $startId++;
+        }
+    }
+
+    /**
+     *
+     * @param
+     * @param
+     * @param
+     * @dataProvider getPreviousNextEntityProvider
+     */
+    public function testDefaultsPrevious($entityId, $limit)
+    {
+        $entities = array();
+        for ($i = 1; $i <= 30; $i++) {
+            $entities[$i] = new SortableEntity();
+            $entities[$i]->save();
+        }
+        /** @var SortableEntity $entity */
+        $entity = $entities[$entityId];
+
+        $expectedEntities = $entity->getPrevious(0);
+        $previous = $entity->getPrevious();
+        $this->assertEquals($expectedEntities->count(), $previous->count());
+        for ($i = 0; $i < $previous->count(); $i++) {
+            $this->assertEquals($expectedEntities->offsetGet($i)->id, $previous->offsetGet($i)->id);
+        }
+    }
+
+    /**
+     *
+     * @param
+     * @param
+     * @param
+     * @dataProvider getPreviousNextEntityProvider
+     */
+    public function testDefaultsNext($entityId, $limit)
+    {
+        $entities = array();
+        for ($i = 1; $i <= 30; $i++) {
+            $entities[$i] = new SortableEntity();
+            $entities[$i]->save();
+        }
+        /** @var SortableEntity $entity */
+        $entity = $entities[$entityId];
+
+        $expectedEntities = $entity->getNext(0);
+        $next = $entity->getNext();
+        $this->assertEquals($expectedEntities->count(), $next->count());
+        for ($i = 0; $i < $next->count(); $i++) {
+            $this->assertEquals($expectedEntities->offsetGet($i)->id, $next->offsetGet($i)->id);
+        }
+    }
+
+    /**
      * @return array
      */
     public function moveWhenMovedEntityComesAfterRelativeEntityProvider()
@@ -332,6 +455,24 @@ class SortableTraitTest extends SortableTestBase
             array(1, 30),
             array(7, 30),
             array(30, 30),
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function getPreviousNextEntityProvider()
+    {
+        return array(
+            array(5, 0),
+            array(5, 1),
+            array(1, 1),
+            array(10, 1),
+            array(30, 1),
+            array(5, 12),
+            array(1, 10),
+            array(10, 4),
+            array(30, 4),
         );
     }
 }
