@@ -1,6 +1,7 @@
 <?php
 
 namespace Rutorika\Sortable;
+
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -56,7 +57,7 @@ trait SortableTrait
         /** @var \Illuminate\Database\Connection $connection */
         $connection = $this->getConnection();
 
-        $this->_transaction(function() use($connection, $entity){
+        $this->_transaction(function () use ($connection, $entity) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = $connection->table($this->getTable());
             $query = $this->_applySortableGroup($query);
@@ -100,7 +101,7 @@ trait SortableTrait
         /** @var \Illuminate\Database\Connection $connection */
         $connection = $this->getConnection();
 
-        $this->_transaction(function() use($connection, $entity){
+        $this->_transaction(function () use ($connection, $entity) {
             $query = $connection->table($this->getTable());
             $query = $this->_applySortableGroup($query);
 
@@ -129,9 +130,9 @@ trait SortableTrait
 
     /**
      * @param int $limit
-     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     * @return Builder
      */
-    public function getPrevious($limit = 0)
+    public function previous($limit = 0)
     {
         /** @var Builder $query */
         $query = $this->newQuery();
@@ -140,16 +141,23 @@ trait SortableTrait
         $query->orderBy('position', 'desc');
         $query->limit($limit);
 
-        $result = $query->get();
-
-        return $result->reverse();
+        return $query;
     }
 
     /**
      * @param int $limit
      * @return \Illuminate\Database\Eloquent\Collection|static[]
      */
-    public function getNext($limit = 0)
+    public function getPrevious($limit = 0)
+    {
+        return $this->previous($limit)->get()->reverse();
+    }
+
+    /**
+     * @param int $limit
+     * @return Builder
+     */
+    public function next($limit = 0)
     {
         /** @var Builder $query */
         $query = $this->newQuery();
@@ -158,16 +166,24 @@ trait SortableTrait
         $query->orderBy('position', 'asc');
         $query->limit($limit);
 
-        $result = $query->get();
+        return $query;
+    }
 
-        return $result;
+    /**
+     * @param int $limit
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public function getNext($limit = 0)
+    {
+        return $this->next($limit)->get();
     }
 
     /**
      * @param callable|\Closure $callback
      * @return mixed
      */
-    protected function _transaction(\Closure $callback){
+    protected function _transaction(\Closure $callback)
+    {
         return $this->getConnection()->transaction($callback);
     }
 
