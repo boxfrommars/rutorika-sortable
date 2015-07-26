@@ -1,9 +1,11 @@
 <?php
 
 namespace Rutorika\Sortable;
+use Illuminate\Database\Eloquent\Builder;
+
 /**
  * Class SortableTrait
- * @traitUses \Eloquent
+ * @traitUses \Illuminate\Database\Eloquent\Model
  */
 trait SortableTrait
 {
@@ -13,6 +15,7 @@ trait SortableTrait
      */
     public static function bootSortableTrait()
     {
+
         static::creating(
             function ($model) {
                 $sortableGroupField = $model->getSortableGroupField();
@@ -45,15 +48,18 @@ trait SortableTrait
      */
     public function moveAfter($entity)
     {
-        /** @var \Illuminate\Database\Connection $connection */
+        $sortableGroupField = $this->getSortableGroupField();
+        if ($sortableGroupField && $this->$sortableGroupField !== $entity->$sortableGroupField) {
+            throw new SortableException($this->$sortableGroupField, $entity->$sortableGroupField);
+        }
 
+        /** @var \Illuminate\Database\Connection $connection */
         $connection = $this->getConnection();
 
         $this->_transaction(function() use($connection, $entity){
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = $connection->table($this->getTable());
-
-            $query = $this->_applySortableGroup($query, $entity);
+            $query = $this->_applySortableGroup($query);
 
             if ($this->position > $entity->position) {
                 $query
@@ -82,17 +88,21 @@ trait SortableTrait
      *
      * @param \Illuminate\Database\Eloquent\Model $entity
      * @throws \Exception
+     * @throws SortableException
      */
     public function moveBefore($entity)
     {
+        $sortableGroupField = $this->getSortableGroupField();
+        if ($sortableGroupField && $this->$sortableGroupField !== $entity->$sortableGroupField) {
+            throw new SortableException($this->$sortableGroupField, $entity->$sortableGroupField);
+        }
+
         /** @var \Illuminate\Database\Connection $connection */
         $connection = $this->getConnection();
 
         $this->_transaction(function() use($connection, $entity){
-            /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = $connection->table($this->getTable());
-
-            $query = $this->_applySortableGroup($query, $entity);
+            $query = $this->_applySortableGroup($query);
 
             if ($this->position > $entity->position) {
                 $query
@@ -118,7 +128,7 @@ trait SortableTrait
     }
 
     /**
-     * @param callable $callback
+     * @param callable|\Closure $callback
      * @return mixed
      */
     protected function _transaction(\Closure $callback){
@@ -126,26 +136,20 @@ trait SortableTrait
     }
 
     /**
-     * @param $query
-     * @param $entity
-     * @return mixed
-     * @throws SortableException
+     * @param \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
      */
-    protected function _applySortableGroup($query, $entity)
+    protected function _applySortableGroup($query)
     {
         $sortableGroupField = $this->getSortableGroupField();
         if ($sortableGroupField) {
-            if ($this->$sortableGroupField !== $entity->$sortableGroupField) {
-                throw new SortableException($this->$sortableGroupField, $entity->$sortableGroupField);
-            }
-
             $query->where($sortableGroupField, '=', $this->$sortableGroupField);
         }
         return $query;
     }
 
     /**
-     * @return null
+     * @return string|null
      */
     public static function getSortableGroupField()
     {

@@ -2,23 +2,23 @@
 
 namespace Rutorika\Sortable;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\Controller;
-use Request;
+use Illuminate\Http\Request;
 
 class SortableController extends Controller
 {
 
-    public function sort()
+    public function sort(Request $request)
     {
         $sortableEntities = app('config')->get('sortable.entities', []);
 
-        $validator = $this->getValidator($sortableEntities);
+        $validator = $this->getValidator($sortableEntities, $request);
 
         if ($validator->passes()) {
             $relation = false;
 
-            /** @var \Eloquent $entityClass */
-            $entityConfig = $sortableEntities[Request::get('entityName')];
+            $entityConfig = $sortableEntities[$request->input('entityName')];
 
             if (is_array($entityConfig)) {
                 $entityClass = $entityConfig['entity'];
@@ -27,12 +27,11 @@ class SortableController extends Controller
                 $entityClass = $entityConfig;
             }
 
-
             if (!$relation) {
-                /** @var SortableTrait $entity */
-                $entity = $entityClass::find(Request::get('id'));
-                $postionEntity = $entityClass::find(Request::get('positionEntityId'));
-                switch (\Input::get('type')) {
+                /** @var SortableTrait|Model $entity */
+                $entity = $entityClass::find($request->input('id'));
+                $postionEntity = $entityClass::find($request->input('positionEntityId'));
+                switch ($request->input('type')) {
                     case 'moveAfter':
                         $entity->moveAfter($postionEntity);
                         break;
@@ -41,12 +40,12 @@ class SortableController extends Controller
                         break;
                 }
             } else {
-                $parentEntity = $entityClass::find(Request::get('parentId'));
+                $parentEntity = $entityClass::find($request->input('parentId'));
 
-                $entity = $parentEntity->$relation()->find(Request::get('id'));
-                $postionEntity = $parentEntity->$relation()->find(Request::get('positionEntityId'));
+                $entity = $parentEntity->$relation()->find($request->input('id'));
+                $postionEntity = $parentEntity->$relation()->find($request->input('positionEntityId'));
 
-                switch (\Input::get('type')) {
+                switch ($request->input('type')) {
                     case 'moveAfter':
                         $parentEntity->$relation()->moveAfter($entity, $postionEntity);
                         break;
@@ -71,9 +70,10 @@ class SortableController extends Controller
 
     /**
      * @param array $sortableEntities
+     * @param Request $request
      * @return mixed
      */
-    protected function getValidator($sortableEntities)
+    protected function getValidator($sortableEntities, $request)
     {
         /** @var  \Illuminate\Validation\Factory $validator */
         $validator = app('validator');
@@ -85,12 +85,12 @@ class SortableController extends Controller
             'positionEntityId' => 'required|numeric',
         ];
 
-        /** @var \Eloquent|bool $entityClass */
+        /** @var Model|bool $entityClass */
         $entityClass = false;
         $relation = false;
 
-        if (array_key_exists(Request::get('entityName'), $sortableEntities)) {
-            $entityConfig = $sortableEntities[Request::get('entityName')];
+        if (array_key_exists($request->input('entityName'), $sortableEntities)) {
+            $entityConfig = $sortableEntities[$request->input('entityName')];
 
             if (is_array($entityConfig)) {
                 $entityClass = $entityConfig['entity'];
@@ -119,12 +119,12 @@ class SortableController extends Controller
                 $relationObject = with(new $entityClass)->$relation();
                 $pivotTable = $relationObject->getTable();
 
-                $rules['id'] .= '|exists:' . $pivotTable . ',' . $relationObject->getOtherKey() . ',' . $relationObject->getForeignKey() . ',' . Request::get('parentId');
-                $rules['positionEntityId'] .= '|exists:' . $pivotTable . ',' . $relationObject->getOtherKey() . ',' . $relationObject->getForeignKey() . ',' . Request::get('parentId');
+                $rules['id'] .= '|exists:' . $pivotTable . ',' . $relationObject->getOtherKey() . ',' . $relationObject->getForeignKey() . ',' . $request->input('parentId');
+                $rules['positionEntityId'] .= '|exists:' . $pivotTable . ',' . $relationObject->getOtherKey() . ',' . $relationObject->getForeignKey() . ',' . $request->input('parentId');
 
             }
         }
 
-        return $validator->make(Request::all(), $rules);
+        return $validator->make($request->all(), $rules);
     }
 }
