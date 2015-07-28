@@ -5,7 +5,6 @@ require_once 'SortableTestBase.php';
 
 class SortableGroupTraitTest extends SortableTestBase
 {
-
     public function setUp()
     {
         parent::setUp();
@@ -25,19 +24,18 @@ class SortableGroupTraitTest extends SortableTestBase
         $entity->category = 'some_category';
         $entity->save();
 
-        $sortableGroupField =  $entity->getSortableGroupField();
+        $sortableGroupField = $entity->getSortableGroupField();
 
         $this->assertEquals('some_category', $entity->$sortableGroupField);
     }
 
     public function testPosition()
     {
-
         $categories = ['first', 'second', 'third'];
 
         /** @var SortableEntity[] $entities */
         $entities = array();
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < 30; ++$i) {
             $category = $categories[array_rand($categories)];
             $entity = new SortableEntityGroup();
             $entity->category = $category;
@@ -66,7 +64,7 @@ class SortableGroupTraitTest extends SortableTestBase
         /** @var SortableEntity[] $entities */
         $entities = array();
         $fixedEntities = array();
-        for ($i = 1; $i <= $countTotal; $i++) {
+        for ($i = 1; $i <= $countTotal; ++$i) {
             $entities[$i] = new SortableEntityGroup();
             $entities[$i]->category = 'first_category';
             $entities[$i]->save();
@@ -74,7 +72,6 @@ class SortableGroupTraitTest extends SortableTestBase
             $fixedEntities[$i] = new SortableEntityGroup();
             $fixedEntities[$i]->category = 'second_category';
             $fixedEntities[$i]->save();
-
         }
 
         $moveEntity = $entities[$entityId];
@@ -93,12 +90,12 @@ class SortableGroupTraitTest extends SortableTestBase
         $left = min($entityId, $relativeEntityId);
         $right = max($entityId, $relativeEntityId);
 
-        for ($id = 1; $id < $left; $id++) {
+        for ($id = 1; $id < $left; ++$id) {
             $entity = SortableEntityGroup::find($entities[$id]->id);
             $this->assertEquals($id, $entity->position);
         }
 
-        for ($id = $right + 1; $id <= $countTotal; $id++) {
+        for ($id = $right + 1; $id <= $countTotal; ++$id) {
             $entity = SortableEntityGroup::find($entities[$id]->id);
             $this->assertEquals($id, $entity->position);
         }
@@ -115,7 +112,7 @@ class SortableGroupTraitTest extends SortableTestBase
         /** @var SortableEntity[] $entities */
         $entities = array();
         $fixedEntities = array();
-        for ($i = 1; $i <= $count; $i++) {
+        for ($i = 1; $i <= $count; ++$i) {
             $entities[$i] = new SortableEntityGroup();
             $entities[$i]->category = 'first_category';
             $entities[$i]->save();
@@ -123,7 +120,6 @@ class SortableGroupTraitTest extends SortableTestBase
             $fixedEntities[$i] = new SortableEntityGroup();
             $fixedEntities[$i]->category = 'second_category';
             $fixedEntities[$i]->save();
-
         }
 
         return $entities;
@@ -148,7 +144,7 @@ class SortableGroupTraitTest extends SortableTestBase
         $this->assertEquals($relativeEntityId, $moveEntity->position);
         $this->assertEquals($relativeEntityId - 1, $relyEntity->position);
 
-        for ($id = $entityId + 1; $id < $relativeEntityId; $id++) {
+        for ($id = $entityId + 1; $id < $relativeEntityId; ++$id) {
             $entity = SortableEntityGroup::find($entities[$id]->id);
             $this->assertEquals($id - 1, $entity->position);
         }
@@ -168,7 +164,7 @@ class SortableGroupTraitTest extends SortableTestBase
      */
     public function testMoveAfterWhenMovedEntityComesAfterRelativeEntity($entityId, $relativeEntityId, $countTotal)
     {
-        /** @var SortableEntityGroup[] $entity */
+        /* @var SortableEntityGroup[] $entity */
         /** @var SortableEntityGroup[] $entities */
         $entities = $this->generateEntities($countTotal);
 
@@ -180,7 +176,7 @@ class SortableGroupTraitTest extends SortableTestBase
         $this->assertEquals($relativeEntityId + 1, $moveEntity->position);
         $this->assertEquals($relativeEntityId, $relyEntity->position);
 
-        for ($id = $relativeEntityId + 1; $id < $entityId; $id++) {
+        for ($id = $relativeEntityId + 1; $id < $entityId; ++$id) {
             $entity = SortableEntityGroup::find($entities[$id]->id);
             $this->assertEquals($id + 1, $entity->position);
         }
@@ -191,7 +187,6 @@ class SortableGroupTraitTest extends SortableTestBase
         $entity = SortableEntityGroup::find($relyEntity->id);
         $this->assertEquals($relativeEntityId, $entity->position);
     }
-
 
     /**
      * @param
@@ -212,7 +207,7 @@ class SortableGroupTraitTest extends SortableTestBase
         $this->assertEquals($relativeEntityId - 1, $moveEntity->position);
         $this->assertEquals($relativeEntityId, $relyEntity->position);
 
-        for ($id = $entityId + 1; $id < $relativeEntityId; $id++) {
+        for ($id = $entityId + 1; $id < $relativeEntityId; ++$id) {
             $entity = SortableEntityGroup::find($entities[$id]->id);
             $this->assertEquals($id - 1, $entity->position);
         }
@@ -223,7 +218,6 @@ class SortableGroupTraitTest extends SortableTestBase
         $entity = SortableEntityGroup::find($relyEntity->id);
         $this->assertEquals($relativeEntityId, $entity->position);
     }
-
 
     /**
      * @param
@@ -244,7 +238,7 @@ class SortableGroupTraitTest extends SortableTestBase
         $this->assertEquals($relativeEntityId, $moveEntity->position);
         $this->assertEquals($relativeEntityId + 1, $relyEntity->position);
 
-        for ($id = $relativeEntityId + 1; $id < $entityId; $id++) {
+        for ($id = $relativeEntityId + 1; $id < $entityId; ++$id) {
             $entity = SortableEntityGroup::find($entities[$id]->id);
             $this->assertEquals($id + 1, $entity->position);
         }
@@ -272,7 +266,6 @@ class SortableGroupTraitTest extends SortableTestBase
         $entity1->moveAfter($entity2);
     }
 
-
     /**
      * @expectedException \Rutorika\Sortable\SortableException
      */
@@ -288,9 +281,6 @@ class SortableGroupTraitTest extends SortableTestBase
 
         $entity1->moveBefore($entity2);
     }
-
-
-
 
     /**
      * @return array

@@ -5,7 +5,6 @@ require_once 'SortableTestBase.php';
 
 class SortableTraitTest extends SortableTestBase
 {
-
     public function setUp()
     {
         parent::setUp();
@@ -30,7 +29,7 @@ class SortableTraitTest extends SortableTestBase
 
         /** @var SortableEntity[] $entities */
         $entities = array();
-        for ($i = 1; $i <= 30; $i++) {
+        for ($i = 1; $i <= 30; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
             $this->assertEquals($i, $entities[$i]->id);
@@ -51,7 +50,7 @@ class SortableTraitTest extends SortableTestBase
 
         /** @var SortableEntity[] $entities */
         $entities = array();
-        for ($i = 1; $i <= $countTotal; $i++) {
+        for ($i = 1; $i <= $countTotal; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
         }
@@ -65,7 +64,7 @@ class SortableTraitTest extends SortableTestBase
         $this->assertEquals($relativeEntityId - 1, $relyEntity->position);
 
         // check [1 .. $entityId - 1] entities
-        for ($id = 1; $id < $entityId; $id++) {
+        for ($id = 1; $id < $entityId; ++$id) {
             $entity = SortableEntity::find($id);
             $this->assertEquals($id, $entity->position);
         }
@@ -75,13 +74,13 @@ class SortableTraitTest extends SortableTestBase
         $this->assertEquals($relativeEntityId, $entity->position);
 
         // check  [$entityId + 1 .. $relativeEntityId] entities
-        for ($id = $entityId + 1; $id <= $relativeEntityId; $id++) {
+        for ($id = $entityId + 1; $id <= $relativeEntityId; ++$id) {
             $entity = SortableEntity::find($id);
             $this->assertEquals($id - 1, $entity->position);
         }
 
         // check  [$relativeEntityId + 1 .. $countTotal] entities
-        for ($id = $relativeEntityId + 1; $id <= $countTotal; $id++) {
+        for ($id = $relativeEntityId + 1; $id <= $countTotal; ++$id) {
             $entity = SortableEntity::find($id);
             $this->assertEquals($id, $entity->position);
         }
@@ -99,7 +98,7 @@ class SortableTraitTest extends SortableTestBase
 
         /** @var SortableEntity[] $entities */
         $entities = array();
-        for ($i = 1; $i <= $countTotal; $i++) {
+        for ($i = 1; $i <= $countTotal; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
         }
@@ -111,13 +110,13 @@ class SortableTraitTest extends SortableTestBase
         $this->assertEquals($relativeEntityId + 1, $moveEntity->position);
 
         // check [1 .. $relativeEntityId] entities
-        for ($id = 1; $id <= $relativeEntityId; $id++) {
+        for ($id = 1; $id <= $relativeEntityId; ++$id) {
             $entity = SortableEntity::find($id);
             $this->assertEquals($id, $entity->position);
         }
 
         // check  [$relativeEntityId + 1 .. $entityId - 1] entities
-        for ($id = $relativeEntityId + 1; $id <= $entityId - 1; $id++) {
+        for ($id = $relativeEntityId + 1; $id <= $entityId - 1; ++$id) {
             $entity = SortableEntity::find($id);
             $this->assertEquals($id + 1, $entity->position);
         }
@@ -127,7 +126,7 @@ class SortableTraitTest extends SortableTestBase
         $this->assertEquals($relativeEntityId + 1, $entity->position);
 
         // check  [$entityId + 1 .. $countTotal] entities
-        for ($id = $entityId + 1; $id <= $countTotal; $id++) {
+        for ($id = $entityId + 1; $id <= $countTotal; ++$id) {
             $entity = SortableEntity::find($id);
             $this->assertEquals($id, $entity->position);
         }
@@ -143,7 +142,7 @@ class SortableTraitTest extends SortableTestBase
 
         /** @var SortableEntity[] $entities */
         $entities = array();
-        for ($i = 1; $i <= $countTotal; $i++) {
+        for ($i = 1; $i <= $countTotal; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
         }
@@ -153,7 +152,7 @@ class SortableTraitTest extends SortableTestBase
 
         $this->assertEquals($entityId, $moveEntity->position);
 
-        for ($i = 1; $i <= $countTotal; $i++) {
+        for ($i = 1; $i <= $countTotal; ++$i) {
             $this->assertEquals($i, SortableEntity::find($i)->position);
         }
     }
@@ -169,7 +168,7 @@ class SortableTraitTest extends SortableTestBase
 
         /** @var SortableEntity[] $entities */
         $entities = array();
-        for ($i = 1; $i <= $countTotal; $i++) {
+        for ($i = 1; $i <= $countTotal; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
         }
@@ -181,7 +180,7 @@ class SortableTraitTest extends SortableTestBase
         $this->assertEquals($relativeEntityId - 1, $moveEntity->position);
 
         // check [1 .. $entityId - 1] entities
-        for ($id = 1; $id < $entityId; $id++) {
+        for ($id = 1; $id < $entityId; ++$id) {
             $entity = SortableEntity::find($id);
             $this->assertEquals($id, $entity->position);
         }
@@ -191,13 +190,13 @@ class SortableTraitTest extends SortableTestBase
         $this->assertEquals($relativeEntityId - 1, $entity->position);
 
         // check  [$entityId + 1 .. $relativeEntityId] entities
-        for ($id = $entityId + 1; $id <= $relativeEntityId - 1; $id++) {
+        for ($id = $entityId + 1; $id <= $relativeEntityId - 1; ++$id) {
             $entity = SortableEntity::find($id);
             $this->assertEquals($id - 1, $entity->position);
         }
 
         // check  [$relativeEntityId + 1 .. $countTotal] entities
-        for ($id = $relativeEntityId; $id <= $countTotal; $id++) {
+        for ($id = $relativeEntityId; $id <= $countTotal; ++$id) {
             $entity = SortableEntity::find($id);
             $this->assertEquals($id, $entity->position);
         }
@@ -214,7 +213,7 @@ class SortableTraitTest extends SortableTestBase
 
         /** @var SortableEntity[] $entities */
         $entities = array();
-        for ($i = 1; $i <= $countTotal; $i++) {
+        for ($i = 1; $i <= $countTotal; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
         }
@@ -227,13 +226,13 @@ class SortableTraitTest extends SortableTestBase
         $this->assertEquals($relativeEntityId + 1, $relyEntity->position);
 
         // check [1 .. $relativeEntityId] entities
-        for ($id = 1; $id <= $relativeEntityId - 1; $id++) {
+        for ($id = 1; $id <= $relativeEntityId - 1; ++$id) {
             $entity = SortableEntity::find($id);
             $this->assertEquals($id, $entity->position);
         }
 
         // check  [$relativeEntityId + 1 .. $entityId - 1] entities
-        for ($id = $relativeEntityId; $id <= $entityId - 1; $id++) {
+        for ($id = $relativeEntityId; $id <= $entityId - 1; ++$id) {
             $entity = SortableEntity::find($id);
             $this->assertEquals($id + 1, $entity->position);
         }
@@ -243,7 +242,7 @@ class SortableTraitTest extends SortableTestBase
         $this->assertEquals($relativeEntityId, $entity->position);
 
         // check  [$entityId + 1 .. $countTotal] entities
-        for ($id = $entityId + 1; $id <= $countTotal; $id++) {
+        for ($id = $entityId + 1; $id <= $countTotal; ++$id) {
             $entity = SortableEntity::find($id);
             $this->assertEquals($id, $entity->position);
         }
@@ -259,7 +258,7 @@ class SortableTraitTest extends SortableTestBase
 
         /** @var SortableEntity[] $entities */
         $entities = array();
-        for ($i = 1; $i <= $countTotal; $i++) {
+        for ($i = 1; $i <= $countTotal; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
         }
@@ -269,7 +268,7 @@ class SortableTraitTest extends SortableTestBase
 
         $this->assertEquals($entityId, $moveEntity->position);
 
-        for ($i = 1; $i <= $countTotal; $i++) {
+        for ($i = 1; $i <= $countTotal; ++$i) {
             $this->assertEquals($i, SortableEntity::find($i)->position);
         }
     }
@@ -278,7 +277,7 @@ class SortableTraitTest extends SortableTestBase
     {
         /** @var SortableEntity[] $entities */
         $entities = array();
-        for ($i = 1; $i <= 30; $i++) {
+        for ($i = 1; $i <= 30; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
         }
@@ -300,7 +299,6 @@ class SortableTraitTest extends SortableTestBase
     }
 
     /**
-     *
      * @param
      * @param
      * @param
@@ -310,7 +308,7 @@ class SortableTraitTest extends SortableTestBase
     {
         /** @var SortableEntity[] $entities */
         $entities = array();
-        for ($i = 1; $i <= 30; $i++) {
+        for ($i = 1; $i <= 30; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
         }
@@ -329,14 +327,15 @@ class SortableTraitTest extends SortableTestBase
 
         foreach ($previous as $prev) {
             $this->assertEquals($startId, $prev->id);
-            if ($curr) $this->assertEquals($curr->position + 1, $prev->position);
+            if ($curr) {
+                $this->assertEquals($curr->position + 1, $prev->position);
+            }
             $curr = $prev;
-            $startId++;
+            ++$startId;
         }
     }
 
     /**
-     *
      * @param
      * @param
      * @param
@@ -346,7 +345,7 @@ class SortableTraitTest extends SortableTestBase
     {
         /** @var SortableEntity[] $entities */
         $entities = array();
-        for ($i = 1; $i <= 30; $i++) {
+        for ($i = 1; $i <= 30; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
         }
@@ -366,14 +365,15 @@ class SortableTraitTest extends SortableTestBase
 
         foreach ($next as $ent) {
             $this->assertEquals($startId, $ent->id);
-            if ($curr) $this->assertEquals($curr->position + 1, $ent->position);
+            if ($curr) {
+                $this->assertEquals($curr->position + 1, $ent->position);
+            }
             $curr = $ent;
-            $startId++;
+            ++$startId;
         }
     }
 
     /**
-     *
      * @param
      * @param
      * @param
@@ -382,7 +382,7 @@ class SortableTraitTest extends SortableTestBase
     public function testDefaultsPrevious($entityId, $limit)
     {
         $entities = array();
-        for ($i = 1; $i <= 30; $i++) {
+        for ($i = 1; $i <= 30; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
         }
@@ -392,13 +392,12 @@ class SortableTraitTest extends SortableTestBase
         $expectedEntities = $entity->getPrevious(0);
         $previous = $entity->getPrevious();
         $this->assertEquals($expectedEntities->count(), $previous->count());
-        for ($i = 0; $i < $previous->count(); $i++) {
+        for ($i = 0; $i < $previous->count(); ++$i) {
             $this->assertEquals($expectedEntities->offsetGet($i)->id, $previous->offsetGet($i)->id);
         }
     }
 
     /**
-     *
      * @param
      * @param
      * @param
@@ -407,7 +406,7 @@ class SortableTraitTest extends SortableTestBase
     public function testDefaultsNext($entityId, $limit)
     {
         $entities = array();
-        for ($i = 1; $i <= 30; $i++) {
+        for ($i = 1; $i <= 30; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
         }
@@ -417,7 +416,7 @@ class SortableTraitTest extends SortableTestBase
         $expectedEntities = $entity->getNext(0);
         $next = $entity->getNext();
         $this->assertEquals($expectedEntities->count(), $next->count());
-        for ($i = 0; $i < $next->count(); $i++) {
+        for ($i = 0; $i < $next->count(); ++$i) {
             $this->assertEquals($expectedEntities->offsetGet($i)->id, $next->offsetGet($i)->id);
         }
     }

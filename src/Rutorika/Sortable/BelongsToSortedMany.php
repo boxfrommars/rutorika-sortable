@@ -2,15 +2,12 @@
 
 namespace Rutorika\Sortable;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use \Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
- * Many to many relation with sorting/ordering support
- *
- * Class BelongsToSortedMany
- * @package Rutorika\Sortable
+ * Many to many relation with sorting/ordering support.
  */
 class BelongsToSortedMany extends BelongsToMany
 {
@@ -21,12 +18,12 @@ class BelongsToSortedMany extends BelongsToMany
      * Sets default ordering by $orderColumn column.
      *
      * @param Builder $query
-     * @param Model $parent
-     * @param string $table
-     * @param string $foreignKey
-     * @param string $otherKey
-     * @param null $relationName
-     * @param string $orderColumn position column name
+     * @param Model   $parent
+     * @param string  $table
+     * @param string  $foreignKey
+     * @param string  $otherKey
+     * @param null    $relationName
+     * @param string  $orderColumn position column name
      */
     public function __construct(Builder $query, Model $parent, $table, $foreignKey, $otherKey, $relationName = null, $orderColumn)
     {
@@ -39,9 +36,10 @@ class BelongsToSortedMany extends BelongsToMany
     /**
      * Attach a model to the parent.
      *
-     * @param  mixed  $id
-     * @param  array  $attributes
-     * @param  bool   $touch
+     * @param  mixed $id
+     * @param  array $attributes
+     * @param  bool  $touch
+     *
      * @return void
      */
     public function attach($id, array $attributes = [], $touch = true)
@@ -52,9 +50,9 @@ class BelongsToSortedMany extends BelongsToMany
     }
 
     /**
-     * Moves $entity before $positionEntity
+     * Moves $entity before $positionEntity.
      *
-     * @param Model $entity What to move
+     * @param Model $entity         What to move
      * @param Model $positionEntity Where to move
      */
     public function moveBefore($entity, $positionEntity)
@@ -89,9 +87,9 @@ class BelongsToSortedMany extends BelongsToMany
     }
 
     /**
-     * Moves $entity after $positionEntity
+     * Moves $entity after $positionEntity.
      *
-     * @param Model $entity What to move
+     * @param Model $entity         What to move
      * @param Model $positionEntity Where to move
      */
     public function moveAfter($entity, $positionEntity)
@@ -127,7 +125,7 @@ class BelongsToSortedMany extends BelongsToMany
     }
 
     /**
-     * Get position of new relation
+     * Get position of new relation.
      *
      * @return int
      */
@@ -137,7 +135,7 @@ class BelongsToSortedMany extends BelongsToMany
     }
 
     /**
-     * get position column name
+     * get position column name.
      *
      * @return string
      */

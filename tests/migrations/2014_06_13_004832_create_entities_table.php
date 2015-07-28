@@ -5,11 +5,8 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateEntitiesTable extends Migration
 {
-
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -23,8 +20,6 @@ class CreateEntitiesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {
@@ -32,5 +27,4 @@ class CreateEntitiesTable extends Migration
             $table->drop();
         });
     }
-
 }

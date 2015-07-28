@@ -6,7 +6,6 @@ require_once 'stubs/M2mRelatedEntity.php';
 
 class SortableControllerTest extends Orchestra\Testbench\TestCase
 {
-
     public function setUp()
     {
         parent::setUp();
@@ -15,7 +14,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
             '--path' => '../tests/migrations',
         ]);
 
-        for ($i = 1; $i <= 30; $i++) {
+        for ($i = 1; $i <= 30; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
         }
@@ -23,7 +22,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
         $entity = new M2mEntity();
         $entity->save();
         $relatedEntities = [];
-        for ($i = 1; $i <= 30; $i++) {
+        for ($i = 1; $i <= 30; ++$i) {
             $relatedEntity = new M2mRelatedEntity();
             $entity->relatedEntities()->save($relatedEntity);
             $relatedEntities[$i] = $relatedEntity;
@@ -32,17 +31,16 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
         $entity = new M2mEntity();
         $entity->save();
         $relatedEntities = [];
-        for ($i = 1; $i <= 30; $i++) {
+        for ($i = 1; $i <= 30; ++$i) {
             $relatedEntity = new M2mRelatedEntity();
             $entity->relatedEntities()->save($relatedEntity);
             $relatedEntities[$i] = $relatedEntity;
         }
-
     }
 
     protected function getEnvironmentSetUp($app)
     {
-        $app['path.base'] = __DIR__ . '/../src';
+        $app['path.base'] = __DIR__.'/../src';
 
         $app['config']->set('database.default', 'testbench');
         $app['config']->set(
@@ -216,6 +214,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
 
     /**
      * @param \Symfony\Component\HttpFoundation\Response $response
+     *
      * @return mixed
      */
     protected function parseJSON($response)
@@ -225,7 +224,6 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
 
     public function validParamsProvider()
     {
-
         return array(
             array(
                 array(
@@ -233,7 +231,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
                     'entityName' => 'sortable_entity',
                     'positionEntityId' => 4,
                     'id' => 13,
-                )
+                ),
             ),
             array(
                 array(
@@ -241,7 +239,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
                     'entityName' => 'sortable_entity',
                     'positionEntityId' => 10,
                     'id' => 5,
-                )
+                ),
             ),
             array(
                 array(
@@ -249,7 +247,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
                     'entityName' => 'sortable_entity',
                     'positionEntityId' => 1,
                     'id' => 30,
-                )
+                ),
             ),
             array(
                 array(
@@ -257,14 +255,13 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
                     'entityName' => 'sortable_entity_full_config',
                     'positionEntityId' => 1,
                     'id' => 30,
-                )
+                ),
             ),
         );
     }
 
     public function validParamsM2mProvider()
     {
-
         return array(
             array(
                 array(
@@ -273,7 +270,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
                     'parentId' => 1,
                     'positionEntityId' => 4,
                     'id' => 13,
-                )
+                ),
             ),
             array(
                 array(
@@ -282,7 +279,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
                     'parentId' => 1,
                     'positionEntityId' => 10,
                     'id' => 5,
-                )
+                ),
             ),
             array(
                 array(
@@ -291,14 +288,13 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
                     'parentId' => 1,
                     'positionEntityId' => 1,
                     'id' => 30,
-                )
+                ),
             ),
         );
     }
 
     public function invalidParamsProvider()
     {
-
         return array(
             array(
                 array(
@@ -307,7 +303,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
                     'positionEntityId' => 4,
                     'id' => 50,
                 ),
-                'invalidEntityId'
+                'invalidEntityId',
             ),
             array(
                 array(
@@ -316,7 +312,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
                     'positionEntityId' => 50,
                     'id' => 4,
                 ),
-                'invalidPositionEntityId'
+                'invalidPositionEntityId',
             ),
             array(
                 array(
@@ -325,7 +321,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
                     'positionEntityId' => 10,
                     'id' => 5,
                 ),
-                'invalidEntityName'
+                'invalidEntityName',
             ),
             array(
                 array(
@@ -334,7 +330,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
                     'positionEntityId' => 10,
                     'id' => 5,
                 ),
-                'invalidEntityClass'
+                'invalidEntityClass',
             ),
             array(
                 array(
@@ -343,14 +339,13 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
                     'positionEntityId' => 1,
                     'id' => 30,
                 ),
-                'invalidType'
+                'invalidType',
             ),
         );
     }
 
     public function invalidM2mParamsProvider()
     {
-
         return array(
             array(
                 array(
@@ -360,7 +355,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
                     'positionEntityId' => 4,
                     'id' => 50,
                 ),
-                'invalidEntityId'
+                'invalidEntityId',
             ),
             array(
                 array(
@@ -370,7 +365,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
                     'positionEntityId' => 50,
                     'id' => 1,
                 ),
-                'invalidPositionEntityId'
+                'invalidPositionEntityId',
             ),
             array(
                 array(
@@ -380,7 +375,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
                     'positionEntityId' => 4,
                     'id' => 6,
                 ),
-                'parentEntityId'
+                'parentEntityId',
             ),
             array(
                 array(
@@ -390,7 +385,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
                     'positionEntityId' => 4,
                     'id' => 1,
                 ),
-                'invalidEntityName'
+                'invalidEntityName',
             ),
         );
     }

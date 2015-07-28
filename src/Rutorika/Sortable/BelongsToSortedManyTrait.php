@@ -3,12 +3,12 @@
 namespace Rutorika\Sortable;
 
 /**
- * Class SortableTrait
+ * Class SortableTrait.
  *
  * @traitUses Illuminate\Database\Eloquent\Model
  */
-trait BelongsToSortedManyTrait {
-
+trait BelongsToSortedManyTrait
+{
     /**
      * Returns new BelongsToSortedMany relation.
      * Notice that signature of this method is different than ->belongsToMany: second param is pivot position column name.
@@ -16,18 +16,17 @@ trait BelongsToSortedManyTrait {
      *
      * Just copy of belongsToMany except last line where we return new BelongsToSortedMany instance with additional orderColumn param
      *
-     * @param $related
+     * @param        $related
      * @param string $orderColumn
-     * @param null $table
-     * @param null $foreignKey
-     * @param null $otherKey
-     * @param null $relation
+     * @param null   $table
+     * @param null   $foreignKey
+     * @param null   $otherKey
+     * @param null   $relation
+     *
      * @return BelongsToSortedMany
      */
     public function belongsToSortedMany($related, $orderColumn = 'position', $table = null, $foreignKey = null, $otherKey = null, $relation = null)
     {
-        //
-
         // If no relationship name was passed, we will pull backtraces to get the
         // name of the calling function. We will use that function name as the
         // title of this relation since that is a great convention to apply.
@@ -40,7 +39,7 @@ trait BelongsToSortedManyTrait {
         // instances as well as the relationship instances we need for this.
         $foreignKey = $foreignKey ?: $this->getForeignKey();
 
-        $instance = new $related;
+        $instance = new $related();
 
         $otherKey = $otherKey ?: $instance->getForeignKey();
 
@@ -58,5 +57,4 @@ trait BelongsToSortedManyTrait {
 
         return new BelongsToSortedMany($query, $this, $table, $foreignKey, $otherKey, $relation, $orderColumn);
     }
-
 }

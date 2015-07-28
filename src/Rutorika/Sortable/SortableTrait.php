@@ -34,6 +34,7 @@ trait SortableTrait
 
     /**
      * @param \Illuminate\Database\Query\Builder $query
+     *
      * @return mixed
      */
     public function scopeSorted($query)
@@ -45,6 +46,7 @@ trait SortableTrait
      * moves $this model after $entity model (and rearrange all entities)
      *
      * @param \Illuminate\Database\Eloquent\Model $entity
+     *
      * @throws \Exception
      */
     public function moveAfter($entity)
@@ -88,6 +90,7 @@ trait SortableTrait
      * moves $this model before $entity model (and rearrange all entities)
      *
      * @param \Illuminate\Database\Eloquent\Model $entity
+     *
      * @throws \Exception
      * @throws SortableException
      */
@@ -130,6 +133,7 @@ trait SortableTrait
 
     /**
      * @param int $limit
+     *
      * @return Builder
      */
     public function previous($limit = 0)
@@ -146,6 +150,7 @@ trait SortableTrait
 
     /**
      * @param int $limit
+     *
      * @return \Illuminate\Database\Eloquent\Collection|static[]
      */
     public function getPrevious($limit = 0)
@@ -155,6 +160,7 @@ trait SortableTrait
 
     /**
      * @param int $limit
+     *
      * @return Builder
      */
     public function next($limit = 0)
@@ -171,6 +177,7 @@ trait SortableTrait
 
     /**
      * @param int $limit
+     *
      * @return \Illuminate\Database\Eloquent\Collection|static[]
      */
     public function getNext($limit = 0)
@@ -180,6 +187,7 @@ trait SortableTrait
 
     /**
      * @param callable|\Closure $callback
+     *
      * @return mixed
      */
     protected function _transaction(\Closure $callback)
@@ -189,6 +197,7 @@ trait SortableTrait
 
     /**
      * @param \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
      */
     protected function _applySortableGroup($query)
@@ -197,6 +206,7 @@ trait SortableTrait
         if ($sortableGroupField) {
             $query->where($sortableGroupField, '=', $this->$sortableGroupField);
         }
+
         return $query;
     }
 

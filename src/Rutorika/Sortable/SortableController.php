@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 
 class SortableController extends Controller
 {
-
     public function sort(Request $request)
     {
         $sortableEntities = app('config')->get('sortable.entities', []);
@@ -55,9 +54,8 @@ class SortableController extends Controller
                 }
             }
 
-
             return [
-                'success' => true
+                'success' => true,
             ];
         } else {
             return [
@@ -69,8 +67,9 @@ class SortableController extends Controller
     }
 
     /**
-     * @param array $sortableEntities
+     * @param array   $sortableEntities
      * @param Request $request
+     *
      * @return mixed
      */
     protected function getValidator($sortableEntities, $request)
@@ -107,7 +106,7 @@ class SortableController extends Controller
         if (!class_exists($entityClass)) {
             $rules['entityClass'] = 'required'; // fake rule for not exist field
         } else {
-            $tableName = with(new $entityClass)->getTable();
+            $tableName = with(new $entityClass())->getTable();
 
             if (!$relation) {
                 $rules['id'] .= '|exists:' . $tableName . ',id';
@@ -116,12 +115,11 @@ class SortableController extends Controller
                 $rules['parentId'] .= '|exists:' . $tableName . ',id';
 
                 /** @var BelongsToSortedMany $relationObject */
-                $relationObject = with(new $entityClass)->$relation();
+                $relationObject = with(new $entityClass())->$relation();
                 $pivotTable = $relationObject->getTable();
 
                 $rules['id'] .= '|exists:' . $pivotTable . ',' . $relationObject->getOtherKey() . ',' . $relationObject->getForeignKey() . ',' . $request->input('parentId');
                 $rules['positionEntityId'] .= '|exists:' . $pivotTable . ',' . $relationObject->getOtherKey() . ',' . $relationObject->getForeignKey() . ',' . $request->input('parentId');
-
             }
         }
 

@@ -5,11 +5,8 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateM2mRelatedEntitiesTable extends Migration
 {
-
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -21,8 +18,6 @@ class CreateM2mRelatedEntitiesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {
@@ -30,5 +25,4 @@ class CreateM2mRelatedEntitiesTable extends Migration
             $table->drop();
         });
     }
-
 }
