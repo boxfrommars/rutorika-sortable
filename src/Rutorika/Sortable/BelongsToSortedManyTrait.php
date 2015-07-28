@@ -18,10 +18,10 @@ trait BelongsToSortedManyTrait
      *
      * @param        $related
      * @param string $orderColumn
-     * @param null   $table
-     * @param null   $foreignKey
-     * @param null   $otherKey
-     * @param null   $relation
+     * @param string $table
+     * @param string $foreignKey
+     * @param string $otherKey
+     * @param string $relation
      *
      * @return BelongsToSortedMany
      */

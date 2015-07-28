@@ -34,7 +34,7 @@ trait SortableTrait
     /**
      * @param \Illuminate\Database\Query\Builder $query
      *
-     * @return mixed
+     * @return \Illuminate\Database\Query\Builder
      */
     public function scopeSorted($query)
     {
@@ -89,7 +89,6 @@ trait SortableTrait
      *
      * @param \Illuminate\Database\Eloquent\Model $entity
      *
-     * @throws \Exception
      * @throws SortableException
      */
     public function moveBefore($entity)

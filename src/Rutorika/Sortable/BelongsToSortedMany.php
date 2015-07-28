@@ -22,7 +22,7 @@ class BelongsToSortedMany extends BelongsToMany
      * @param string  $table
      * @param string  $foreignKey
      * @param string  $otherKey
-     * @param null    $relationName
+     * @param string  $relationName
      * @param string  $orderColumn  position column name
      */
     public function __construct(Builder $query, Model $parent, $table, $foreignKey, $otherKey, $relationName = null, $orderColumn)
