@@ -40,7 +40,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
 
     protected function getEnvironmentSetUp($app)
     {
-        $app['path.base'] = __DIR__.'/../src';
+        $app['path.base'] = __DIR__ . '/../src';
 
         $app['config']->set('database.default', 'testbench');
         $app['config']->set(
