@@ -23,7 +23,7 @@ class BelongsToSortedMany extends BelongsToMany
      * @param string  $foreignKey
      * @param string  $otherKey
      * @param null    $relationName
-     * @param string  $orderColumn position column name
+     * @param string  $orderColumn  position column name
      */
     public function __construct(Builder $query, Model $parent, $table, $foreignKey, $otherKey, $relationName = null, $orderColumn)
     {
@@ -36,11 +36,9 @@ class BelongsToSortedMany extends BelongsToMany
     /**
      * Attach a model to the parent.
      *
-     * @param  mixed $id
-     * @param  array $attributes
-     * @param  bool  $touch
-     *
-     * @return void
+     * @param mixed $id
+     * @param array $attributes
+     * @param bool  $touch
      */
     public function attach($id, array $attributes = [], $touch = true)
     {
@@ -74,7 +72,6 @@ class BelongsToSortedMany extends BelongsToMany
 
             $entity->pivot->save();
             $positionEntity->pivot->save();
-
         } elseif ($entityPosition < $positionEntityPosition) {
             $query
                 ->where($positionColumn, '<', $positionEntityPosition)
@@ -109,7 +106,6 @@ class BelongsToSortedMany extends BelongsToMany
             $entity->pivot->$positionColumn = $positionEntityPosition + 1;
 
             $entity->pivot->save();
-
         } elseif ($entityPosition < $positionEntityPosition) {
             $query
                 ->where($positionColumn, '<=', $positionEntityPosition)

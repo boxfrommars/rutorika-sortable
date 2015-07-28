@@ -6,7 +6,6 @@ use Illuminate\Support\ServiceProvider;
 
 class SortableServiceProvider extends ServiceProvider
 {
-
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -16,8 +15,6 @@ class SortableServiceProvider extends ServiceProvider
 
     /**
      * Register the service provider.
-     *
-     * @return void
      */
     public function register()
     {
@@ -29,7 +26,7 @@ class SortableServiceProvider extends ServiceProvider
         //$this->package('rutorika/sortable');
 
         $this->publishes([
-            __DIR__.'/../../config/sortable.php' => config_path('sortable.php'),
+            __DIR__ . '/../../config/sortable.php' => config_path('sortable.php'),
         ]);
     }
 

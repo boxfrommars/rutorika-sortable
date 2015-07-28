@@ -5,18 +5,17 @@ namespace Rutorika\Sortable;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * Class SortableTrait
+ * Class SortableTrait.
+ *
  * @traitUses \Illuminate\Database\Eloquent\Model
  */
 trait SortableTrait
 {
-
     /**
-     * Adds position to model on creating event
+     * Adds position to model on creating event.
      */
     public static function bootSortableTrait()
     {
-
         static::creating(
             function ($model) {
                 $sortableGroupField = $model->getSortableGroupField();
@@ -43,7 +42,7 @@ trait SortableTrait
     }
 
     /**
-     * moves $this model after $entity model (and rearrange all entities)
+     * moves $this model after $entity model (and rearrange all entities).
      *
      * @param \Illuminate\Database\Eloquent\Model $entity
      *
@@ -72,7 +71,6 @@ trait SortableTrait
 
                 $this->position = $entity->position + 1;
             } elseif ($this->position < $entity->position) {
-
                 $query
                     ->where('position', '<=', $entity->position)
                     ->where('position', '>', $this->position)
@@ -87,7 +85,7 @@ trait SortableTrait
     }
 
     /**
-     * moves $this model before $entity model (and rearrange all entities)
+     * moves $this model before $entity model (and rearrange all entities).
      *
      * @param \Illuminate\Database\Eloquent\Model $entity
      *
@@ -117,7 +115,6 @@ trait SortableTrait
                 $this->position = $entity->position;
 
                 $entity->position = $entity->position + 1;
-
             } elseif ($this->position < $entity->position) {
                 $query
                     ->where('position', '<', $entity->position)

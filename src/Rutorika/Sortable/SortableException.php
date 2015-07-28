@@ -3,7 +3,7 @@
 namespace Rutorika\Sortable;
 
 /**
- * Define a custom exception class
+ * Define a custom exception class.
  */
 class SortableException extends \Exception
 {
