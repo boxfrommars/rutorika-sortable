@@ -83,7 +83,7 @@ YourModel::deleting(function ($model) {
     $model->next()->decrement('position');
 });
 ```
- > You need rutorika-sortable >=1.2.5 to use `->next()`
+ > You need rutorika-sortable >=2.3 to use `->next()`
 
 ### Sortable groups
 
