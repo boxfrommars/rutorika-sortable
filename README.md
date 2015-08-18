@@ -340,10 +340,6 @@ Template for many to many ordering
                 cursor: "move"
             });
         }
-
-        $('.sortable td').each(function(){ // fix jquery ui sortable table row width issue
-            $(this).css('width', $(this).width() +'px');
-        });
     });
 ```
 
