@@ -107,12 +107,13 @@ class SortableController extends Controller
             $rules['entityClass'] = 'required'; // fake rule for not exist field
         } else {
             $tableName = with(new $entityClass())->getTable();
+            $primaryKey = with(new $entityClass())->getKeyName();
 
             if (!$relation) {
-                $rules['id'] .= '|exists:' . $tableName . ',id';
-                $rules['positionEntityId'] .= '|exists:' . $tableName . ',id';
+                $rules['id'] .= '|exists:' . $tableName . ',' . $primaryKey;
+                $rules['positionEntityId'] .= '|exists:' . $tableName . ',' . $primaryKey;
             } else {
-                $rules['parentId'] .= '|exists:' . $tableName . ',id';
+                $rules['parentId'] .= '|exists:' . $tableName . ',' . $primaryKey;
 
                 /** @var BelongsToSortedMany $relationObject */
                 $relationObject = with(new $entityClass())->$relation();
