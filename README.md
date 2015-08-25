@@ -74,6 +74,17 @@ To get ordered entities use the `sorted` scope:
 $articles = Article::sorted()->get();
 ```
 
+:exclamation: There is no resort after delete. You shouldn't think about position values, so you shouldn't worry about gaps in it, because gaps not affect the functionality. But if you want, you can add reposition on delete event. Something like:
+
+```php
+// YourAppServiceProvider
+
+YourModel::deleting(function ($model) {
+    $model->next()->decrement('position');
+});
+```
+ > You need rutorika-sortable >=2.3 to use `->next()`
+
 ### Sortable groups
 
 if you want group entity ordering by field, add to your model
@@ -329,10 +340,6 @@ Template for many to many ordering
                 cursor: "move"
             });
         }
-
-        $('.sortable td').each(function(){ // fix jquery ui sortable table row width issue
-            $(this).css('width', $(this).width() +'px');
-        });
     });
 ```
 
