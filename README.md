@@ -74,7 +74,7 @@ To get ordered entities use the `sorted` scope:
 $articles = Article::sorted()->get();
 ```
 
-:exclamation: There is no resort after delete. You shouldn't think about position values, so you shouldn't worry about gaps in it, because gaps not affect the functionality. But if you want, you can add reposition on delete event. Something like:
+> ** Note **: Resorting does not take place after a record is deleted. Gaps in positional values do not affect the ordering of your lists. However, if you prefer to prevent gaps you can reposition your models using the `deleting` event. Something like:
 
 ```php
 // YourAppServiceProvider
