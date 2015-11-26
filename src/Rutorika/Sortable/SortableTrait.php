@@ -139,7 +139,9 @@ trait SortableTrait
         $query = $this->_applySortableGroup($query);
         $query->where('position', '<', $this->position);
         $query->orderBy('position', 'desc');
-        $query->limit($limit);
+        if ($limit !== 0) {
+            $query->limit($limit);
+        }
 
         return $query;
     }
@@ -166,7 +168,9 @@ trait SortableTrait
         $query = $this->_applySortableGroup($query);
         $query->where('position', '>', $this->position);
         $query->orderBy('position', 'asc');
-        $query->limit($limit);
+        if ($limit !== 0) {
+            $query->limit($limit);
+        }
 
         return $query;
     }
