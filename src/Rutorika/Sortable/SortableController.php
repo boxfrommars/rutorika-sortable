@@ -80,8 +80,8 @@ class SortableController extends Controller
         $rules = [
             'type' => ['required', 'in:moveAfter,moveBefore'],
             'entityName' => ['required', 'in:' . implode(',', array_keys($sortableEntities))],
-            'id' => 'required|numeric',
-            'positionEntityId' => 'required|numeric',
+            'id' => 'required',
+            'positionEntityId' => 'required',
         ];
 
         /** @var Model|bool $entityClass */
@@ -100,7 +100,7 @@ class SortableController extends Controller
         }
 
         if ($relation) {
-            $rules['parentId'] = 'required|numeric';
+            $rules['parentId'] = 'required';
         }
 
         if (!class_exists($entityClass)) {
