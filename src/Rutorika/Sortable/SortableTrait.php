@@ -117,7 +117,7 @@ trait SortableTrait
                         throw new SortableException($this->$field, $entity->$field);
                     }
                 }
-            } elseif($this->$sortableGroupField !== $entity->$sortableGroupField) {
+            } elseif ($this->$sortableGroupField !== $entity->$sortableGroupField) {
                 throw new SortableException($this->$sortableGroupField, $entity->$sortableGroupField);
             }
         }
