@@ -22,7 +22,7 @@ trait SortableTrait
 
                 if ($sortableGroupField) {
                     if (is_array($sortableGroupField)) {
-                        $query = static::newInstance();
+                        $query = static::on();
                         foreach ($sortableGroupField as $field) {
                             $query = $query->where($field, $model->$field);
                         }
@@ -230,10 +230,10 @@ trait SortableTrait
         if ($sortableGroupField) {
             if (is_array($sortableGroupField)) {
                 foreach ($sortableGroupField as $field) {
-                    $query->where($field, '=', $this->$field);
+                    $query->where($field, $this->$field);
                 }
             } else {
-                $query->where($sortableGroupField, '=', $this->$sortableGroupField);
+                $query->where($sortableGroupField, $this->$sortableGroupField);
             }
         }
 
