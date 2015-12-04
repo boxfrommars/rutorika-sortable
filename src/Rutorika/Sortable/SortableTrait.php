@@ -21,7 +21,7 @@ trait SortableTrait
                 $sortableGroupField = $model->getSortableGroupField();
 
                 if ($sortableGroupField) {
-                    if(is_array($sortableGroupField)) {
+                    if (is_array($sortableGroupField)) {
                         $query = static::newInstance();
                         foreach ($sortableGroupField as $field) {
                             $query = $query->where($field, $model->$field);
@@ -60,13 +60,13 @@ trait SortableTrait
     {
         $sortableGroupField = $this->getSortableGroupField();
         if ($sortableGroupField) {
-            if(is_array($sortableGroupField)) {
-                foreach($sortableGroupField as $field) {
-                    if($this->$field !== $entity->$field) {
+            if (is_array($sortableGroupField)) {
+                foreach ($sortableGroupField as $field) {
+                    if ($this->$field !== $entity->$field) {
                         throw new SortableException($this->$field, $entity->$field);
                     }
                 }
-            } elseif($this->$sortableGroupField !== $entity->$sortableGroupField) {
+            } elseif ($this->$sortableGroupField !== $entity->$sortableGroupField) {
                 throw new SortableException($this->$sortableGroupField, $entity->$sortableGroupField);
             }
         }
@@ -111,9 +111,9 @@ trait SortableTrait
     {
         $sortableGroupField = $this->getSortableGroupField();
         if ($sortableGroupField) {
-            if(is_array($sortableGroupField)) {
-                foreach($sortableGroupField as $field) {
-                    if($this->$field !== $entity->$field) {
+            if (is_array($sortableGroupField)) {
+                foreach ($sortableGroupField as $field) {
+                    if ($this->$field !== $entity->$field) {
                         throw new SortableException($this->$field, $entity->$field);
                     }
                 }
@@ -228,8 +228,8 @@ trait SortableTrait
     {
         $sortableGroupField = $this->getSortableGroupField();
         if ($sortableGroupField) {
-            if(is_array($sortableGroupField)) {
-                foreach($sortableGroupField as $field) {
+            if (is_array($sortableGroupField)) {
+                foreach ($sortableGroupField as $field) {
                     $query->where($field, '=', $this->$field);
                 }
             } else {
