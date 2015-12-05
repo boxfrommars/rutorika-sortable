@@ -21,7 +21,15 @@ trait SortableTrait
                 $sortableGroupField = $model->getSortableGroupField();
 
                 if ($sortableGroupField) {
-                    $maxPosition = static::where($sortableGroupField, $model->$sortableGroupField)->max('position');
+                    if (is_array($sortableGroupField)) {
+                        $query = static::on();
+                        foreach ($sortableGroupField as $field) {
+                            $query = $query->where($field, $model->$field);
+                        }
+                        $maxPosition = $query->max('position');
+                    } else {
+                        $maxPosition = static::where($sortableGroupField, $model->$sortableGroupField)->max('position');
+                    }
                 } else {
                     $maxPosition = static::max('position');
                 }
@@ -51,8 +59,16 @@ trait SortableTrait
     public function moveAfter($entity)
     {
         $sortableGroupField = $this->getSortableGroupField();
-        if ($sortableGroupField && $this->$sortableGroupField !== $entity->$sortableGroupField) {
-            throw new SortableException($this->$sortableGroupField, $entity->$sortableGroupField);
+        if ($sortableGroupField) {
+            if (is_array($sortableGroupField)) {
+                foreach ($sortableGroupField as $field) {
+                    if ($this->$field !== $entity->$field) {
+                        throw new SortableException($this->$field, $entity->$field);
+                    }
+                }
+            } elseif ($this->$sortableGroupField !== $entity->$sortableGroupField) {
+                throw new SortableException($this->$sortableGroupField, $entity->$sortableGroupField);
+            }
         }
 
         /** @var \Illuminate\Database\Connection $connection */
@@ -94,8 +110,16 @@ trait SortableTrait
     public function moveBefore($entity)
     {
         $sortableGroupField = $this->getSortableGroupField();
-        if ($sortableGroupField && $this->$sortableGroupField !== $entity->$sortableGroupField) {
-            throw new SortableException($this->$sortableGroupField, $entity->$sortableGroupField);
+        if ($sortableGroupField) {
+            if (is_array($sortableGroupField)) {
+                foreach ($sortableGroupField as $field) {
+                    if ($this->$field !== $entity->$field) {
+                        throw new SortableException($this->$field, $entity->$field);
+                    }
+                }
+            } elseif ($this->$sortableGroupField !== $entity->$sortableGroupField) {
+                throw new SortableException($this->$sortableGroupField, $entity->$sortableGroupField);
+            }
         }
 
         /** @var \Illuminate\Database\Connection $connection */
@@ -204,7 +228,13 @@ trait SortableTrait
     {
         $sortableGroupField = $this->getSortableGroupField();
         if ($sortableGroupField) {
-            $query->where($sortableGroupField, '=', $this->$sortableGroupField);
+            if (is_array($sortableGroupField)) {
+                foreach ($sortableGroupField as $field) {
+                    $query->where($field, $this->$field);
+                }
+            } else {
+                $query->where($sortableGroupField, $this->$sortableGroupField);
+            }
         }
 
         return $query;

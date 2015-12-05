@@ -88,12 +88,15 @@ YourModel::deleting(function ($model) {
 ### Sortable groups
 
 if you want group entity ordering by field, add to your model
-
 ```php
 protected static $sortableGroupField = 'fieldName';
 ```
-
 now moving and ordering will be encapsulated by this field.
+
+If you want group entity ordering by many fields, use as an array:
+```php
+protected static $sortableGroupField = ['fieldName1','fieldName2'];
+```
 
 ### Sortable many to many
 
