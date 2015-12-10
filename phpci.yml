@@ -11,17 +11,7 @@ setup:
     prefer_dist: false
 
 test:
-  php_mess_detector:
-    path: "src"
-    allowed_warnings: -1
-    rules:
-#      - "cleancode"
-      - "controversial"
-      - "codesize"
-      - "design"
-      - "naming"
-      - "unusedcode"
-  php_code_sniffer:
+    php_code_sniffer:
     path: "src"
     standard: "PSR1,PSR2"
     allow_failures: false
