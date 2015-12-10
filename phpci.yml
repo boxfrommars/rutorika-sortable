@@ -1,0 +1,37 @@
+build_settings:
+  verbose: true
+  ignore:
+    - "vendor"
+
+setup:
+  composer:
+    env:
+      APP_ENV: "testing"
+    action: "install"
+    prefer_dist: false
+
+test:
+  php_mess_detector:
+    path: "src"
+    allowed_warnings: -1
+    rules:
+#      - "cleancode"
+      - "controversial"
+      - "codesize"
+      - "design"
+      - "naming"
+      - "unusedcode"
+  php_code_sniffer:
+    path: "src"
+    standard: "PSR1,PSR2"
+    allow_failures: false
+  php_loc:
+    directory: "src"
+  php_unit:
+    args: '--verbose'
+    config:
+      - "phpunit.xml"
+  php_docblock_checker:
+    path: "src"
+    allowed_warnings: 0
+    skip_classes: true
