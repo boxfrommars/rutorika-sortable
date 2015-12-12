@@ -60,17 +60,7 @@ trait SortableTrait
     public function moveAfter($entity)
     {
         $sortableGroupField = $this->getSortableGroupField();
-        if ($sortableGroupField) {
-            if (is_array($sortableGroupField)) {
-                foreach ($sortableGroupField as $field) {
-                    if ($this->$field !== $entity->$field) {
-                        throw new SortableException($this->$field, $entity->$field);
-                    }
-                }
-            } elseif ($this->$sortableGroupField !== $entity->$sortableGroupField) {
-                throw new SortableException($this->$sortableGroupField, $entity->$sortableGroupField);
-            }
-        }
+        $this->checkSortableGroupField($sortableGroupField, $entity);
 
         /** @var \Illuminate\Database\Connection $connection */
         $connection = $this->getConnection();
@@ -111,17 +101,7 @@ trait SortableTrait
     public function moveBefore($entity)
     {
         $sortableGroupField = $this->getSortableGroupField();
-        if ($sortableGroupField !== null) {
-            if (is_array($sortableGroupField)) {
-                foreach ($sortableGroupField as $field) {
-                    if ($this->$field !== $entity->$field) {
-                        throw new SortableException($this->$field, $entity->$field);
-                    }
-                }
-            } elseif ($this->$sortableGroupField !== $entity->$sortableGroupField) {
-                throw new SortableException($this->$sortableGroupField, $entity->$sortableGroupField);
-            }
-        }
+        $this->checkSortableGroupField($sortableGroupField, $entity);
 
         /** @var \Illuminate\Database\Connection $connection */
         $connection = $this->getConnection();
@@ -245,6 +225,27 @@ trait SortableTrait
     public static function getSortableGroupField()
     {
         return isset(static::$sortableGroupField) ? static::$sortableGroupField : null;
+    }
+
+    /**
+     * @param string $sortableGroupField
+     * @param \Illuminate\Database\Eloquent\Model $entity
+     *
+     * @throws SortableException
+     */
+    public function checkSortableGroupField($sortableGroupField, $entity)
+    {
+        if ($sortableGroupField !== null) {
+            if (is_array($sortableGroupField)) {
+                foreach ($sortableGroupField as $field) {
+                    if ($this->$field !== $entity->$field) {
+                        throw new SortableException($this->$field, $entity->$field);
+                    }
+                }
+            } elseif ($this->$sortableGroupField !== $entity->$sortableGroupField) {
+                throw new SortableException($this->$sortableGroupField, $entity->$sortableGroupField);
+            }
+        }
     }
 
     /**
