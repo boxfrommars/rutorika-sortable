@@ -21,7 +21,7 @@ trait SortableTrait
             function ($model) {
                 $sortableGroupField = $model->getSortableGroupField();
 
-                if ($sortableGroupField) {
+                if ($sortableGroupField !== null) {
                     if (is_array($sortableGroupField)) {
                         $query = static::on();
                         foreach ($sortableGroupField as $field) {
@@ -111,7 +111,7 @@ trait SortableTrait
     public function moveBefore($entity)
     {
         $sortableGroupField = $this->getSortableGroupField();
-        if ($sortableGroupField) {
+        if ($sortableGroupField !== null) {
             if (is_array($sortableGroupField)) {
                 foreach ($sortableGroupField as $field) {
                     if ($this->$field !== $entity->$field) {
@@ -226,7 +226,7 @@ trait SortableTrait
     protected function _applySortableGroup($query)
     {
         $sortableGroupField = $this->getSortableGroupField();
-        if ($sortableGroupField) {
+        if ($sortableGroupField !== null) {
             if (is_array($sortableGroupField)) {
                 foreach ($sortableGroupField as $field) {
                     $query->where($field, $this->$field);
