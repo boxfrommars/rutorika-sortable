@@ -202,7 +202,7 @@ trait SortableTrait
     /**
      * @param int $limit
      *
-     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getNext($limit = 0)
     {
@@ -210,7 +210,7 @@ trait SortableTrait
     }
 
     /**
-     * @param callable|\Closure $callback
+     * @param \Closure $callback
      *
      * @return mixed
      */

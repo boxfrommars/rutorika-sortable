@@ -70,7 +70,7 @@ class SortableController extends Controller
      * @param array   $sortableEntities
      * @param Request $request
      *
-     * @return mixed
+     * @return \Illuminate\Validation\Validator
      */
     protected function getValidator($sortableEntities, $request)
     {
