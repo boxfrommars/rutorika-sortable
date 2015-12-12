@@ -99,7 +99,7 @@ class SortableController extends Controller
 
     /**
      * @param array $sortableEntities
-     * @param string $entityName
+     * @param string|array $entityName
      *
      * @return array
      */
