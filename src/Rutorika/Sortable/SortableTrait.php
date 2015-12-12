@@ -252,21 +252,21 @@ trait SortableTrait
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public abstract function newQuery();
+    abstract public function newQuery();
 
     /**
      * Get the database connection for the model.
      *
      * @return \Illuminate\Database\Connection
      */
-    public abstract function getConnection();
+    abstract public function getConnection();
 
     /**
      * Get the table associated with the model.
      *
      * @return string
      */
-    public abstract function getTable();
+    abstract public function getTable();
 
     /**
      * Save the model to the database.
@@ -274,5 +274,5 @@ trait SortableTrait
      * @param  array  $options
      * @return bool
      */
-    public abstract function save(array $options = []);
+    abstract public function save(array $options = []);
 }
