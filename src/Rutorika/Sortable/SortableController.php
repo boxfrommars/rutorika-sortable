@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class SortableController extends Controller
 {
+    /**
+     * @param Request $request
+     *
+     * @return array
+     */
     public function sort(Request $request)
     {
         $sortableEntities = app('config')->get('sortable.entities', []);
@@ -17,33 +22,18 @@ class SortableController extends Controller
         if ($validator->passes()) {
             /** @var Model|bool $entityClass */
             list($entityClass, $relation) = $this->getEntityInfo($sortableEntities, $request->input('entityName'));
+            $method = $request->input('type');
 
             if (!$relation) {
                 /** @var SortableTrait $entity */
                 $entity = $entityClass::find($request->input('id'));
                 $postionEntity = $entityClass::find($request->input('positionEntityId'));
-                switch ($request->input('type')) {
-                    case 'moveAfter':
-                        $entity->moveAfter($postionEntity);
-                        break;
-                    case 'moveBefore':
-                        $entity->moveBefore($postionEntity);
-                        break;
-                }
+                $entity->$method($postionEntity);
             } else {
                 $parentEntity = $entityClass::find($request->input('parentId'));
-
                 $entity = $parentEntity->$relation()->find($request->input('id'));
                 $postionEntity = $parentEntity->$relation()->find($request->input('positionEntityId'));
-
-                switch ($request->input('type')) {
-                    case 'moveAfter':
-                        $parentEntity->$relation()->moveAfter($entity, $postionEntity);
-                        break;
-                    case 'moveBefore':
-                        $parentEntity->$relation()->moveBefore($entity, $postionEntity);
-                        break;
-                }
+                $parentEntity->$relation()->$method($entity, $postionEntity);
             }
 
             return [
@@ -59,7 +49,7 @@ class SortableController extends Controller
     }
 
     /**
-     * @param array   $sortableEntities
+     * @param array $sortableEntities
      * @param Request $request
      *
      * @return \Illuminate\Validation\Validator
@@ -108,8 +98,8 @@ class SortableController extends Controller
     }
 
     /**
-     * @param $sortableEntities
-     * @param $entityName
+     * @param array $sortableEntities
+     * @param string $entityName
      *
      * @return array
      */
