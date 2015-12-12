@@ -27,7 +27,7 @@ class SortableController extends Controller
             }
 
             if (!$relation) {
-                /** @var SortableTrait|Model $entity */
+                /** @var SortableTrait $entity */
                 $entity = $entityClass::find($request->input('id'));
                 $postionEntity = $entityClass::find($request->input('positionEntityId'));
                 switch ($request->input('type')) {

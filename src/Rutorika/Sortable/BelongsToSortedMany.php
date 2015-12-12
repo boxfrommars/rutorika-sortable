@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Many to many relation with sorting/ordering support.
+ *
+ * @method \Illuminate\Database\Query\Builder orderBy($column, $direction = 'asc')
  */
 class BelongsToSortedMany extends BelongsToMany
 {

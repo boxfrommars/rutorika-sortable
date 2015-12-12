@@ -57,4 +57,27 @@ trait BelongsToSortedManyTrait
 
         return new BelongsToSortedMany($query, $this, $table, $foreignKey, $otherKey, $relation, $orderColumn);
     }
+
+    /**
+     * Get the joining table name for a many-to-many relation.
+     *
+     * @param string $related
+     *
+     * @return string
+     */
+    abstract public function joiningTable($related);
+
+    /**
+     * Get the default foreign key name for the model.
+     *
+     * @return string
+     */
+    abstract public function getForeignKey();
+
+    /**
+     * Get the relationship name of the belongs to many.
+     *
+     * @return string
+     */
+    abstract protected function getBelongsToManyCaller();
 }
