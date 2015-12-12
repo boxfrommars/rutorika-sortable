@@ -271,7 +271,7 @@ trait SortableTrait
     /**
      * Save the model to the database.
      *
-     * @param  array  $options
+     * @param array $options
      * @return bool
      */
     abstract public function save(array $options = []);
