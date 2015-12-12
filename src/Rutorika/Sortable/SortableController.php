@@ -107,6 +107,12 @@ class SortableController extends Controller
         return $validator->make($request->all(), $rules);
     }
 
+    /**
+     * @param $sortableEntities
+     * @param $entityName
+     *
+     * @return array
+     */
     protected function getEntityInfo($sortableEntities, $entityName)
     {
         $entityClass = false;
