@@ -15,16 +15,8 @@ class SortableController extends Controller
         $validator = $this->getValidator($sortableEntities, $request);
 
         if ($validator->passes()) {
-            $relation = false;
-
-            $entityConfig = $sortableEntities[$request->input('entityName')];
-
-            if (is_array($entityConfig)) {
-                $entityClass = $entityConfig['entity'];
-                $relation = !empty($entityConfig['relation']) ? $entityConfig['relation'] : false;
-            } else {
-                $entityClass = $entityConfig;
-            }
+            /** @var Model|bool $entityClass */
+            list($entityClass, $relation) = $this->getEntityInfo($sortableEntities, $request->input('entityName'));
 
             if (!$relation) {
                 /** @var SortableTrait $entity */
@@ -85,19 +77,7 @@ class SortableController extends Controller
         ];
 
         /** @var Model|bool $entityClass */
-        $entityClass = false;
-        $relation = false;
-
-        if (array_key_exists($request->input('entityName'), $sortableEntities)) {
-            $entityConfig = $sortableEntities[$request->input('entityName')];
-
-            if (is_array($entityConfig)) {
-                $entityClass = $entityConfig['entity'];
-                $relation = !empty($entityConfig['relation']) ? $entityConfig['relation'] : false;
-            } else {
-                $entityClass = $entityConfig;
-            }
-        }
+        list($entityClass, $relation) = $this->getEntityInfo($sortableEntities, $request->input('entityName'));
 
         if ($relation) {
             $rules['parentId'] = 'required';
@@ -125,5 +105,24 @@ class SortableController extends Controller
         }
 
         return $validator->make($request->all(), $rules);
+    }
+
+    protected function getEntityInfo($sortableEntities, $entityName)
+    {
+        $entityClass = false;
+        $relation = false;
+
+        if (array_key_exists($entityName, $sortableEntities)) {
+            $entityConfig = $sortableEntities[$entityName];
+
+            if (is_array($entityConfig)) {
+                $entityClass = $entityConfig['entity'];
+                $relation = !empty($entityConfig['relation']) ? $entityConfig['relation'] : false;
+            } else {
+                $entityClass = $entityConfig;
+            }
+        }
+
+        return [$entityClass, $relation];
     }
 }
