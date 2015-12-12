@@ -62,26 +62,14 @@ trait SortableTrait
         $sortableGroupField = $this->getSortableGroupField();
         $this->checkSortableGroupField($sortableGroupField, $entity);
 
-        /** @var \Illuminate\Database\Connection $connection */
-        $connection = $this->getConnection();
-
-        $this->_transaction(function () use ($connection, $entity) {
-            /** @var \Illuminate\Database\Eloquent\Builder $query */
-            $query = $connection->table($this->getTable());
-            $query = $this->_applySortableGroup($query);
+        $this->_transaction(function () use ($entity) {
 
             if ($this->position > $entity->position) {
-                $query
-                    ->where('position', '>', $entity->position)
-                    ->where('position', '<', $this->position)
-                    ->increment('position');
+                $this->queryBetween($entity->position, $this->position)->increment('position');
 
                 $this->position = $entity->position + 1;
             } elseif ($this->position < $entity->position) {
-                $query
-                    ->where('position', '<=', $entity->position)
-                    ->where('position', '>', $this->position)
-                    ->decrement('position');
+                $this->queryBetween($this->position, $entity->position, false, true)->decrement('position');
 
                 $this->position = $entity->position;
                 $entity->position = $entity->position - 1;
@@ -103,33 +91,42 @@ trait SortableTrait
         $sortableGroupField = $this->getSortableGroupField();
         $this->checkSortableGroupField($sortableGroupField, $entity);
 
-        /** @var \Illuminate\Database\Connection $connection */
-        $connection = $this->getConnection();
-
-        $this->_transaction(function () use ($connection, $entity) {
-            $query = $connection->table($this->getTable());
-            $query = $this->_applySortableGroup($query);
+        $this->_transaction(function () use ($entity) {
 
             if ($this->position > $entity->position) {
-                $query
-                    ->where('position', '>=', $entity->position)
-                    ->where('position', '<', $this->position)
-                    ->increment('position');
+                $this->queryBetween($entity->position, $this->position, true)->increment('position');
 
                 $this->position = $entity->position;
-
                 $entity->position = $entity->position + 1;
             } elseif ($this->position < $entity->position) {
-                $query
-                    ->where('position', '<', $entity->position)
-                    ->where('position', '>', $this->position)
-                    ->decrement('position');
+                $this->queryBetween($this->position, $entity->position)->decrement('position');
 
                 $this->position = $entity->position - 1;
             }
 
             $this->save();
         });
+    }
+
+    /**
+     * @param $left
+     * @param $right
+     * @param $leftIncluded
+     * @param $rightIncluded
+     *
+     * @return QueryBuilder
+     */
+    protected function queryBetween($left, $right, $leftIncluded = false, $rightIncluded = false)
+    {
+        $connection = $this->getConnection();
+        $query = $connection->table($this->getTable());
+
+        $leftOperator = $leftIncluded ? '>=' : '>';
+        $rightOperator = $rightIncluded ? '<=' : '<';
+
+        $query = $this->_applySortableGroup($query);
+
+        return $query->where('position', $leftOperator, $left)->where('position', $rightOperator, $right);
     }
 
     /**
@@ -224,11 +221,13 @@ trait SortableTrait
      */
     public static function getSortableGroupField()
     {
-        return isset(static::$sortableGroupField) ? static::$sortableGroupField : null;
+        $sortableGroupField = isset(static::$sortableGroupField) ? static::$sortableGroupField : null;
+
+        return $sortableGroupField;
     }
 
     /**
-     * @param string $sortableGroupField
+     * @param string                              $sortableGroupField
      * @param \Illuminate\Database\Eloquent\Model $entity
      *
      * @throws SortableException

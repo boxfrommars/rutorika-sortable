@@ -49,7 +49,7 @@ class SortableController extends Controller
     }
 
     /**
-     * @param array $sortableEntities
+     * @param array   $sortableEntities
      * @param Request $request
      *
      * @return \Illuminate\Validation\Validator
@@ -98,7 +98,7 @@ class SortableController extends Controller
     }
 
     /**
-     * @param array $sortableEntities
+     * @param array        $sortableEntities
      * @param string|array $entityName
      *
      * @return array
