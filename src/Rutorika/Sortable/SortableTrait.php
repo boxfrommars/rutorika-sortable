@@ -3,6 +3,7 @@
 namespace Rutorika\Sortable;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
 /**
@@ -53,59 +54,60 @@ trait SortableTrait
     /**
      * moves $this model after $entity model (and rearrange all entities).
      *
-     * @param \Illuminate\Database\Eloquent\Model $entity
+     * @param Model $entity
      *
      * @throws \Exception
      */
     public function moveAfter($entity)
     {
-        $sortableGroupField = $this->getSortableGroupField();
-        $this->checkSortableGroupField($sortableGroupField, $entity);
-
-        $this->_transaction(function () use ($entity) {
-
-            if ($this->position > $entity->position) {
-                $this->queryBetween($entity->position, $this->position)->increment('position');
-
-                $this->position = $entity->position + 1;
-            } elseif ($this->position < $entity->position) {
-                $this->queryBetween($this->position, $entity->position, false, true)->decrement('position');
-
-                $this->position = $entity->position;
-                $entity->position = $entity->position - 1;
-            }
-
-            $this->save();
-        });
+        $this->move('moveAfter', $entity);
     }
 
     /**
      * moves $this model before $entity model (and rearrange all entities).
      *
-     * @param \Illuminate\Database\Eloquent\Model $entity
+     * @param Model $entity
      *
      * @throws SortableException
      */
     public function moveBefore($entity)
     {
+        $this->move('moveBefore', $entity);
+    }
+
+    /**
+     * @param string $action
+     * @param Model $entity
+     *
+     * @throws SortableException
+     */
+    public function move($action, $entity)
+    {
         $sortableGroupField = $this->getSortableGroupField();
         $this->checkSortableGroupField($sortableGroupField, $entity);
 
-        $this->_transaction(function () use ($entity) {
+        $this->_transaction(function () use ($entity, $action) {
+            $isMoveBefore = $action === 'moveBefore';
+            $isMoveAfter = $action === 'moveAfter';
 
             if ($this->position > $entity->position) {
-                $this->queryBetween($entity->position, $this->position, true)->increment('position');
-
+                $query = $this->queryBetween($entity->position, $this->position, $isMoveBefore, false);
+                $query->increment('position');
                 $this->position = $entity->position;
-                $entity->position = $entity->position + 1;
             } elseif ($this->position < $entity->position) {
-                $this->queryBetween($this->position, $entity->position)->decrement('position');
-
+                $query = $this->queryBetween($this->position, $entity->position, false, $isMoveAfter);
+                $query->decrement('position');
                 $this->position = $entity->position - 1;
             }
 
+            if ($isMoveAfter) {
+                $this->position = $this->position + 1;
+            }
+
+            $entity->position = $entity->fresh()->position;
             $this->save();
         });
+
     }
 
     /**
