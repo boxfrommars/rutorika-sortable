@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/boxfrommars/rutorika-sortable.svg?branch=master)](https://travis-ci.org/boxfrommars/rutorika-sortable) [![Latest Stable Version](https://poser.pugx.org/rutorika/sortable/v/stable)](https://packagist.org/packages/rutorika/sortable) [![Total Downloads](https://poser.pugx.org/rutorika/sortable/downloads)](https://packagist.org/packages/rutorika/sortable) [![Latest Unstable Version](https://poser.pugx.org/rutorika/sortable/v/unstable)](https://packagist.org/packages/rutorika/sortable) [![License](https://poser.pugx.org/rutorika/sortable/license)](https://packagist.org/packages/rutorika/sortable)
+[![Build Status](https://travis-ci.org/boxfrommars/rutorika-sortable.svg?branch=master)](https://travis-ci.org/boxfrommars/rutorika-sortable) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/boxfrommars/rutorika-sortable/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/boxfrommars/rutorika-sortable/?branch=master) [![Latest Stable Version](https://poser.pugx.org/rutorika/sortable/v/stable)](https://packagist.org/packages/rutorika/sortable) [![Total Downloads](https://poser.pugx.org/rutorika/sortable/downloads)](https://packagist.org/packages/rutorika/sortable) [![Latest Unstable Version](https://poser.pugx.org/rutorika/sortable/v/unstable)](https://packagist.org/packages/rutorika/sortable) [![License](https://poser.pugx.org/rutorika/sortable/license)](https://packagist.org/packages/rutorika/sortable)
 
 ## Laravel 5 - Demo
 
@@ -17,7 +17,7 @@ composer require rutorika/sortable
 ```
 > Note: For **Laravel 4** please see the branch [1.2@laravel4](https://github.com/boxfrommars/rutorika-sortable/tree/laravel4)
 
-## Sortable Trait 
+## Sortable Trait
 
 Adds sortable behavior to Eloquent (Laravel) models
 
@@ -44,7 +44,7 @@ class Article extends Model {
 }
 ```
 
-Now you can move your entities with methods `moveBefore($entity)` and `moveAfter($entity)` (you dont need to save 
+Now you can move your entities with methods `moveBefore($entity)` and `moveAfter($entity)` (you dont need to save
 model after that, it has saved already):
 
 ```php
@@ -177,13 +177,13 @@ Add the service provider to `config/app.php`
 ```php
 'providers' => array(
     // providers...
-    
+
     'Rutorika\Sortable\SortableServiceProvider',
 )
 ```
 
 publish the config:
- 
+
 ```bash
 php artisan vendor:publish
 ```
@@ -206,7 +206,7 @@ Add models you need to sort in the config `config/sortable.php`:
 Add route to the `sort` method of the controller:
 
 ```php
-Route::post('sort', '\Rutorika\Sortable\SortableController@sort'); 
+Route::post('sort', '\Rutorika\Sortable\SortableController@sort');
 ```
 
 Now if you post to this route valid data:
@@ -241,7 +241,7 @@ entityName:articles
 id:3
 positionEntityId:14
 ```
-then the article with id 3 will be moved after the article with id 14. 
+then the article with id 3 will be moved after the article with id 14.
 
 ### jQuery UI sortable example
 
