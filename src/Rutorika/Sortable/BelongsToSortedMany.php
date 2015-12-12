@@ -123,7 +123,7 @@ class BelongsToSortedMany extends BelongsToMany
     /**
      * Get position of new relation.
      *
-     * @return double
+     * @return float
      */
     protected function getNextPosition()
     {

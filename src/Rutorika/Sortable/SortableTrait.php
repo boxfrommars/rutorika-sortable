@@ -3,6 +3,7 @@
 namespace Rutorika\Sortable;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 
 /**
  * Class SortableTrait.
@@ -40,9 +41,9 @@ trait SortableTrait
     }
 
     /**
-     * @param \Illuminate\Database\Query\Builder $query
+     * @param QueryBuilder $query
      *
-     * @return \Illuminate\Database\Query\Builder
+     * @return QueryBuilder
      */
     public function scopeSorted($query)
     {
@@ -158,7 +159,6 @@ trait SortableTrait
      */
     public function previous($limit = 0)
     {
-        /** @var Builder $query */
         $query = $this->newQuery();
         $query = $this->_applySortableGroup($query);
         $query->where('position', '<', $this->position);
@@ -187,7 +187,6 @@ trait SortableTrait
      */
     public function next($limit = 0)
     {
-        /** @var Builder $query */
         $query = $this->newQuery();
         $query = $this->_applySortableGroup($query);
         $query->where('position', '>', $this->position);
@@ -220,9 +219,9 @@ trait SortableTrait
     }
 
     /**
-     * @param \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder $query
+     * @param QueryBuilder|\Illuminate\Database\Eloquent\Builder $query
      *
-     * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
+     * @return QueryBuilder|\Illuminate\Database\Eloquent\Builder
      */
     protected function _applySortableGroup($query)
     {
@@ -247,4 +246,33 @@ trait SortableTrait
     {
         return isset(static::$sortableGroupField) ? static::$sortableGroupField : null;
     }
+
+    /**
+     * Get a new query builder for the model's table.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public abstract function newQuery();
+
+    /**
+     * Get the database connection for the model.
+     *
+     * @return \Illuminate\Database\Connection
+     */
+    public abstract function getConnection();
+
+    /**
+     * Get the table associated with the model.
+     *
+     * @return string
+     */
+    public abstract function getTable();
+
+    /**
+     * Save the model to the database.
+     *
+     * @param  array  $options
+     * @return bool
+     */
+    public abstract function save(array $options = []);
 }
