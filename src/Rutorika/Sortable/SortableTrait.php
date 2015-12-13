@@ -2,7 +2,6 @@
 
 namespace Rutorika\Sortable;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
@@ -20,7 +19,6 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  */
 trait SortableTrait
 {
-
     /**
      * Adds position to model on creating event.
      */
@@ -120,13 +118,35 @@ trait SortableTrait
     /**
      * @param int $limit
      *
-     * @return Builder
+     * @return QueryBuilder
      */
     public function previous($limit = 0)
     {
+        return $this->siblings(false, $limit);
+    }
+
+    /**
+     * @param int $limit
+     *
+     * @return QueryBuilder
+     */
+    public function next($limit = 0)
+    {
+        return $this->siblings(true, $limit);
+    }
+
+
+    /**
+     * @param bool $isNext is next, otherwise before
+     * @param int $limit
+     *
+     * @return QueryBuilder
+     */
+    public function siblings($isNext, $limit = 0)
+    {
         $query = static::applySortableGroup($this->newQuery(), $this);
-        $query->where('position', '<', $this->getAttribute('position'));
-        $query->orderBy('position', 'desc');
+        $query->where('position', $isNext ? '>' : '<', $this->getAttribute('position'));
+        $query->orderBy('position', $isNext ? 'asc' : 'desc');
         if ($limit !== 0) {
             $query->limit($limit);
         }
@@ -142,23 +162,6 @@ trait SortableTrait
     public function getPrevious($limit = 0)
     {
         return $this->previous($limit)->get()->reverse();
-    }
-
-    /**
-     * @param int $limit
-     *
-     * @return Builder
-     */
-    public function next($limit = 0)
-    {
-        $query = static::applySortableGroup($this->newQuery(), $this);
-        $query->where('position', '>', $this->getAttribute('position'));
-        $query->orderBy('position', 'asc');
-        if ($limit !== 0) {
-            $query->limit($limit);
-        }
-
-        return $query;
     }
 
     /**
@@ -270,7 +273,7 @@ trait SortableTrait
     /**
      * Get an attribute from the model.
      *
-     * @param  string $key
+     * @param string $key
      *
      * @return mixed
      */
@@ -279,8 +282,8 @@ trait SortableTrait
     /**
      * Set a given attribute on the model.
      *
-     * @param  string $key
-     * @param  mixed  $value
+     * @param string $key
+     * @param mixed  $value
      *
      * @return $this
      */

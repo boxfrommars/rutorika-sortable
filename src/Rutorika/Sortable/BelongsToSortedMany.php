@@ -57,32 +57,7 @@ class BelongsToSortedMany extends BelongsToMany
      */
     public function moveBefore($entity, $positionEntity)
     {
-        $positionColumn = $this->getOrderColumnName();
-        $query = $this->newPivotQuery();
-
-        $entityPosition = $entity->pivot->$positionColumn;
-        $positionEntityPosition = $positionEntity->pivot->$positionColumn;
-
-        if ($entityPosition > $positionEntityPosition) {
-            $query
-                ->where($positionColumn, '>=', $positionEntityPosition)
-                ->where($positionColumn, '<', $entityPosition)
-                ->increment($positionColumn);
-
-            $entity->pivot->$positionColumn = $positionEntityPosition;
-            $positionEntity->pivot->$positionColumn = $positionEntityPosition + 1;
-
-            $entity->pivot->save();
-            $positionEntity->pivot->save();
-        } elseif ($entityPosition < $positionEntityPosition) {
-            $query
-                ->where($positionColumn, '<', $positionEntityPosition)
-                ->where($positionColumn, '>', $entityPosition)
-                ->decrement($positionColumn);
-
-            $entity->pivot->$positionColumn = $positionEntityPosition - 1;
-            $entity->pivot->save();
-        }
+        $this->move('moveBefore', $entity, $positionEntity);
     }
 
     /**
@@ -93,33 +68,55 @@ class BelongsToSortedMany extends BelongsToMany
      */
     public function moveAfter($entity, $positionEntity)
     {
+        $this->move('moveAfter', $entity, $positionEntity);
+    }
+
+    /**
+     * @param string $action
+     * @param Model  $entity
+     * @param Model  $positionEntity
+     */
+    public function move($action, $entity, $positionEntity)
+    {
         $positionColumn = $this->getOrderColumnName();
+
+        $oldPosition = $entity->pivot->$positionColumn;
+        $newPosition = $positionEntity->pivot->$positionColumn;
+
+        $isMoveBefore = $action === 'moveBefore'; // otherwise moveAfter
+
+        if ($oldPosition > $newPosition) {
+            $this->queryBetween($newPosition, $oldPosition, $isMoveBefore, false)->increment($positionColumn);
+            $entity->pivot->$positionColumn = $isMoveBefore ? $newPosition : $newPosition + 1;
+            $positionEntity->pivot->$positionColumn = $isMoveBefore ? $newPosition + 1 : $newPosition;
+        } elseif ($oldPosition < $newPosition) {
+            $this->queryBetween($oldPosition, $newPosition, false, !$isMoveBefore)->decrement($positionColumn);
+            $entity->pivot->$positionColumn = $isMoveBefore ? $newPosition - 1 : $newPosition;
+            $positionEntity->pivot->$positionColumn = $isMoveBefore ? $newPosition : $newPosition - 1;
+        }
+
+        $entity->pivot->save();
+        $positionEntity->pivot->save();
+    }
+
+    /**
+     * @param $left
+     * @param $right
+     * @param $leftIncluded
+     * @param $rightIncluded
+     *
+     * @return \Illuminate\Database\Query\Builder
+     */
+    protected function queryBetween($left, $right, $leftIncluded = false, $rightIncluded = false)
+    {
+        $positionColumn = $this->getOrderColumnName();
+
+        $leftOperator = $leftIncluded ? '>=' : '>';
+        $rightOperator = $rightIncluded ? '<=' : '<';
+
         $query = $this->newPivotQuery();
 
-        $entityPosition = $entity->pivot->$positionColumn;
-        $positionEntityPosition = $positionEntity->pivot->$positionColumn;
-
-        if ($entity->pivot->$positionColumn > $positionEntityPosition) {
-            $query
-                ->where($positionColumn, '>', $positionEntityPosition)
-                ->where($positionColumn, '<', $entityPosition)
-                ->increment($positionColumn);
-
-            $entity->pivot->$positionColumn = $positionEntityPosition + 1;
-
-            $entity->pivot->save();
-        } elseif ($entityPosition < $positionEntityPosition) {
-            $query
-                ->where($positionColumn, '<=', $positionEntityPosition)
-                ->where($positionColumn, '>', $entityPosition)
-                ->decrement($positionColumn);
-
-            $entity->pivot->$positionColumn = $positionEntityPosition;
-            $positionEntity->pivot->$positionColumn = $positionEntityPosition - 1;
-
-            $entity->pivot->save();
-            $positionEntity->pivot->save();
-        }
+        return $query->where($positionColumn, $leftOperator, $left)->where($positionColumn, $rightOperator, $right);
     }
 
     /**
