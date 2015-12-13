@@ -94,7 +94,6 @@ trait SortableTrait
             $entity->setAttribute('position', $entity->fresh()->getAttribute('position'));
             $this->save();
         });
-
     }
 
     /**
@@ -134,7 +133,6 @@ trait SortableTrait
     {
         return $this->siblings(true, $limit);
     }
-
 
     /**
      * @param bool $isNext is next, otherwise before

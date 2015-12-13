@@ -97,9 +97,13 @@ class BelongsToSortedMany extends BelongsToMany
             return;
         }
 
-        $entity->pivot->$positionColumn = $isMoveBefore ? $newEntityPosition : $newEntityPosition + 1;
-        $positionEntity->pivot->$positionColumn = $isMoveBefore ? $newPositionEntityPosition : $newPositionEntityPosition - 1;
-
+        if ($isMoveBefore) {
+            $entity->pivot->$positionColumn = $newEntityPosition;
+            $positionEntity->pivot->$positionColumn = $newPositionEntityPosition;
+        } else {
+            $entity->pivot->$positionColumn = $newEntityPosition + 1;
+            $positionEntity->pivot->$positionColumn = $newPositionEntityPosition - 1;
+        }
 
         $entity->pivot->save();
         $positionEntity->pivot->save();
