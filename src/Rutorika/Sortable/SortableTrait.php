@@ -138,7 +138,7 @@ trait SortableTrait
 
     /**
      * @param bool $isNext is next, otherwise before
-     * @param int $limit
+     * @param int  $limit
      *
      * @return QueryBuilder
      */

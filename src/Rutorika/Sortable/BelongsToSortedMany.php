@@ -25,7 +25,7 @@ class BelongsToSortedMany extends BelongsToMany
      * @param string  $foreignKey
      * @param string  $otherKey
      * @param string  $relationName
-     * @param string  $orderColumn position column name
+     * @param string  $orderColumn  position column name
      */
     public function __construct(Builder $query, Model $parent, $table, $foreignKey, $otherKey, $relationName = null, $orderColumn)
     {
@@ -87,13 +87,19 @@ class BelongsToSortedMany extends BelongsToMany
 
         if ($oldPosition > $newPosition) {
             $this->queryBetween($newPosition, $oldPosition, $isMoveBefore, false)->increment($positionColumn);
-            $entity->pivot->$positionColumn = $isMoveBefore ? $newPosition : $newPosition + 1;
-            $positionEntity->pivot->$positionColumn = $isMoveBefore ? $newPosition + 1 : $newPosition;
+            $newEntityPosition = $newPosition;
+            $newPositionEntityPosition = $newPosition + 1;
         } elseif ($oldPosition < $newPosition) {
             $this->queryBetween($oldPosition, $newPosition, false, !$isMoveBefore)->decrement($positionColumn);
-            $entity->pivot->$positionColumn = $isMoveBefore ? $newPosition - 1 : $newPosition;
-            $positionEntity->pivot->$positionColumn = $isMoveBefore ? $newPosition : $newPosition - 1;
+            $newEntityPosition = $newPosition - 1;
+            $newPositionEntityPosition = $newPosition;
+        } else {
+            return;
         }
+
+        $entity->pivot->$positionColumn = $isMoveBefore ? $newEntityPosition : $newEntityPosition + 1;
+        $positionEntity->pivot->$positionColumn = $isMoveBefore ? $newPositionEntityPosition : $newPositionEntityPosition - 1;
+
 
         $entity->pivot->save();
         $positionEntity->pivot->save();
