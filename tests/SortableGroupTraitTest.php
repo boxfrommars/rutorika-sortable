@@ -24,7 +24,7 @@ class SortableGroupTraitTest extends SortableTestBase
         $entity->category = 'some_category';
         $entity->save();
 
-        $sortableGroupField = $entity->getSortableGroupField();
+        $sortableGroupField = SortableEntityGroup::getSortableGroupField();
 
         $this->assertEquals('some_category', $entity->$sortableGroupField);
     }

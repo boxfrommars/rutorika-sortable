@@ -10,9 +10,17 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * Class SortableTrait.
  *
  * @traitUses \Illuminate\Database\Eloquent\Model
+ *
+ * @property string $sortableGroupField
+ *
+ * @method null creating($callback)
+ * @method QueryBuilder on($connection = null)
+ * @method QueryBuilder where($column, $operator = null, $value = null, $boolean = 'and')
+ * @method float|int max($column)
  */
 trait SortableTrait
 {
+
     /**
      * Adds position to model on creating event.
      */
@@ -20,23 +28,8 @@ trait SortableTrait
     {
         static::creating(
             function ($model) {
-                $sortableGroupField = $model->getSortableGroupField();
-
-                if ($sortableGroupField !== null) {
-                    if (is_array($sortableGroupField)) {
-                        $query = static::on();
-                        foreach ($sortableGroupField as $field) {
-                            $query = $query->where($field, $model->$field);
-                        }
-                        $maxPosition = $query->max('position');
-                    } else {
-                        $maxPosition = static::where($sortableGroupField, $model->$sortableGroupField)->max('position');
-                    }
-                } else {
-                    $maxPosition = static::max('position');
-                }
-
-                $model->position = $maxPosition + 1;
+                $query = static::applySortableGroup(static::on(), $model);
+                $model->position = $query->max('position') + 1;
             }
         );
     }
@@ -77,34 +70,30 @@ trait SortableTrait
 
     /**
      * @param string $action
-     * @param Model $entity
+     * @param Model  $entity
      *
      * @throws SortableException
      */
     public function move($action, $entity)
     {
-        $sortableGroupField = $this->getSortableGroupField();
+        $sortableGroupField = static::getSortableGroupField();
         $this->checkSortableGroupField($sortableGroupField, $entity);
 
         $this->_transaction(function () use ($entity, $action) {
-            $isMoveBefore = $action === 'moveBefore';
-            $isMoveAfter = $action === 'moveAfter';
+            $isMoveBefore = $action === 'moveBefore'; // otherwise moveAfter
 
-            if ($this->position > $entity->position) {
-                $query = $this->queryBetween($entity->position, $this->position, $isMoveBefore, false);
-                $query->increment('position');
-                $this->position = $entity->position;
-            } elseif ($this->position < $entity->position) {
-                $query = $this->queryBetween($this->position, $entity->position, false, $isMoveAfter);
-                $query->decrement('position');
-                $this->position = $entity->position - 1;
+            $oldPosition = $this->getAttribute('position');
+            $newPosition = $entity->getAttribute('position');
+
+            if ($oldPosition > $newPosition) {
+                $this->queryBetween($newPosition, $oldPosition, $isMoveBefore, false)->increment('position');
+                $this->setAttribute('position', $isMoveBefore ? $newPosition : $newPosition + 1);
+            } elseif ($oldPosition < $newPosition) {
+                $this->queryBetween($oldPosition, $newPosition, false, !$isMoveBefore)->decrement('position');
+                $this->setAttribute('position', $isMoveBefore ? $newPosition - 1 : $newPosition);
             }
 
-            if ($isMoveAfter) {
-                $this->position = $this->position + 1;
-            }
-
-            $entity->position = $entity->fresh()->position;
+            $entity->setAttribute('position', $entity->fresh()->getAttribute('position'));
             $this->save();
         });
 
@@ -120,13 +109,10 @@ trait SortableTrait
      */
     protected function queryBetween($left, $right, $leftIncluded = false, $rightIncluded = false)
     {
-        $connection = $this->getConnection();
-        $query = $connection->table($this->getTable());
-
         $leftOperator = $leftIncluded ? '>=' : '>';
         $rightOperator = $rightIncluded ? '<=' : '<';
 
-        $query = $this->_applySortableGroup($query);
+        $query = static::applySortableGroup($this->newQuery(), $this);
 
         return $query->where('position', $leftOperator, $left)->where('position', $rightOperator, $right);
     }
@@ -138,9 +124,8 @@ trait SortableTrait
      */
     public function previous($limit = 0)
     {
-        $query = $this->newQuery();
-        $query = $this->_applySortableGroup($query);
-        $query->where('position', '<', $this->position);
+        $query = static::applySortableGroup($this->newQuery(), $this);
+        $query->where('position', '<', $this->getAttribute('position'));
         $query->orderBy('position', 'desc');
         if ($limit !== 0) {
             $query->limit($limit);
@@ -166,9 +151,8 @@ trait SortableTrait
      */
     public function next($limit = 0)
     {
-        $query = $this->newQuery();
-        $query = $this->_applySortableGroup($query);
-        $query->where('position', '>', $this->position);
+        $query = static::applySortableGroup($this->newQuery(), $this);
+        $query->where('position', '>', $this->getAttribute('position'));
         $query->orderBy('position', 'asc');
         if ($limit !== 0) {
             $query->limit($limit);
@@ -198,21 +182,21 @@ trait SortableTrait
     }
 
     /**
-     * @param QueryBuilder|\Illuminate\Database\Eloquent\Builder $query
+     * @param QueryBuilder  $query
+     * @param SortableTrait $model
      *
-     * @return QueryBuilder|\Illuminate\Database\Eloquent\Builder
+     * @return QueryBuilder
      */
-    protected function _applySortableGroup($query)
+    protected static function applySortableGroup($query, $model)
     {
-        $sortableGroupField = $this->getSortableGroupField();
-        if ($sortableGroupField !== null) {
-            if (is_array($sortableGroupField)) {
-                foreach ($sortableGroupField as $field) {
-                    $query->where($field, $this->$field);
-                }
-            } else {
-                $query->where($sortableGroupField, $this->$sortableGroupField);
+        $sortableGroupField = static::getSortableGroupField();
+
+        if (is_array($sortableGroupField)) {
+            foreach ($sortableGroupField as $field) {
+                $query = $query->where($field, $model->$field);
             }
+        } elseif ($sortableGroupField !== null) {
+            $query = $query->where($sortableGroupField, $model->$sortableGroupField);
         }
 
         return $query;
@@ -236,23 +220,27 @@ trait SortableTrait
      */
     public function checkSortableGroupField($sortableGroupField, $entity)
     {
-        if ($sortableGroupField !== null) {
-            if (is_array($sortableGroupField)) {
-                foreach ($sortableGroupField as $field) {
-                    if ($this->$field !== $entity->$field) {
-                        throw new SortableException($this->$field, $entity->$field);
-                    }
+        if ($sortableGroupField === null) {
+            return;
+        }
+
+        if (is_array($sortableGroupField)) {
+            foreach ($sortableGroupField as $field) {
+                if ($this->$field !== $entity->$field) {
+                    throw new SortableException($this->$field, $entity->$field);
                 }
-            } elseif ($this->$sortableGroupField !== $entity->$sortableGroupField) {
-                throw new SortableException($this->$sortableGroupField, $entity->$sortableGroupField);
             }
+        }
+
+        if ($this->$sortableGroupField !== $entity->$sortableGroupField) {
+            throw new SortableException($this->$sortableGroupField, $entity->$sortableGroupField);
         }
     }
 
     /**
      * Get a new query builder for the model's table.
      *
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return \Illuminate\Database\Query\Builder
      */
     abstract public function newQuery();
 
@@ -278,4 +266,23 @@ trait SortableTrait
      * @return bool
      */
     abstract public function save(array $options = []);
+
+    /**
+     * Get an attribute from the model.
+     *
+     * @param  string $key
+     *
+     * @return mixed
+     */
+    abstract public function getAttribute($key);
+
+    /**
+     * Set a given attribute on the model.
+     *
+     * @param  string $key
+     * @param  mixed  $value
+     *
+     * @return $this
+     */
+    abstract public function setAttribute($key, $value);
 }
