@@ -27,7 +27,6 @@ class MorphToSortedMany extends MorphToMany
      * @param string  $orderColumn
      * @param string  $relationName
      * @param bool    $inverse
-     * @return void
      */
     public function __construct(Builder $query, Model $parent, $name, $table, $foreignKey, $otherKey, $orderColumn, $relationName = null, $inverse = false)
     {
