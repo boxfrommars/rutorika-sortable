@@ -10,14 +10,14 @@ namespace Rutorika\Sortable;
 trait ToSortedManyTrait
 {
     protected $orderColumn;
-    
+
     protected function setOrderColumn($orderColumn)
     {
         $this->orderColumn = $orderColumn;
         $this->withPivot($orderColumn);
         $this->orderBy($orderColumn, 'ASC');
     }
-    
+
     /**
      * Attach a model to the parent.
      *

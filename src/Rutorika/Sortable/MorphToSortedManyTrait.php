@@ -30,23 +30,23 @@ trait MorphToSortedManyTrait
     public function morphToSortedMany($related, $name, $orderColumn = 'position', $table = null, $foreignKey = null, $otherKey = null, $inverse = false)
     {
         $caller = $this->getBelongsToManyCaller();
-        
+
         // First, we will need to determine the foreign key and "other key" for the
         // relationship. Once we have determined the keys we will make the query
         // instances, as well as the relationship instances we need for these.
-        $foreignKey = $foreignKey ?: $name.'_id';
-        
-        $instance = new $related;
-        
+        $foreignKey = $foreignKey ?: $name . '_id';
+
+        $instance = new $related();
+
         $otherKey = $otherKey ?: $instance->getForeignKey();
-        
+
         // Now we're ready to create a new query builder for this related model and
         // the relationship instances for this relation. This relations will set
         // appropriate query constraints then entirely manages the hydrations.
         $query = $instance->newQuery();
-        
+
         $table = $table ?: Str::plural($name);
-        
+
         return new MorphToSortedMany($query, $this, $name, $table, $foreignKey, $otherKey, $orderColumn);
     }
 

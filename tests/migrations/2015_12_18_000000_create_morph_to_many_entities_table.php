@@ -14,7 +14,7 @@ class CreateMorphToManyEntitiesTable extends Migration
             $table->increments('id');
             $table->timestamps();
         });
-        
+
         Schema::create('morph_to_many_entity_twos', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
@@ -29,6 +29,7 @@ class CreateMorphToManyEntitiesTable extends Migration
         Schema::table('morph_to_many_entity_ones', function (Blueprint $table) {
             $table->drop();
         });
+
         Schema::table('morph_to_many_entity_twos', function (Blueprint $table) {
             $table->drop();
         });

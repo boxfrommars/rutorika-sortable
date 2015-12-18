@@ -30,7 +30,7 @@ class BelongsToSortedMany extends BelongsToMany
     public function __construct(Builder $query, Model $parent, $table, $foreignKey, $otherKey, $relationName = null, $orderColumn)
     {
         parent::__construct($query, $parent, $table, $foreignKey, $otherKey, $relationName);
-        
+
         $this->setOrderColumn($orderColumn);
     }
 }
