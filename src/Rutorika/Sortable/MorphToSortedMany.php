@@ -14,19 +14,19 @@ use Illuminate\Database\Eloquent\Builder;
 class MorphToSortedMany extends MorphToMany
 {
     use ToSortedManyTrait;
-    
+
     /**
      * Create a new morph to many relationship instance.
      *
-     * @param  Builder $query
-     * @param  Model   $parent
-     * @param  string  $name
-     * @param  string  $table
-     * @param  string  $foreignKey
-     * @param  string  $otherKey
-     * @param  string  $orderColumn
-     * @param  string  $relationName
-     * @param  bool    $inverse
+     * @param Builder $query
+     * @param Model   $parent
+     * @param string  $name
+     * @param string  $table
+     * @param string  $foreignKey
+     * @param string  $otherKey
+     * @param string  $orderColumn
+     * @param string  $relationName
+     * @param bool    $inverse
      * @return void
      */
     public function __construct(Builder $query, Model $parent, $name, $table, $foreignKey, $otherKey, $orderColumn, $relationName = null, $inverse = false)
