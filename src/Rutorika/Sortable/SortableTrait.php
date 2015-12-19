@@ -26,8 +26,10 @@ trait SortableTrait
     {
         static::creating(
             function ($model) {
+                /** @var Model $model */
+                $sortableField = static::getSortableField();
                 $query = static::applySortableGroup(static::on(), $model);
-                $model->position = $query->max('position') + 1;
+                $model->setAttribute($sortableField, $query->max($sortableField) + 1);
             }
         );
     }
@@ -39,7 +41,9 @@ trait SortableTrait
      */
     public function scopeSorted($query)
     {
-        return $query->orderBy('position');
+        $sortableField = static::getSortableField();
+
+        return $query->orderBy($sortableField);
     }
 
     /**
@@ -78,20 +82,21 @@ trait SortableTrait
         $this->checkSortableGroupField($sortableGroupField, $entity);
 
         $this->_transaction(function () use ($entity, $action) {
+            $sortableField = static::getSortableField();
             $isMoveBefore = $action === 'moveBefore'; // otherwise moveAfter
 
-            $oldPosition = $this->getAttribute('position');
-            $newPosition = $entity->getAttribute('position');
+            $oldPosition = $this->getAttribute($sortableField);
+            $newPosition = $entity->getAttribute($sortableField);
 
             if ($oldPosition > $newPosition) {
-                $this->queryBetween($newPosition, $oldPosition, $isMoveBefore, false)->increment('position');
-                $this->setAttribute('position', $isMoveBefore ? $newPosition : $newPosition + 1);
+                $this->queryBetween($newPosition, $oldPosition, $isMoveBefore, false)->increment($sortableField);
+                $this->setAttribute($sortableField, $isMoveBefore ? $newPosition : $newPosition + 1);
             } elseif ($oldPosition < $newPosition) {
-                $this->queryBetween($oldPosition, $newPosition, false, !$isMoveBefore)->decrement('position');
-                $this->setAttribute('position', $isMoveBefore ? $newPosition - 1 : $newPosition);
+                $this->queryBetween($oldPosition, $newPosition, false, !$isMoveBefore)->decrement($sortableField);
+                $this->setAttribute($sortableField, $isMoveBefore ? $newPosition - 1 : $newPosition);
             }
 
-            $entity->setAttribute('position', $entity->fresh()->getAttribute('position'));
+            $entity->setAttribute($sortableField, $entity->fresh()->getAttribute($sortableField));
             $this->save();
         });
     }
@@ -106,12 +111,14 @@ trait SortableTrait
      */
     protected function queryBetween($left, $right, $leftIncluded = false, $rightIncluded = false)
     {
+        $sortableField = static::getSortableField();
+
         $leftOperator = $leftIncluded ? '>=' : '>';
         $rightOperator = $rightIncluded ? '<=' : '<';
 
         $query = static::applySortableGroup($this->newQuery(), $this);
 
-        return $query->where('position', $leftOperator, $left)->where('position', $rightOperator, $right);
+        return $query->where($sortableField, $leftOperator, $left)->where($sortableField, $rightOperator, $right);
     }
 
     /**
@@ -142,9 +149,11 @@ trait SortableTrait
      */
     public function siblings($isNext, $limit = 0)
     {
+        $sortableField = static::getSortableField();
+
         $query = static::applySortableGroup($this->newQuery(), $this);
-        $query->where('position', $isNext ? '>' : '<', $this->getAttribute('position'));
-        $query->orderBy('position', $isNext ? 'asc' : 'desc');
+        $query->where($sortableField, $isNext ? '>' : '<', $this->getAttribute($sortableField));
+        $query->orderBy($sortableField, $isNext ? 'asc' : 'desc');
         if ($limit !== 0) {
             $query->limit($limit);
         }
@@ -184,7 +193,7 @@ trait SortableTrait
 
     /**
      * @param QueryBuilder  $query
-     * @param SortableTrait $model
+     * @param Model|SortableTrait $model
      *
      * @return QueryBuilder
      */
@@ -211,6 +220,16 @@ trait SortableTrait
         $sortableGroupField = isset(static::$sortableGroupField) ? static::$sortableGroupField : null;
 
         return $sortableGroupField;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getSortableField()
+    {
+        $sortableField = isset(static::$sortableField) ? static::$sortableField : 'position';
+
+        return $sortableField;
     }
 
     /**

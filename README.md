@@ -22,7 +22,7 @@ composer require rutorika/sortable
 Adds sortable behavior to Eloquent (Laravel) models
 
 ### Usage
-Your model must have `position` field:
+Add `position` field to your model (see below how to change this name):
 
 ```php
 // schema builder example
@@ -35,14 +35,24 @@ public function up()
 }
 ```
 
+
 Add `\Rutorika\Sortable\SortableTrait` to your Eloquent model.
 
 ```php
-class Article extends Model {
-
+class Article extends Model
+{
     use \Rutorika\Sortable\SortableTrait;
 }
 ```
+
+if you want to use custom column name for position, set `$sortableField`:
+```php
+class Article extends Model
+{
+    use \Rutorika\Sortable\SortableTrait;
+
+    protected static $sortableField = 'somefield';
+}
 
 Now you can move your entities with methods `moveBefore($entity)` and `moveAfter($entity)` (you dont need to save
 model after that, it has saved already):
