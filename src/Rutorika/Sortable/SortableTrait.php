@@ -26,7 +26,7 @@ trait SortableTrait
     {
         static::creating(
             function ($model) {
-                /** @var Model $model */
+                /* @var Model $model */
                 $sortableField = static::getSortableField();
                 $query = static::applySortableGroup(static::on(), $model);
                 $model->setAttribute($sortableField, $query->max($sortableField) + 1);
@@ -192,7 +192,7 @@ trait SortableTrait
     }
 
     /**
-     * @param QueryBuilder  $query
+     * @param QueryBuilder        $query
      * @param Model|SortableTrait $model
      *
      * @return QueryBuilder
