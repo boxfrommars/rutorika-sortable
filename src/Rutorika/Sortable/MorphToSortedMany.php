@@ -2,7 +2,7 @@
 
 namespace Rutorika\Sortable;
 
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -11,25 +11,26 @@ use Illuminate\Database\Eloquent\Builder;
  *
  * @method \Illuminate\Database\Query\Builder orderBy($column, $direction = 'asc')
  */
-class BelongsToSortedMany extends BelongsToMany
+class MorphToSortedMany extends MorphToMany
 {
     use ToSortedManyTrait;
 
     /**
-     * Create a new belongs to many relationship instance.
-     * Sets default ordering by $orderColumn column.
+     * Create a new morph to many relationship instance.
      *
      * @param Builder $query
      * @param Model   $parent
+     * @param string  $name
      * @param string  $table
      * @param string  $foreignKey
      * @param string  $otherKey
+     * @param string  $orderColumn
      * @param string  $relationName
-     * @param string  $orderColumn  position column name
+     * @param bool    $inverse
      */
-    public function __construct(Builder $query, Model $parent, $table, $foreignKey, $otherKey, $relationName = null, $orderColumn)
+    public function __construct(Builder $query, Model $parent, $name, $table, $foreignKey, $otherKey, $orderColumn, $relationName = null, $inverse = false)
     {
-        parent::__construct($query, $parent, $table, $foreignKey, $otherKey, $relationName);
+        parent::__construct($query, $parent, $name, $table, $foreignKey, $otherKey, $relationName, $inverse);
 
         $this->setOrderColumn($orderColumn);
     }

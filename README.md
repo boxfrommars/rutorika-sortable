@@ -164,8 +164,41 @@ You can reorder tags for given post
     $post->tags()->moveAfter($entityToMove, $whereToMoveEntity);
 ```
 
-
 Many to many demo: http://sortable5.boxfrommars.ru/posts ([code](https://github.com/boxfrommars/rutorika-sortable-demo5))
+
+You can also use polymorphic many to many relation with sortable behavour by using the `MorphsToSortedManyTrait` trait and returning `$this->morphToSortedMany()` from relation method.
+
+By following the Laravel polymorphic many to many table relation your tables should look like
+
+```
+posts
+    id
+    title
+
+tags
+    id
+    title
+
+taggables
+    tag_id
+    position
+    taggable_id
+    taggable_type
+```
+
+And your model like
+
+```php
+class Post extends Model {
+
+    use MorphToSortedManyTrait;
+
+    public function tags()
+    {
+        return $this->morphToSortedMany('\App\Tag', 'taggable');
+    }
+}
+```
 
 ## Sortable Controller
 
