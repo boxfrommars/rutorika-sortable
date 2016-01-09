@@ -51,6 +51,18 @@ trait MorphToSortedManyTrait
         return new MorphToSortedMany($query, $this, $name, $table, $foreignKey, $otherKey, $orderColumn, $caller, $inverse);
     }
 
+    public function morphedBySortedMany($related, $name, $orderColumn = 'position', $table = null, $foreignKey = null, $otherKey = null)
+    {
+        $foreignKey = $foreignKey ?: $this->getForeignKey();
+
+        // For the inverse of the polymorphic many-to-many relations, we will change
+        // the way we determine the foreign and other keys, as it is the opposite
+        // of the morph-to-many method since we're figuring out these inverses.
+        $otherKey = $otherKey ?: $name.'_id';
+
+        return $this->morphToSortedMany($related, $name, $orderColumn, $table, $foreignKey, $otherKey, true);
+    }
+
     /**
      * Get the default foreign key name for the model.
      *
