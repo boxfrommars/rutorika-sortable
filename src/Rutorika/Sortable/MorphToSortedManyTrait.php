@@ -67,7 +67,7 @@ trait MorphToSortedManyTrait
         // For the inverse of the polymorphic many-to-many relations, we will change
         // the way we determine the foreign and other keys, as it is the opposite
         // of the morph-to-many method since we're figuring out these inverses.
-        $otherKey = $otherKey ?: $name.'_id';
+        $otherKey = $otherKey ?: $name . '_id';
 
         return $this->morphToSortedMany($related, $name, $orderColumn, $table, $foreignKey, $otherKey, true);
     }
