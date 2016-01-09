@@ -19,11 +19,12 @@ trait MorphToSortedManyTrait
      * Just copy of belongsToMany except last line where we return new BelongsToSortedMany instance with additional orderColumn param
      *
      * @param        $related
+     * @param        $name
      * @param string $orderColumn
      * @param string $table
      * @param string $foreignKey
      * @param string $otherKey
-     * @param string $relation
+     * @param bool   $inverse
      *
      * @return BelongsToSortedMany
      */
@@ -47,7 +48,7 @@ trait MorphToSortedManyTrait
 
         $table = $table ?: Str::plural($name);
 
-        return new MorphToSortedMany($query, $this, $name, $table, $foreignKey, $otherKey, $orderColumn);
+        return new MorphToSortedMany($query, $this, $name, $table, $foreignKey, $otherKey, $orderColumn, $caller, $inverse);
     }
 
     /**
