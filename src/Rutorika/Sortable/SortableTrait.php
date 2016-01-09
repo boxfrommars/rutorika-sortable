@@ -71,7 +71,7 @@ trait SortableTrait
     }
 
     /**
-     * @param string $action
+     * @param string $action moveAfter/moveBefore
      * @param Model  $entity
      *
      * @throws SortableException
