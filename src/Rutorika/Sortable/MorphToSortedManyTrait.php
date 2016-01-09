@@ -50,7 +50,16 @@ trait MorphToSortedManyTrait
 
         return new MorphToSortedMany($query, $this, $name, $table, $foreignKey, $otherKey, $orderColumn, $caller, $inverse);
     }
-
+    /**
+     * @param        $related
+     * @param        $name
+     * @param string $orderColumn
+     * @param string $table
+     * @param string $foreignKey
+     * @param string $otherKey
+     *
+     * @return BelongsToSortedMany
+     */
     public function morphedBySortedMany($related, $name, $orderColumn = 'position', $table = null, $foreignKey = null, $otherKey = null)
     {
         $foreignKey = $foreignKey ?: $this->getForeignKey();
