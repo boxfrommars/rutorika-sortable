@@ -239,27 +239,37 @@ trait SortableTrait
     }
 
     /**
-     * @param string                              $sortableGroupField
-     * @param \Illuminate\Database\Eloquent\Model $entity
+     * @param string $sortableGroupField
+     * @param Model  $entity
      *
      * @throws SortableException
      */
     public function checkSortableGroupField($sortableGroupField, $entity)
     {
-        if ($sortableGroupField === null) {
-            return;
-        }
-
         if (is_array($sortableGroupField)) {
             foreach ($sortableGroupField as $field) {
-                if ($this->$field !== $entity->$field) {
-                    throw new SortableException($this->$field, $entity->$field);
-                }
+                $this->checkFieldEquals($this, $entity, $field);
             }
         }
 
-        if ($this->$sortableGroupField !== $entity->$sortableGroupField) {
-            throw new SortableException($this->$sortableGroupField, $entity->$sortableGroupField);
+        $this->checkFieldEquals($this, $entity, $sortableGroupField);
+    }
+
+    /**
+     * @param Model|SortableTrait  $entity1
+     * @param Model                $entity2
+     * @param string               $field
+     *
+     * @throws SortableException
+     */
+    public function checkFieldEquals($entity1, $entity2, $field)
+    {
+        if ($field === null) {
+            return;
+        }
+
+        if ($entity1->$field !== $entity2->$field) {
+            throw new SortableException($entity1->$field, $entity2->$field);
         }
     }
 
