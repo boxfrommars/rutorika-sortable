@@ -89,10 +89,6 @@ trait SortableTrait
             $oldPosition = $this->getAttribute($sortableField);
             $newPosition = $entity->getAttribute($sortableField);
 
-            if ($oldPosition === $newPosition) {
-                return;
-            }
-
             $isMoveForward = $oldPosition < $newPosition;
 
             if ($isMoveForward) {
@@ -118,10 +114,13 @@ trait SortableTrait
      * @return mixed
      */
     protected function getNewPosition($isMoveBefore, $isMoveForward, $position) {
-        if (!$isMoveBefore && !$isMoveForward) {
-            return $position + 1;
-        } elseif ($isMoveBefore && $isMoveForward) {
-            return $position - 1;
+
+        if (!$isMoveBefore) {
+            $position++;
+        }
+
+        if ($isMoveForward) {
+            $position--;
         }
 
         return $position;
