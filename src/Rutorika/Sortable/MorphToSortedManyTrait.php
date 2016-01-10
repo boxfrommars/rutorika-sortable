@@ -50,6 +50,7 @@ trait MorphToSortedManyTrait
 
         return new MorphToSortedMany($query, $this, $name, $table, $foreignKey, $otherKey, $orderColumn, $caller, $inverse);
     }
+
     /**
      * @param        $related
      * @param        $name
