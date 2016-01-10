@@ -28,7 +28,7 @@ class SortableController extends Controller
         }
 
         /** @var Model|bool $entityClass */
-        list($entityClass, $relation) = $this->getEntityInfo($sortableEntities, $request->input('entityName'));
+        list($entityClass, $relation) = $this->getEntityInfo($sortableEntities, (string) $request->input('entityName'));
         $method = $request->input('type');
 
         if (!$relation) {
@@ -67,7 +67,7 @@ class SortableController extends Controller
         ];
 
         /** @var Model|bool $entityClass */
-        list($entityClass, $relation) = $this->getEntityInfo($sortableEntities, $request->input('entityName'));
+        list($entityClass, $relation) = $this->getEntityInfo($sortableEntities, (string) $request->input('entityName'));
 
         if (!class_exists($entityClass)) {
             $rules['entityClass'] = 'required'; // fake rule for not exist field
