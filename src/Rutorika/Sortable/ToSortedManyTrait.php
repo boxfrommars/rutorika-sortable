@@ -1,10 +1,12 @@
 <?php
 
 namespace Rutorika\Sortable;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class MorphToSortedManyTrait.
  *
+ * @method Model orderBy($column, $direction = 'asc')
  * @traitUses Illuminate\Database\Eloquent\Model
  */
 trait ToSortedManyTrait
@@ -131,4 +133,19 @@ trait ToSortedManyTrait
     {
         return $this->orderColumn;
     }
+
+    /**
+     * Set the columns on the pivot table to retrieve.
+     *
+     * @param  array|mixed  $columns
+     * @return $this
+     */
+    abstract public function withPivot($columns);
+
+    /**
+     * Create a new query builder for the pivot table.
+     *
+     * @return \Illuminate\Database\Query\Builder
+     */
+    abstract protected function newPivotQuery();
 }
