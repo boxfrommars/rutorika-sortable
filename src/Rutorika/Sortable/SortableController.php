@@ -95,8 +95,8 @@ class SortableController extends Controller
     }
 
     /**
-     * @param array        $sortableEntities
-     * @param string|array $entityName
+     * @param array  $sortableEntities
+     * @param string $entityName
      *
      * @return array
      */
