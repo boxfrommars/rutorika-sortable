@@ -18,13 +18,10 @@ class SortableServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
     }
 
     public function boot()
     {
-        //$this->package('rutorika/sortable');
-
         $this->publishes([
             __DIR__ . '/../../config/sortable.php' => config_path('sortable.php'),
         ]);
