@@ -16,7 +16,6 @@ class SortableController extends Controller
     public function sort(Request $request)
     {
         $sortableEntities = app('config')->get('sortable.entities', []);
-
         $validator = $this->getValidator($sortableEntities, $request);
 
         if (!$validator->passes()) {
@@ -43,9 +42,7 @@ class SortableController extends Controller
             $parentEntity->$relation()->$method($entity, $postionEntity);
         }
 
-        return [
-            'success' => true,
-        ];
+        return ['success' => true];
     }
 
     /**
@@ -81,12 +78,11 @@ class SortableController extends Controller
             $rules['id'] .= '|exists:' . $tableName . ',' . $primaryKey;
             $rules['positionEntityId'] .= '|exists:' . $tableName . ',' . $primaryKey;
         } else {
-            $rules['parentId'] = 'required|exists:' . $tableName . ',' . $primaryKey;
-
             /** @var BelongsToSortedMany $relationObject */
             $relationObject = with(new $entityClass())->$relation();
             $pivotTable = $relationObject->getTable();
 
+            $rules['parentId'] = 'required|exists:' . $tableName . ',' . $primaryKey;
             $rules['id'] .= '|exists:' . $pivotTable . ',' . $relationObject->getOtherKey() . ',' . $relationObject->getForeignKey() . ',' . $request->input('parentId');
             $rules['positionEntityId'] .= '|exists:' . $pivotTable . ',' . $relationObject->getOtherKey() . ',' . $relationObject->getForeignKey() . ',' . $request->input('parentId');
         }

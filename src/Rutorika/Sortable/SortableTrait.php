@@ -79,30 +79,29 @@ trait SortableTrait
      */
     public function move($action, $entity)
     {
-        $sortableGroupField = static::getSortableGroupField();
-        $this->checkSortableGroupField($sortableGroupField, $entity);
+        $this->checkSortableGroupField(static::getSortableGroupField(), $entity);
 
         $this->_transaction(function () use ($entity, $action) {
             $sortableField = static::getSortableField();
-            $isMoveBefore = $action === 'moveBefore'; // otherwise moveAfter
 
             $oldPosition = $this->getAttribute($sortableField);
             $newPosition = $entity->getAttribute($sortableField);
 
+            if ($oldPosition === $newPosition) {
+                return;
+            }
+
+            $isMoveBefore = $action === 'moveBefore'; // otherwise moveAfter
             $isMoveForward = $oldPosition < $newPosition;
 
             if ($isMoveForward) {
-                $this->queryBetween($oldPosition, $newPosition, false, !$isMoveBefore)->decrement($sortableField);
+                $this->queryBetween($oldPosition, $newPosition)->decrement($sortableField);
             } else {
-                $this->queryBetween($newPosition, $oldPosition, $isMoveBefore, false)->increment($sortableField);
+                $this->queryBetween($newPosition, $oldPosition)->increment($sortableField);
             }
 
-            $this->setAttribute($sortableField, $this->getNewPosition($isMoveBefore, $isMoveForward, $newPosition));
-
-            /** @var Model $freshEntity */
-            $freshEntity = $entity->fresh();
-            $entity->setAttribute($sortableField, $freshEntity->getAttribute($sortableField));
-            $this->save();
+            $this->setAttribute($sortableField, $this->getNewPosition($isMoveBefore, $isMoveForward, $newPosition))->save();
+            $entity->setAttribute($sortableField, $this->getNewPosition(!$isMoveBefore, $isMoveForward, $newPosition))->save();
         });
     }
 
@@ -129,21 +128,15 @@ trait SortableTrait
     /**
      * @param $left
      * @param $right
-     * @param $leftIncluded
-     * @param $rightIncluded
      *
      * @return QueryBuilder
      */
-    protected function queryBetween($left, $right, $leftIncluded = false, $rightIncluded = false)
+    protected function queryBetween($left, $right)
     {
         $sortableField = static::getSortableField();
-
-        $leftOperator = $leftIncluded ? '>=' : '>';
-        $rightOperator = $rightIncluded ? '<=' : '<';
-
         $query = static::applySortableGroup($this->newQuery(), $this);
 
-        return $query->where($sortableField, $leftOperator, $left)->where($sortableField, $rightOperator, $right);
+        return $query->where($sortableField, '>', $left)->where($sortableField, '<', $right);
     }
 
     /**
