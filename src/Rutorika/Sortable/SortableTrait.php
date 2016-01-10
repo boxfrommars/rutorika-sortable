@@ -2,6 +2,7 @@
 
 namespace Rutorika\Sortable;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
@@ -96,7 +97,9 @@ trait SortableTrait
                 $this->setAttribute($sortableField, $isMoveBefore ? $newPosition - 1 : $newPosition);
             }
 
-            $entity->setAttribute($sortableField, $entity->fresh()->getAttribute($sortableField));
+            /** @var Model $freshEntity */
+            $freshEntity = $entity->fresh();
+            $entity->setAttribute($sortableField, $freshEntity->getAttribute($sortableField));
             $this->save();
         });
     }
@@ -164,17 +167,20 @@ trait SortableTrait
     /**
      * @param int $limit
      *
-     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     * @return Collection|static[]
      */
     public function getPrevious($limit = 0)
     {
-        return $this->previous($limit)->get()->reverse();
+        /** @var Collection $collection */
+        $collection = $this->previous($limit)->get();
+
+        return $collection->reverse();
     }
 
     /**
      * @param int $limit
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     public function getNext($limit = 0)
     {
