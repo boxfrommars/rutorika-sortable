@@ -89,19 +89,42 @@ trait SortableTrait
             $oldPosition = $this->getAttribute($sortableField);
             $newPosition = $entity->getAttribute($sortableField);
 
-            if ($oldPosition > $newPosition) {
-                $this->queryBetween($newPosition, $oldPosition, $isMoveBefore, false)->increment($sortableField);
-                $this->setAttribute($sortableField, $isMoveBefore ? $newPosition : $newPosition + 1);
-            } elseif ($oldPosition < $newPosition) {
-                $this->queryBetween($oldPosition, $newPosition, false, !$isMoveBefore)->decrement($sortableField);
-                $this->setAttribute($sortableField, $isMoveBefore ? $newPosition - 1 : $newPosition);
+            if ($oldPosition === $newPosition) {
+                return;
             }
+
+            $isMoveForward = $oldPosition < $newPosition;
+
+            if ($isMoveForward) {
+                $this->queryBetween($oldPosition, $newPosition, false, !$isMoveBefore)->decrement($sortableField);
+            } else {
+                $this->queryBetween($newPosition, $oldPosition, $isMoveBefore, false)->increment($sortableField);
+            }
+
+            $this->setAttribute($sortableField, $this->getNewPosition($isMoveBefore, $isMoveForward, $newPosition));
 
             /** @var Model $freshEntity */
             $freshEntity = $entity->fresh();
             $entity->setAttribute($sortableField, $freshEntity->getAttribute($sortableField));
             $this->save();
         });
+    }
+
+    /**
+     * @param bool $isMoveBefore
+     * @param bool $isMoveForward
+     * @param      $position
+     *
+     * @return mixed
+     */
+    protected function getNewPosition($isMoveBefore, $isMoveForward, $position) {
+        if (!$isMoveBefore && !$isMoveForward) {
+            return $position + 1;
+        } elseif ($isMoveBefore && $isMoveForward) {
+            return $position - 1;
+        }
+
+        return $position;
     }
 
     /**
