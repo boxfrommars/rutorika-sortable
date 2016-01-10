@@ -100,8 +100,11 @@ trait SortableTrait
                 $this->queryBetween($newPosition, $oldPosition)->increment($sortableField);
             }
 
-            $this->setAttribute($sortableField, $this->getNewPosition($isMoveBefore, $isMoveForward, $newPosition))->save();
-            $entity->setAttribute($sortableField, $this->getNewPosition(!$isMoveBefore, $isMoveForward, $newPosition))->save();
+            $this->setAttribute($sortableField, $this->getNewPosition($isMoveBefore, $isMoveForward, $newPosition));
+            $entity->setAttribute($sortableField, $this->getNewPosition(!$isMoveBefore, $isMoveForward, $newPosition));
+
+            $this->save();
+            $entity->save();
         });
     }
 
