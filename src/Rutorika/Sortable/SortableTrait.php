@@ -239,8 +239,8 @@ trait SortableTrait
     }
 
     /**
-     * @param string $sortableGroupField
-     * @param Model  $entity
+     * @param string|array $sortableGroupField
+     * @param Model        $entity
      *
      * @throws SortableException
      */
@@ -250,9 +250,9 @@ trait SortableTrait
             foreach ($sortableGroupField as $field) {
                 $this->checkFieldEquals($this, $entity, $field);
             }
+        } else {
+            $this->checkFieldEquals($this, $entity, $sortableGroupField);
         }
-
-        $this->checkFieldEquals($this, $entity, $sortableGroupField);
     }
 
     /**
