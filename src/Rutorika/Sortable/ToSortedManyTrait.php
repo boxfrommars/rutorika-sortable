@@ -1,6 +1,7 @@
 <?php
 
 namespace Rutorika\Sortable;
+
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -137,7 +138,8 @@ trait ToSortedManyTrait
     /**
      * Set the columns on the pivot table to retrieve.
      *
-     * @param  array|mixed  $columns
+     * @param array|mixed $columns
+     *
      * @return $this
      */
     abstract public function withPivot($columns);
