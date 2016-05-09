@@ -119,14 +119,14 @@ trait SortableTrait
      *
      * @return mixed
      */
-    protected function getNewPosition($isMoveBefore, $isMoveForward, $position) {
-
+    protected function getNewPosition($isMoveBefore, $isMoveForward, $position)
+    {
         if (!$isMoveBefore) {
-            $position++;
+            ++$position;
         }
 
         if ($isMoveForward) {
-            $position--;
+            --$position;
         }
 
         return $position;
@@ -278,9 +278,9 @@ trait SortableTrait
     }
 
     /**
-     * @param Model|SortableTrait  $entity1
-     * @param Model                $entity2
-     * @param string               $field
+     * @param Model|SortableTrait $entity1
+     * @param Model               $entity2
+     * @param string              $field
      *
      * @throws SortableException
      */

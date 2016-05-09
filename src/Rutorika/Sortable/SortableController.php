@@ -53,7 +53,7 @@ class SortableController extends Controller
      */
     protected function getValidator($sortableEntities, $request)
     {
-        /** @var  \Illuminate\Validation\Factory $validator */
+        /** @var \Illuminate\Validation\Factory $validator */
         $validator = app('validator');
 
         $rules = [
