@@ -30,7 +30,11 @@ trait SortableTrait
                 /* @var Model $model */
                 $sortableField = static::getSortableField();
                 $query = static::applySortableGroup(static::on(), $model);
-                $model->setAttribute($sortableField, $query->max($sortableField) + 1);
+
+                // only automatically calculate next position with max+1 when a position has not been set already
+                if ($model->$sortableField === null) {
+                    $model->setAttribute($sortableField, $query->max($sortableField) + 1);
+                }
             }
         );
     }
