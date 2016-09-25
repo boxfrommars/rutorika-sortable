@@ -6,9 +6,9 @@ class SortableTestBase extends Orchestra\Testbench\TestCase
     {
         parent::setUp();
 
-        $this->artisan('migrate', [
+        $this->loadMigrationsFrom([
             '--database' => 'testbench',
-            '--path' => '../tests/migrations',
+            '--realpath' => realpath(__DIR__.'/migrations'),
         ]);
     }
 
