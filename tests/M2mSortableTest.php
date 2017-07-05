@@ -482,14 +482,14 @@ class M2mSortableTest extends SortableTestBase
      */
     public function moveWhenMovedEntityComesBeforeRelativeEntityProvider()
     {
-        return array(
-            array(1, 7, 30),
-            array(7, 9, 30),
-            array(15, 30, 30),
-            array(1, 30, 30),
-            array(1, 2, 30),
-            array(29, 30, 30),
-        );
+        return [
+            [1, 7, 30],
+            [7, 9, 30],
+            [15, 30, 30],
+            [1, 30, 30],
+            [1, 2, 30],
+            [29, 30, 30],
+        ];
     }
 
     /**
@@ -497,14 +497,14 @@ class M2mSortableTest extends SortableTestBase
      */
     public function moveWhenMovedEntityComesAfterRelativeEntityProvider()
     {
-        return array(
-            array(7, 1, 30),
-            array(9, 7, 30),
-            array(30, 15, 30),
-            array(30, 1, 30),
-            array(2, 1, 30),
-            array(30, 29, 30),
-        );
+        return [
+            [7, 1, 30],
+            [9, 7, 30],
+            [30, 15, 30],
+            [30, 1, 30],
+            [2, 1, 30],
+            [30, 29, 30],
+        ];
     }
 
     /**
@@ -512,11 +512,11 @@ class M2mSortableTest extends SortableTestBase
      */
     public function moveWhenMovedEntityIsRelativeEntityProvider()
     {
-        return array(
-            array(1, 30),
-            array(7, 30),
-            array(30, 30),
-        );
+        return [
+            [1, 30],
+            [7, 30],
+            [30, 30],
+        ];
     }
 
     /**

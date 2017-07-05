@@ -11,7 +11,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
         parent::setUp();
         $this->loadMigrationsFrom([
             '--database' => 'testbench',
-            '--realpath' => realpath(__DIR__.'/migrations'),
+            '--realpath' => realpath(__DIR__ . '/migrations'),
         ]);
 
         for ($i = 1; $i <= 30; ++$i) {
@@ -46,16 +46,16 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
         $app['config']->set('app.debug', true);
         $app['config']->set(
             'database.connections.testbench',
-            array(
+            [
                 'driver' => 'sqlite',
                 'database' => ':memory:',
                 'prefix' => '',
-            )
+            ]
         );
 
         $app['config']->set(
             'sortable.entities',
-            array(
+            [
                 'sortable_entity' => '\SortableEntity',
                 'sortable_entity_full_config' => ['entity' => '\SortableEntity'],
                 'sortable_entity_m2m' => ['entity' => '\M2mEntity', 'relation' => 'relatedEntities'],
@@ -63,7 +63,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
 
                 'sortable_entity_m2m_without_relation' => ['entity' => '\M2mEntity'],
                 'sortable_entity_m2m_with_invalid_relation' => ['entity' => '\M2mEntity'],
-            )
+            ]
         );
 
         $app['router']->post('sort', '\Rutorika\Sortable\SortableController@sort');
@@ -225,170 +225,170 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
 
     public function validParamsProvider()
     {
-        return array(
-            array(
-                array(
+        return [
+            [
+                [
                     'type' => 'moveAfter',
                     'entityName' => 'sortable_entity',
                     'positionEntityId' => 4,
                     'id' => 13,
-                ),
-            ),
-            array(
-                array(
+                ],
+            ],
+            [
+                [
                     'type' => 'moveAfter',
                     'entityName' => 'sortable_entity',
                     'positionEntityId' => 10,
                     'id' => 5,
-                ),
-            ),
-            array(
-                array(
+                ],
+            ],
+            [
+                [
                     'type' => 'moveBefore',
                     'entityName' => 'sortable_entity',
                     'positionEntityId' => 1,
                     'id' => 30,
-                ),
-            ),
-            array(
-                array(
+                ],
+            ],
+            [
+                [
                     'type' => 'moveBefore',
                     'entityName' => 'sortable_entity_full_config',
                     'positionEntityId' => 1,
                     'id' => 30,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     public function validParamsM2mProvider()
     {
-        return array(
-            array(
-                array(
+        return [
+            [
+                [
                     'type' => 'moveAfter',
                     'entityName' => 'sortable_entity_m2m',
                     'parentId' => 1,
                     'positionEntityId' => 4,
                     'id' => 13,
-                ),
-            ),
-            array(
-                array(
+                ],
+            ],
+            [
+                [
                     'type' => 'moveAfter',
                     'entityName' => 'sortable_entity_m2m',
                     'parentId' => 1,
                     'positionEntityId' => 10,
                     'id' => 5,
-                ),
-            ),
-            array(
-                array(
+                ],
+            ],
+            [
+                [
                     'type' => 'moveBefore',
                     'entityName' => 'sortable_entity_m2m',
                     'parentId' => 1,
                     'positionEntityId' => 1,
                     'id' => 30,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     public function invalidParamsProvider()
     {
-        return array(
-            array(
-                array(
+        return [
+            [
+                [
                     'type' => 'moveAfter',
                     'entityName' => 'sortable_entity',
                     'positionEntityId' => 4,
                     'id' => 50,
-                ),
+                ],
                 'invalidEntityId',
-            ),
-            array(
-                array(
+            ],
+            [
+                [
                     'type' => 'moveAfter',
                     'entityName' => 'sortable_entity',
                     'positionEntityId' => 50,
                     'id' => 4,
-                ),
+                ],
                 'invalidPositionEntityId',
-            ),
-            array(
-                array(
+            ],
+            [
+                [
                     'type' => 'moveAfter',
                     'entityName' => 'invalid_entity',
                     'positionEntityId' => 10,
                     'id' => 5,
-                ),
+                ],
                 'invalidEntityName',
-            ),
-            array(
-                array(
+            ],
+            [
+                [
                     'type' => 'moveAfter',
                     'entityName' => 'sortable_entity_without_class',
                     'positionEntityId' => 10,
                     'id' => 5,
-                ),
+                ],
                 'invalidEntityClass',
-            ),
-            array(
-                array(
+            ],
+            [
+                [
                     'type' => 'moveSomewher',
                     'entityName' => 'sortable_entity',
                     'positionEntityId' => 1,
                     'id' => 30,
-                ),
+                ],
                 'invalidType',
-            ),
-        );
+            ],
+        ];
     }
 
     public function invalidM2mParamsProvider()
     {
-        return array(
-            array(
-                array(
+        return [
+            [
+                [
                     'type' => 'moveAfter',
                     'entityName' => 'sortable_entity_m2m',
                     'parentId' => 1,
                     'positionEntityId' => 4,
                     'id' => 50,
-                ),
+                ],
                 'invalidEntityId',
-            ),
-            array(
-                array(
+            ],
+            [
+                [
                     'type' => 'moveAfter',
                     'entityName' => 'sortable_entity_m2m',
                     'parentId' => 1,
                     'positionEntityId' => 50,
                     'id' => 1,
-                ),
+                ],
                 'invalidPositionEntityId',
-            ),
-            array(
-                array(
+            ],
+            [
+                [
                     'type' => 'moveAfter',
                     'entityName' => 'sortable_entity_m2m',
                     'parentId' => 3,
                     'positionEntityId' => 4,
                     'id' => 6,
-                ),
+                ],
                 'parentEntityId',
-            ),
-            array(
-                array(
+            ],
+            [
+                [
                     'type' => 'moveAfter',
                     'entityName' => 'sortable_entity_m2m_failed',
                     'parentId' => 3,
                     'positionEntityId' => 4,
                     'id' => 1,
-                ),
+                ],
                 'invalidEntityName',
-            ),
-        );
+            ],
+        ];
     }
 
     protected function getPackageProviders($app)

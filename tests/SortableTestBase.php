@@ -8,7 +8,7 @@ class SortableTestBase extends Orchestra\Testbench\TestCase
 
         $this->loadMigrationsFrom([
             '--database' => 'testbench',
-            '--realpath' => realpath(__DIR__.'/migrations'),
+            '--realpath' => realpath(__DIR__ . '/migrations'),
         ]);
     }
 
@@ -19,11 +19,11 @@ class SortableTestBase extends Orchestra\Testbench\TestCase
         $app['config']->set('database.default', 'testbench');
         $app['config']->set(
             'database.connections.testbench',
-            array(
+            [
                 'driver' => 'sqlite',
                 'database' => ':memory:',
                 'prefix' => '',
-            )
+            ]
         );
     }
 
@@ -31,5 +31,4 @@ class SortableTestBase extends Orchestra\Testbench\TestCase
     {
         return ['Orchestra\Database\ConsoleServiceProvider'];
     }
-
 }
