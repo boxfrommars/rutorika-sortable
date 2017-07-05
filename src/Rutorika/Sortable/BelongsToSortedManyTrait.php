@@ -31,7 +31,7 @@ trait BelongsToSortedManyTrait
         // name of the calling function. We will use that function name as the
         // title of this relation since that is a great convention to apply.
         if (is_null($relation)) {
-            $relation = $this->getBelongsToManyCaller();
+            $relation = $this->getRelations();
         }
 
         // First, we'll need to determine the foreign key and "other key" for the
@@ -79,5 +79,5 @@ trait BelongsToSortedManyTrait
      *
      * @return string
      */
-    abstract protected function getBelongsToManyCaller();
+    abstract protected function getRelations();
 }

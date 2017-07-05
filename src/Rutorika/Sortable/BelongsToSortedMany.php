@@ -33,4 +33,14 @@ class BelongsToSortedMany extends BelongsToMany
 
         $this->setOrderColumn($orderColumn);
     }
+
+    public function getRelatedKey()
+    {
+        return $this->relatedKey;
+    }
+
+    public function getForeignKey()
+    {
+        return $this->foreignKey;
+    }
 }

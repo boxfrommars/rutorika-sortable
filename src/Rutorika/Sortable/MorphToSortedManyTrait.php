@@ -30,7 +30,7 @@ trait MorphToSortedManyTrait
      */
     public function morphToSortedMany($related, $name, $orderColumn = 'position', $table = null, $foreignKey = null, $otherKey = null, $inverse = false)
     {
-        $caller = $this->getBelongsToManyCaller();
+        $caller = $this->getRelations();
 
         // First, we will need to determine the foreign key and "other key" for the
         // relationship. Once we have determined the keys we will make the query
@@ -85,5 +85,5 @@ trait MorphToSortedManyTrait
      *
      * @return string
      */
-    abstract protected function getBelongsToManyCaller();
+    abstract protected function getRelations();
 }

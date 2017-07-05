@@ -43,6 +43,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
         $app['path.base'] = __DIR__ . '/../src';
 
         $app['config']->set('database.default', 'testbench');
+        $app['config']->set('app.debug', true);
         $app['config']->set(
             'database.connections.testbench',
             array(
@@ -76,7 +77,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
     public function testControllerWithoutParams()
     {
         $response = $this->call('POST', 'sort');
-        $this->assertResponseOk();
+        $response->assertStatus(200);
         $responseData = $this->parseJSON($response);
 
         $this->assertObjectHasAttribute('errors', $responseData);
@@ -388,5 +389,10 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
                 'invalidEntityName',
             ),
         );
+    }
+
+    protected function getPackageProviders($app)
+    {
+        return ['Orchestra\Database\ConsoleServiceProvider'];
     }
 }

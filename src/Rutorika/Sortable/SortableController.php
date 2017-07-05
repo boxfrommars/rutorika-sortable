@@ -83,8 +83,8 @@ class SortableController extends Controller
             $pivotTable = $relationObject->getTable();
 
             $rules['parentId'] = 'required|exists:' . $tableName . ',' . $primaryKey;
-            $rules['id'] .= '|exists:' . $pivotTable . ',' . $relationObject->getOtherKey() . ',' . $relationObject->getForeignKey() . ',' . $request->input('parentId');
-            $rules['positionEntityId'] .= '|exists:' . $pivotTable . ',' . $relationObject->getOtherKey() . ',' . $relationObject->getForeignKey() . ',' . $request->input('parentId');
+            $rules['id'] .= '|exists:' . $pivotTable . ',' . $relationObject->getRelatedKey() . ',' . $relationObject->getForeignKey() . ',' . $request->input('parentId');
+            $rules['positionEntityId'] .= '|exists:' . $pivotTable . ',' . $relationObject->getRelatedKey() . ',' . $relationObject->getForeignKey() . ',' . $request->input('parentId');
         }
 
         return $validator->make($request->all(), $rules);
