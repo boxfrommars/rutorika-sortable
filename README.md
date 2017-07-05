@@ -15,7 +15,13 @@ Install package through Composer
 ```bash
 composer require rutorika/sortable
 ```
-> Note: For **Laravel 4** please see the branch [1.2@laravel4](https://github.com/boxfrommars/rutorika-sortable/tree/laravel4)
+### Version Compatibility
+
+ Laravel  | Rutorika Sortable
+:---------|:----------
+ 4        | 1.2.x (branch laravel4)
+ <=5.3    | 3.2.x
+ 5.4      | 3.4.x
 
 ## Sortable Trait
 
