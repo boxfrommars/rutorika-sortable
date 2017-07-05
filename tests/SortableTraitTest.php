@@ -28,7 +28,7 @@ class SortableTraitTest extends SortableTestBase
     {
 
         /** @var SortableEntity[] $entities */
-        $entities = array();
+        $entities = [];
         for ($i = 1; $i <= 30; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
@@ -49,7 +49,7 @@ class SortableTraitTest extends SortableTestBase
         // interavls: [1 .. $entityId - 1], [$entityId], [$entityId + 1 .. $relativeEntityId], [$relativeEntityId .. $countTotal]
 
         /** @var SortableEntity[] $entities */
-        $entities = array();
+        $entities = [];
         for ($i = 1; $i <= $countTotal; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
@@ -97,7 +97,7 @@ class SortableTraitTest extends SortableTestBase
         // interavls: [1 .. $relativeEntityId], , [$relativeEntityId + 1 .. $entityId - 1], [$entityId], [$entityId + 1 .. $countTotal]
 
         /** @var SortableEntity[] $entities */
-        $entities = array();
+        $entities = [];
         for ($i = 1; $i <= $countTotal; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
@@ -141,7 +141,7 @@ class SortableTraitTest extends SortableTestBase
     {
 
         /** @var SortableEntity[] $entities */
-        $entities = array();
+        $entities = [];
         for ($i = 1; $i <= $countTotal; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
@@ -167,7 +167,7 @@ class SortableTraitTest extends SortableTestBase
     {
 
         /** @var SortableEntity[] $entities */
-        $entities = array();
+        $entities = [];
         for ($i = 1; $i <= $countTotal; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
@@ -212,7 +212,7 @@ class SortableTraitTest extends SortableTestBase
     {
 
         /** @var SortableEntity[] $entities */
-        $entities = array();
+        $entities = [];
         for ($i = 1; $i <= $countTotal; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
@@ -257,7 +257,7 @@ class SortableTraitTest extends SortableTestBase
     {
 
         /** @var SortableEntity[] $entities */
-        $entities = array();
+        $entities = [];
         for ($i = 1; $i <= $countTotal; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
@@ -276,7 +276,7 @@ class SortableTraitTest extends SortableTestBase
     public function testSortedScope()
     {
         /** @var SortableEntity[] $entities */
-        $entities = array();
+        $entities = [];
         for ($i = 1; $i <= 30; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
@@ -307,7 +307,7 @@ class SortableTraitTest extends SortableTestBase
     public function testGetPrevious($entityId, $limit)
     {
         /** @var SortableEntity[] $entities */
-        $entities = array();
+        $entities = [];
         for ($i = 1; $i <= 30; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
@@ -344,7 +344,7 @@ class SortableTraitTest extends SortableTestBase
     public function testGetNext($entityId, $limit)
     {
         /** @var SortableEntity[] $entities */
-        $entities = array();
+        $entities = [];
         for ($i = 1; $i <= 30; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
@@ -381,7 +381,7 @@ class SortableTraitTest extends SortableTestBase
      */
     public function testDefaultsPrevious($entityId, $limit)
     {
-        $entities = array();
+        $entities = [];
         for ($i = 1; $i <= 30; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
@@ -405,7 +405,7 @@ class SortableTraitTest extends SortableTestBase
      */
     public function testDefaultsNext($entityId, $limit)
     {
-        $entities = array();
+        $entities = [];
         for ($i = 1; $i <= 30; ++$i) {
             $entities[$i] = new SortableEntity();
             $entities[$i]->save();
@@ -426,11 +426,11 @@ class SortableTraitTest extends SortableTestBase
      */
     public function moveWhenMovedEntityComesAfterRelativeEntityProvider()
     {
-        return array(
-            array(7, 1, 30),
-            array(9, 7, 30),
-            array(30, 15, 30),
-        );
+        return [
+            [7, 1, 30],
+            [9, 7, 30],
+            [30, 15, 30],
+        ];
     }
 
     /**
@@ -438,11 +438,11 @@ class SortableTraitTest extends SortableTestBase
      */
     public function moveWhenMovedEntityComesBeforeRelativeEntityProvider()
     {
-        return array(
-            array(1, 7, 30),
-            array(7, 9, 30),
-            array(15, 30, 30),
-        );
+        return [
+            [1, 7, 30],
+            [7, 9, 30],
+            [15, 30, 30],
+        ];
     }
 
     /**
@@ -450,11 +450,11 @@ class SortableTraitTest extends SortableTestBase
      */
     public function moveWhenMovedEntityIsRelativeEntityProvider()
     {
-        return array(
-            array(1, 30),
-            array(7, 30),
-            array(30, 30),
-        );
+        return [
+            [1, 30],
+            [7, 30],
+            [30, 30],
+        ];
     }
 
     /**
@@ -462,16 +462,16 @@ class SortableTraitTest extends SortableTestBase
      */
     public function getPreviousNextEntityProvider()
     {
-        return array(
-            array(5, 0),
-            array(5, 1),
-            array(1, 1),
-            array(10, 1),
-            array(30, 1),
-            array(5, 12),
-            array(1, 10),
-            array(10, 4),
-            array(30, 4),
-        );
+        return [
+            [5, 0],
+            [5, 1],
+            [1, 1],
+            [10, 1],
+            [30, 1],
+            [5, 12],
+            [1, 10],
+            [10, 4],
+            [30, 4],
+        ];
     }
 }

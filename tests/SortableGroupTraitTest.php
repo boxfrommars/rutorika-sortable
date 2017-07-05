@@ -34,7 +34,7 @@ class SortableGroupTraitTest extends SortableTestBase
         $categories = ['first', 'second', 'third'];
 
         /** @var SortableEntity[] $entities */
-        $entities = array();
+        $entities = [];
         for ($i = 0; $i < 30; ++$i) {
             $category = $categories[array_rand($categories)];
             $entity = new SortableEntityGroup();
@@ -62,8 +62,8 @@ class SortableGroupTraitTest extends SortableTestBase
     {
 
         /** @var SortableEntity[] $entities */
-        $entities = array();
-        $fixedEntities = array();
+        $entities = [];
+        $fixedEntities = [];
         for ($i = 1; $i <= $countTotal; ++$i) {
             $entities[$i] = new SortableEntityGroup();
             $entities[$i]->category = 'first_category';
@@ -110,8 +110,8 @@ class SortableGroupTraitTest extends SortableTestBase
     {
 
         /** @var SortableEntity[] $entities */
-        $entities = array();
-        $fixedEntities = array();
+        $entities = [];
+        $fixedEntities = [];
         for ($i = 1; $i <= $count; ++$i) {
             $entities[$i] = new SortableEntityGroup();
             $entities[$i]->category = 'first_category';
@@ -287,43 +287,43 @@ class SortableGroupTraitTest extends SortableTestBase
      */
     public function fixedEntitiesProvider()
     {
-        return array(
-            array(2, 5, 'before', 30),
-            array(1, 6, 'before', 30),
-            array(1, 7, 'before', 30),
-            array(3, 5, 'before', 30),
-            array(5, 10, 'before', 30),
-            array(7, 9, 'before', 30),
-            array(15, 30, 'before', 30),
-            array(16, 30, 'before', 30),
-            array(7, 1, 'before', 30),
-            array(6, 1, 'before', 30),
-            array(5, 3, 'before', 30),
-            array(9, 7, 'before', 30),
-            array(10, 5, 'before', 30),
-            array(30, 15, 'before', 30),
-            array(1, 1, 'before', 30),
-            array(7, 7, 'before', 30),
-            array(30, 30, 'before', 30),
+        return [
+            [2, 5, 'before', 30],
+            [1, 6, 'before', 30],
+            [1, 7, 'before', 30],
+            [3, 5, 'before', 30],
+            [5, 10, 'before', 30],
+            [7, 9, 'before', 30],
+            [15, 30, 'before', 30],
+            [16, 30, 'before', 30],
+            [7, 1, 'before', 30],
+            [6, 1, 'before', 30],
+            [5, 3, 'before', 30],
+            [9, 7, 'before', 30],
+            [10, 5, 'before', 30],
+            [30, 15, 'before', 30],
+            [1, 1, 'before', 30],
+            [7, 7, 'before', 30],
+            [30, 30, 'before', 30],
 
-            array(2, 5, 'after', 30),
-            array(1, 6, 'after', 30),
-            array(1, 7, 'after', 30),
-            array(3, 5, 'after', 30),
-            array(5, 10, 'after', 30),
-            array(7, 9, 'after', 30),
-            array(15, 30, 'after', 30),
-            array(16, 30, 'after', 30),
-            array(7, 1, 'after', 30),
-            array(6, 1, 'after', 30),
-            array(5, 3, 'after', 30),
-            array(9, 7, 'after', 30),
-            array(10, 5, 'after', 30),
-            array(30, 15, 'after', 30),
-            array(1, 1, 'after', 30),
-            array(7, 7, 'after', 30),
-            array(30, 30, 'after', 30),
-        );
+            [2, 5, 'after', 30],
+            [1, 6, 'after', 30],
+            [1, 7, 'after', 30],
+            [3, 5, 'after', 30],
+            [5, 10, 'after', 30],
+            [7, 9, 'after', 30],
+            [15, 30, 'after', 30],
+            [16, 30, 'after', 30],
+            [7, 1, 'after', 30],
+            [6, 1, 'after', 30],
+            [5, 3, 'after', 30],
+            [9, 7, 'after', 30],
+            [10, 5, 'after', 30],
+            [30, 15, 'after', 30],
+            [1, 1, 'after', 30],
+            [7, 7, 'after', 30],
+            [30, 30, 'after', 30],
+        ];
     }
 
     /**
@@ -331,14 +331,14 @@ class SortableGroupTraitTest extends SortableTestBase
      */
     public function moveWhenMovedEntityComesAfterRelativeEntityProvider()
     {
-        return array(
-            array(7, 1, 30),
-            array(6, 1, 30),
-            array(5, 3, 30),
-            array(9, 7, 30),
-            array(10, 5, 30),
-            array(30, 15, 30),
-        );
+        return [
+            [7, 1, 30],
+            [6, 1, 30],
+            [5, 3, 30],
+            [9, 7, 30],
+            [10, 5, 30],
+            [30, 15, 30],
+        ];
     }
 
     /**
@@ -346,16 +346,16 @@ class SortableGroupTraitTest extends SortableTestBase
      */
     public function moveWhenMovedEntityComesBeforeRelativeEntityProvider()
     {
-        return array(
-            array(2, 5, 30),
-            array(1, 6, 30),
-            array(1, 7, 30),
-            array(3, 5, 30),
-            array(5, 10, 30),
-            array(7, 9, 30),
-            array(15, 30, 30),
-            array(16, 30, 30),
-        );
+        return [
+            [2, 5, 30],
+            [1, 6, 30],
+            [1, 7, 30],
+            [3, 5, 30],
+            [5, 10, 30],
+            [7, 9, 30],
+            [15, 30, 30],
+            [16, 30, 30],
+        ];
     }
 
     /**
@@ -363,10 +363,10 @@ class SortableGroupTraitTest extends SortableTestBase
      */
     public function moveWhenMovedEntityIsRelativeEntityProvider()
     {
-        return array(
-            array(1, 30),
-            array(7, 30),
-            array(30, 30),
-        );
+        return [
+            [1, 30],
+            [7, 30],
+            [30, 30],
+        ];
     }
 }
