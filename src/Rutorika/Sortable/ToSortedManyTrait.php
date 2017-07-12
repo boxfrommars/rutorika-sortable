@@ -165,4 +165,14 @@ trait ToSortedManyTrait
      * @return \Illuminate\Database\Query\Builder
      */
     abstract protected function newPivotQuery();
+
+    /**
+     * Detach models from the relationship.
+     *
+     * @param mixed $ids
+     * @param bool  $touch
+     * 
+     * @return int
+     */
+    abstract public function detach($ids = null, $touch = true);
 }
