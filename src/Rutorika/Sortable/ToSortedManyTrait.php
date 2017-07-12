@@ -136,6 +136,20 @@ trait ToSortedManyTrait
     }
 
     /**
+     * Sync the intermediate tables with a list of IDs or collection of models.
+     *
+     * @param  \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|array  $ids
+     * @param  bool   $detaching
+     * @return array
+     */
+    public function sync($ids, $detaching = true)
+    {
+        $this->detach();
+        
+        return parent::sync($ids, $detaching);
+    }
+
+    /**
      * Set the columns on the pivot table to retrieve.
      *
      * @param array|mixed $columns

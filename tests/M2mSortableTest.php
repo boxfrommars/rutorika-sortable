@@ -68,7 +68,11 @@ class M2mSortableTest extends SortableTestBase
         }
     }
 
-    public function testPositionOnSync()
+    /**
+     * @param
+     * @dataProvider syncProvider
+     */
+    public function testPositionOnSync($entitiesToSync)
     {
         $entity = new M2mEntity();
         $entity->save();
@@ -86,8 +90,36 @@ class M2mSortableTest extends SortableTestBase
             $relatedEntity->save();
         }
 
-        $entitiesToSync = [12, 13, 16];
+        $entity->relatedEntities()->sync($entitiesToSync);
 
+        $currentAssertedPosition = 1;
+
+        foreach ($entity->relatedEntities as $relatedEntity) {
+            $this->assertEquals($currentAssertedPosition, $relatedEntity->pivot->m2m_related_entity_position);
+            $this->assertEquals($relatedEntity->id, $entitiesToSync[$currentAssertedPosition - 1]);
+
+            ++$currentAssertedPosition;
+        }
+    }
+
+    /**
+     * @param
+     * @dataProvider syncProvider
+     */
+    public function testPositionOnSyncWithExistedRelations($entitiesToSync)
+    {
+        $entity = new M2mEntity();
+        $entity->save();
+
+        for ($i = 1; $i < 10; ++$i) {
+            $relatedEntity = new M2mRelatedEntity();
+            $entity->relatedEntities()->save($relatedEntity);
+        }
+
+        for ($i = 1; $i < 10; ++$i) {
+            $relatedEntity = new M2mRelatedEntity();
+            $relatedEntity->save();
+        }
         $entity->relatedEntities()->sync($entitiesToSync);
 
         $currentAssertedPosition = 1;
@@ -516,6 +548,19 @@ class M2mSortableTest extends SortableTestBase
             [1, 30],
             [7, 30],
             [30, 30],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function syncProvider()
+    {
+        return [
+            [[12, 13, 16]],
+            [[9, 6, 4]],
+            [[16, 6, 13]],
+            [[16, 6, 8]],
         ];
     }
 
