@@ -171,7 +171,7 @@ trait ToSortedManyTrait
      *
      * @param mixed $ids
      * @param bool  $touch
-     * 
+     *
      * @return int
      */
     abstract public function detach($ids = null, $touch = true);
