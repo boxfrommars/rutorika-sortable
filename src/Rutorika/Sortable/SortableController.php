@@ -28,7 +28,7 @@ class SortableController extends Controller
 
         /** @var Model|bool $entityClass */
         list($entityClass, $relation) = $this->getEntityInfo($sortableEntities, (string) $request->input('entityName'));
-        $method = $request->input('type');
+        $method = ($request->input('type') === 'moveAfter') ? 'moveAfter' : 'moveBefore';
 
         if (!$relation) {
             /** @var SortableTrait $entity */
