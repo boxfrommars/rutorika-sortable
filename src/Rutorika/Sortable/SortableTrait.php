@@ -268,6 +268,11 @@ trait SortableTrait
      */
     public static function getCanSwitchBetweenGroups()
     {
+        $sortableGroupField = self::getSortableGroupField();
+
+        if($sortableGroupField == null || is_array($sortableGroupField))
+            return false;
+
         return isset(static::$switchBetweenGroups) ? static::$switchBetweenGroups : false;
     }
 
