@@ -93,7 +93,7 @@ trait SortableTrait
             $oldPosition = $this->getAttribute($sortableField);
             $newPosition = $entity->getAttribute($sortableField);
 
-            if($groupField) {
+            if($groupField && $this->getCanSwitchBetweenGroups()) {
                 $oldList = $this->getAttribute($groupField);
                 $newList = $entity->getAttribute($groupField);
                 if($oldList !== $newList)
@@ -264,6 +264,14 @@ trait SortableTrait
     }
 
     /**
+     * @return bool
+     */
+    public static function getCanSwitchBetweenGroups()
+    {
+        return isset(static::$switchBetweenGroups) ? static::$switchBetweenGroups : false;
+    }
+
+    /**
      * @return string
      */
     public static function getSortableField()
@@ -281,7 +289,7 @@ trait SortableTrait
      */
     public function checkSortableGroupField($sortableGroupField, $entity)
     {
-        if(static::$switchBetweenGroups) {
+        if($this->getCanSwitchBetweenGroups()) {
             return;
         }
 

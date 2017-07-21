@@ -1,6 +1,7 @@
 <?php
 
 require_once 'stubs/SortableGroupEntity.php';
+require_once 'stubs/SortableGroupEntityWithMoveBetweenGroups.php';
 require_once 'SortableTestBase.php';
 
 class SortableGroupTraitTest extends SortableTestBase
@@ -120,6 +121,20 @@ class SortableGroupTraitTest extends SortableTestBase
             $fixedEntities[$i] = new SortableEntityGroup();
             $fixedEntities[$i]->category = 'second_category';
             $fixedEntities[$i]->save();
+        }
+
+        return $entities;
+    }
+
+    public function generateEntitiesWithMoveBetweenGroups($count)
+    {
+
+        /** @var SortableEntity[] $entities */
+        $entities = [];
+        for ($i = 1; $i <= $count; ++$i) {
+            $entities[$i] = new SortableEntityGroupWithMoveBetweenGroups();
+            $entities[$i]->category = $i%2;
+            $entities[$i]->save();
         }
 
         return $entities;
@@ -281,6 +296,73 @@ class SortableGroupTraitTest extends SortableTestBase
 
         $entity1->moveBefore($entity2);
     }
+
+    /**
+     * @param
+     * @param
+     * @param
+     * @dataProvider moveWhenMovedEntityComesAfterRelativeEntityProvider
+     */
+    public function testValidAfterMoveBetweenGroupsEntityComesAfterRelativeEntity($entityId, $relativeEntityId, $countTotal)
+    {
+        /** @var SortableEntity[] $entities */
+        $entities = $this->generateEntitiesWithMoveBetweenGroups($countTotal);
+
+        $moveEntity = $entities[$entityId];
+        $relyEntity = $entities[$relativeEntityId];
+
+        $moveEntity->moveAfter($relyEntity);
+
+        $actualPos = ($relativeEntityId % 2) == 0 ? $relativeEntityId / 2 : ($relativeEntityId + 1) / 2;
+
+        $this->assertEquals($actualPos + 1, $moveEntity->position);
+        $this->assertEquals($actualPos, $relyEntity->position);
+
+        for ($id = $entityId + 2; $id < $relativeEntityId; ++$id) {
+            $entity = SortableEntityGroupWithMoveBetweenGroups::find($entities[$id]->id);
+            $this->assertEquals($id - 1, $entity->position);
+        }
+
+        $entity = SortableEntityGroupWithMoveBetweenGroups::find($moveEntity->id);
+        $this->assertEquals($actualPos + 1, $entity->position);
+
+        $entity = SortableEntityGroupWithMoveBetweenGroups::find($relyEntity->id);
+        $this->assertEquals($actualPos, $entity->position);
+    }
+
+    /**
+     * @param
+     * @param
+     * @param
+     * @dataProvider moveWhenMovedEntityComesAfterRelativeEntityProvider
+     */
+    public function testValidBeforeMoveBetweenGroupsEntityComesAfterRelativeEntity($entityId, $relativeEntityId, $countTotal)
+    {
+        /** @var SortableEntity[] $entities */
+        $entities = $this->generateEntitiesWithMoveBetweenGroups($countTotal);
+
+        $moveEntity = $entities[$entityId];
+        $relyEntity = $entities[$relativeEntityId];
+
+        $moveEntity->moveBefore($relyEntity);
+
+        $actualPos = ($relativeEntityId % 2) == 0 ? $relativeEntityId / 2 : ($relativeEntityId + 1) / 2;
+
+        $this->assertEquals($actualPos, $moveEntity->position);
+        $this->assertEquals($actualPos + 1, $relyEntity->position);
+
+        for ($id = $entityId + 2; $id < $relativeEntityId; ++$id) {
+            $entity = SortableEntityGroupWithMoveBetweenGroups::find($entities[$id]->id);
+            $this->assertEquals($id + 1, $entity->position);
+        }
+
+        $entity = SortableEntityGroupWithMoveBetweenGroups::find($moveEntity->id);
+        $this->assertEquals($actualPos, $entity->position);
+
+        $entity = SortableEntityGroupWithMoveBetweenGroups::find($relyEntity->id);
+        $this->assertEquals($actualPos + 1, $entity->position);
+    }
+
 
     /**
      * @return array
