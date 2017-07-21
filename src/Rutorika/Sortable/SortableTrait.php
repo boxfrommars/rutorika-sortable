@@ -100,6 +100,7 @@ trait SortableTrait
                 {
                     $query = static::applySortableGroup(static::on(), $entity);
                     $oldPosition = $query->max($sortableField) + 1;
+                    $this->setAttribute($groupField,$newList);
                 }
             }
 
