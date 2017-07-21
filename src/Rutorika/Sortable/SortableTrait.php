@@ -12,6 +12,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @traitUses \Illuminate\Database\Eloquent\Model
  *
  * @property string $sortableGroupField
+ * @property bool $switchBetweenGroups
  *
  * @method null creating($callback)
  * @method QueryBuilder on($connection = null)
@@ -87,9 +88,20 @@ trait SortableTrait
 
         $this->_transaction(function () use ($entity, $action) {
             $sortableField = static::getSortableField();
+            $groupField = static::getSortableGroupField();
 
             $oldPosition = $this->getAttribute($sortableField);
             $newPosition = $entity->getAttribute($sortableField);
+
+            if($groupField) {
+                $oldList = $this->getAttribute($groupField);
+                $newList = $entity->getAttribute($groupField);
+                if($oldList !== $newList)
+                {
+                    $query = static::applySortableGroup(static::on(), $entity);
+                    $oldPosition = $query->max($sortableField) + 1;
+                }
+            }
 
             if ($oldPosition === $newPosition) {
                 return;
@@ -268,6 +280,10 @@ trait SortableTrait
      */
     public function checkSortableGroupField($sortableGroupField, $entity)
     {
+        if(static::$switchBetweenGroups) {
+            return;
+        }
+
         if (is_array($sortableGroupField)) {
             foreach ($sortableGroupField as $field) {
                 $this->checkFieldEquals($this, $entity, $field);
