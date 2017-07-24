@@ -99,7 +99,7 @@ trait SortableTrait
                 if ($oldList !== $newList) {
                     $query = static::applySortableGroup(static::on(), $entity);
                     $oldPosition = $query->max($sortableField) + 1;
-                    $this->setAttribute($groupField,$newList);
+                    $this->setAttribute($groupField, $newList);
                 }
             }
 

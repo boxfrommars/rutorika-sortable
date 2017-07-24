@@ -363,7 +363,6 @@ class SortableGroupTraitTest extends SortableTestBase
         $this->assertEquals($actualPos + 1, $entity->position);
     }
 
-
     /**
      * @return array
      */
