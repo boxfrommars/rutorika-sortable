@@ -133,7 +133,7 @@ class SortableGroupTraitTest extends SortableTestBase
         $entities = [];
         for ($i = 1; $i <= $count; ++$i) {
             $entities[$i] = new SortableEntityGroupWithMoveBetweenGroups();
-            $entities[$i]->category = $i%2;
+            $entities[$i]->category = $i % 2;
             $entities[$i]->save();
         }
 
