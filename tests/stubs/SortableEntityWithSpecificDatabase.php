@@ -5,5 +5,4 @@ class SortableEntityWithSpecificDatabase extends \Illuminate\Database\Eloquent\M
     use Rutorika\Sortable\SortableTrait;
 
     protected $connection = 'other';
-
 }
