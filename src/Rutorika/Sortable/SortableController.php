@@ -71,8 +71,13 @@ class SortableController extends Controller
             return $validator->make($request->all(), $rules);
         }
 
+        $connectionName = with(new $entityClass())->getConnectionName();
         $tableName = with(new $entityClass())->getTable();
         $primaryKey = with(new $entityClass())->getKeyName();
+
+        if (!empty($connectionName)) {
+            $tableName = $connectionName . '.' . $tableName;
+        }
 
         if (!$relation) {
             $rules['id'] .= '|exists:' . $tableName . ',' . $primaryKey;
