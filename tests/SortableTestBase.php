@@ -25,6 +25,14 @@ class SortableTestBase extends Orchestra\Testbench\TestCase
                 'prefix' => '',
             ]
         );
+        $app['config']->set(
+            'database.connections.other',
+            [
+                'driver' => 'sqlite',
+                'database' => ':memory:',
+                'prefix' => '',
+            ]
+        );
     }
 
     protected function getPackageProviders($app)

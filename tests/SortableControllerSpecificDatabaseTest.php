@@ -1,10 +1,10 @@
 <?php
 
-require_once 'stubs/SortableEntity.php';
+require_once 'stubs/SortableEntityWithSpecificDatabase.php';
 require_once 'stubs/M2mEntity.php';
 require_once 'stubs/M2mRelatedEntity.php';
 
-class SortableControllerTest extends Orchestra\Testbench\TestCase
+class SortableControllerSpecificDatabaseTest extends Orchestra\Testbench\TestCase
 {
     public function setUp()
     {
@@ -15,7 +15,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
         ]);
 
         for ($i = 1; $i <= 30; ++$i) {
-            $entities[$i] = new SortableEntity();
+            $entities[$i] = new SortableEntityWithSpecificDatabase();
             $entities[$i]->save();
         }
 
@@ -64,8 +64,8 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
         $app['config']->set(
             'sortable.entities',
             [
-                'sortable_entity' => '\SortableEntity',
-                'sortable_entity_full_config' => ['entity' => '\SortableEntity'],
+                'sortable_entity' => '\SortableEntityWithSpecificDatabase',
+                'sortable_entity_full_config' => ['entity' => '\SortableEntityWithSpecificDatabase'],
                 'sortable_entity_m2m' => ['entity' => '\M2mEntity', 'relation' => 'relatedEntities'],
                 'sortable_entity_without_class' => '\SortableEntityNotExist',
 
