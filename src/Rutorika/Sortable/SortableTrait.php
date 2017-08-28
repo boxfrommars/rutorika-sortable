@@ -29,7 +29,7 @@ trait SortableTrait
             function ($model) {
                 /* @var Model $model */
                 $sortableField = static::getSortableField();
-                $query = static::applySortableGroup(static::on(), $model);
+                $query = static::applySortableGroup(static::on($model->getConnectionName()), $model);
 
                 // only automatically calculate next position with max+1 when a position has not been set already
                 if ($model->$sortableField === null) {
