@@ -18,15 +18,16 @@ trait MorphToSortedManyTrait
      *
      * Just copy of belongsToMany except last line where we return new BelongsToSortedMany instance with additional orderColumn param
      *
-     * @param  string  $related
-     * @param  string  $name
-     * @param  string  $orderColumn
-     * @param  string  $table
-     * @param  string  $foreignPivotKey
-     * @param  string  $relatedPivotKey
-     * @param  string  $parentKey
-     * @param  string  $relatedKey
-     * @param  bool  $inverse
+     * @param string $related
+     * @param string $name
+     * @param string $orderColumn
+     * @param string $table
+     * @param string $foreignPivotKey
+     * @param string $relatedPivotKey
+     * @param string $parentKey
+     * @param string $relatedKey
+     * @param bool   $inverse
+     *
      * @return MorphToSortedMany
      */
     public function morphToSortedMany($related, $name, $orderColumn = 'position', $table = null, $foreignPivotKey = null,
@@ -40,7 +41,7 @@ trait MorphToSortedManyTrait
         // instances, as well as the relationship instances we need for these.
         $instance = $this->newRelatedInstance($related);
 
-        $foreignPivotKey = $foreignPivotKey ?: $name.'_id';
+        $foreignPivotKey = $foreignPivotKey ?: $name . '_id';
 
         $relatedPivotKey = $relatedPivotKey ?: $instance->getForeignKey();
 
@@ -59,14 +60,15 @@ trait MorphToSortedManyTrait
     /**
      * Define a polymorphic, inverse many-to-many relationship.
      *
-     * @param  string  $related
-     * @param  string  $name
-     * @param  string  $orderColumn
-     * @param  string  $table
-     * @param  string  $foreignPivotKey
-     * @param  string  $relatedPivotKey
-     * @param  string  $parentKey
-     * @param  string  $relatedKey
+     * @param string $related
+     * @param string $name
+     * @param string $orderColumn
+     * @param string $table
+     * @param string $foreignPivotKey
+     * @param string $relatedPivotKey
+     * @param string $parentKey
+     * @param string $relatedKey
+     *
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
     public function morphedBySortedMany($related, $name, $orderColumn = 'position', $table = null, $foreignPivotKey = null,
@@ -77,7 +79,7 @@ trait MorphToSortedManyTrait
         // For the inverse of the polymorphic many-to-many relations, we will change
         // the way we determine the foreign and other keys, as it is the opposite
         // of the morph-to-many method since we're figuring out these inverses.
-        $relatedPivotKey = $relatedPivotKey ?: $name.'_id';
+        $relatedPivotKey = $relatedPivotKey ?: $name . '_id';
 
         return $this->morphToSortedMany(
             $related, $name, $orderColumn, $table, $foreignPivotKey,

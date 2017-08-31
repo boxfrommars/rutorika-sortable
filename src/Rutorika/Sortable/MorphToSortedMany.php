@@ -18,17 +18,17 @@ class MorphToSortedMany extends MorphToMany
     /**
      * Create a new morph to many relationship instance.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Model  $parent
-     * @param  string  $name
-     * @param  string  $table
-     * @param  string  $foreignPivotKey
-     * @param  string  $relatedPivotKey
-     * @param  string  $parentKey
-     * @param  string  $relatedKey
-     * @param  string  $orderColumn
-     * @param  string  $relationName
-     * @param  bool  $inverse
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Model   $parent
+     * @param string                                $name
+     * @param string                                $table
+     * @param string                                $foreignPivotKey
+     * @param string                                $relatedPivotKey
+     * @param string                                $parentKey
+     * @param string                                $relatedKey
+     * @param string                                $orderColumn
+     * @param string                                $relationName
+     * @param bool                                  $inverse
      */
     public function __construct(Builder $query, Model $parent, $name, $table, $foreignPivotKey,
                                 $relatedPivotKey, $parentKey, $relatedKey, $orderColumn, $relationName = null, $inverse = false)

@@ -19,15 +19,15 @@ class BelongsToSortedMany extends BelongsToMany
      * Create a new belongs to many relationship instance.
      * Sets default ordering by $orderColumn column.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Model  $parent
-     * @param  string  $table
-     * @param  string  $foreignPivotKey
-     * @param  string  $relatedPivotKey
-     * @param  string  $parentKey
-     * @param  string  $relatedKey
-     * @param  string  $relationName
-     * @param  string  $orderColumn  position column name
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Model   $parent
+     * @param string                                $table
+     * @param string                                $foreignPivotKey
+     * @param string                                $relatedPivotKey
+     * @param string                                $parentKey
+     * @param string                                $relatedKey
+     * @param string                                $relationName
+     * @param string                                $orderColumn     position column name
      */
     public function __construct(Builder $query, Model $parent, $table, $foreignPivotKey,
                                 $relatedPivotKey, $parentKey, $relatedKey, $relationName = null, $orderColumn = null)
