@@ -27,7 +27,7 @@ class BelongsToSortedMany extends BelongsToMany
      * @param string  $parentKey
      * @param string  $relatedKey
      * @param string  $relationName
-     * @param string  $orderColumn position column name
+     * @param string  $orderColumn     position column name
      */
     public function __construct(Builder $query, Model $parent, $table, $foreignPivotKey,
                                 $relatedPivotKey, $parentKey, $relatedKey, $relationName = null, $orderColumn = null)
