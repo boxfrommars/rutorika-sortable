@@ -397,3 +397,10 @@ Template for many to many ordering
     });
 ```
 
+## Development
+
+```
+sudo docker build -t rutorika-sortable .
+sudo docker run --volume $PWD:/project --rm --interactive --tty --user $(id -u):$(id -g) rutorika-sortable vendor/bin/phpunit
+```
+
