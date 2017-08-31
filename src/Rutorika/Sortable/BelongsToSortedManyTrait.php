@@ -16,14 +16,15 @@ trait BelongsToSortedManyTrait
      *
      * Just copy of belongsToMany except last line where we return new BelongsToSortedMany instance with additional orderColumn param
      *
-     * @param  string  $related
-     * @param  string  $orderColumn
-     * @param  string  $table
-     * @param  string  $foreignPivotKey
-     * @param  string  $relatedPivotKey
-     * @param  string  $parentKey
-     * @param  string  $relatedKey
-     * @param  string  $relation
+     * @param string $related
+     * @param string $orderColumn
+     * @param string $table
+     * @param string $foreignPivotKey
+     * @param string $relatedPivotKey
+     * @param string $parentKey
+     * @param string $relatedKey
+     * @param string $relation
+     *
      * @return BelongsToSortedMany
      */
     public function belongsToSortedMany($related, $orderColumn = 'position', $table = null, $foreignPivotKey = null, $relatedPivotKey = null,
