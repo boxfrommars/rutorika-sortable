@@ -112,6 +112,7 @@ trait MorphToSortedManyTrait
      * Create a new model instance for a related model.
      *
      * @param string $class
+     *
      * @return mixed
      */
     abstract protected function newRelatedInstance($class);
