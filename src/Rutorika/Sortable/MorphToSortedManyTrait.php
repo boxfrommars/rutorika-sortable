@@ -100,4 +100,26 @@ trait MorphToSortedManyTrait
      * @return string
      */
     abstract protected function getRelations();
+
+    /**
+     * Get the relationship name of the belongs to many.
+     *
+     * @return string
+     */
+    abstract protected function guessBelongsToManyRelation();
+
+    /**
+     * Create a new model instance for a related model.
+     *
+     * @param string $class
+     * @return mixed
+     */
+    abstract protected function newRelatedInstance($class);
+
+    /**
+     * Get the primary key for the model.
+     *
+     * @return string
+     */
+    abstract public function getKeyName();
 }
