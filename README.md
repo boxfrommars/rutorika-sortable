@@ -22,6 +22,7 @@ composer require rutorika/sortable
  4        | 1.2.x (branch laravel4)
  <=5.3    | 3.2.x
  5.4      | 3.4.x
+ 5.5      | 3.5.x
 
 ## Sortable Trait
 
