@@ -145,7 +145,9 @@ trait ToSortedManyTrait
      */
     public function sync($ids, $detaching = true)
     {
-        $this->detach();
+        if($detaching) {
+            $this->detach();
+        }
 
         return parent::sync($ids, $detaching);
     }
