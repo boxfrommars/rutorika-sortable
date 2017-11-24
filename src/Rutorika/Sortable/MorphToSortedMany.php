@@ -34,7 +34,7 @@ class MorphToSortedMany extends MorphToMany
                                 $relatedPivotKey, $parentKey, $relatedKey, $orderColumn, $relationName = null, $inverse = false)
     {
         parent::__construct($query, $parent, $name, $table, $foreignPivotKey,
-            $relatedPivotKey, $parentKey, $relatedKey, $relationName = null, $inverse = false);
+            $relatedPivotKey, $parentKey, $relatedKey, $relationName = null, $inverse);
         $this->setOrderColumn($orderColumn);
     }
 }
