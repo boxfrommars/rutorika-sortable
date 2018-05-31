@@ -44,10 +44,10 @@ trait SortableTrait
                 $sortableField = static::getSortableField();
 
                 if ($model->exists && $model->isDirty()) {
-                    $old_model = new self($model->getOriginal());
+                    $plainOldModel = (object) $model->getOriginal();
 
                     try {
-                        $model->checkSortableGroupField(static::getSortableGroupField(), $old_model);
+                        $model->checkSortableGroupField(static::getSortableGroupField(), $plainOldModel);
                     } catch (SortableException $e) {
                         // signal to reset order
                         $model->$sortableField = null;
