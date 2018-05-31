@@ -21,10 +21,11 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 trait SortableTrait
 {
     /**
-     * Adds position to model on creating event.
+     * Adds position to model on creating event; reset order on sortable group change.
      */
     public static function bootSortableTrait()
     {
+        
         static::creating(
             function ($model) {
                 /* @var Model $model */
@@ -37,6 +38,32 @@ trait SortableTrait
                 }
             }
         );
+
+        static::saving(
+            function ($model) {
+                /* @var Model $model */
+                $sortableField = static::getSortableField();
+
+                if ($model->exists && $model->isDirty()) {
+                    $old_model = new self($model->getDirty()); // or simple new object(array) would do?
+                    try {
+                        $model->checkSortableGroupField(static::getSortableGroupField(), $old_model);
+                    } catch (SortableException $e) {
+                        // signal to reset order
+                        $model->$sortableField = null;
+                    }
+                }
+
+                // todo: pull up and share between 'creating' and 'saving' event handlers
+                // only automatically calculate next position with max+1 when a position has not been set already
+                // i.e. moves model to the end of the group
+                if ($model->$sortableField === null) {
+                    $query = static::applySortableGroup(static::on($model->getConnectionName()), $model);
+                    $model->setAttribute($sortableField, $query->max($sortableField) + 1);
+                }
+            }
+        );
+
     }
 
     /**
