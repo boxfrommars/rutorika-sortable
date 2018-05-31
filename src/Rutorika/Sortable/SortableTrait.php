@@ -44,7 +44,7 @@ trait SortableTrait
                 $sortableField = static::getSortableField();
 
                 if ($model->exists && $model->isDirty()) {
-                    $old_model = new self($model->getDirty()); // or simple new object(array) would do?
+                    $old_model = $model->getOriginal();
                     try {
                         $model->checkSortableGroupField(static::getSortableGroupField(), $old_model);
                     } catch (SortableException $e) {
