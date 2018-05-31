@@ -53,11 +53,12 @@ trait SortableTrait
     }
 
     /**
-     * Set model order if not set
+     * Set model order if not set.
      *
      * @param Model $model
      */
-    private static function _setOrder(Model $model) {
+    private static function _setOrder(Model $model)
+    {
         /* @var Model $model */
         $sortableField = static::getSortableField();
         $query = static::applySortableGroup(static::on($model->getConnectionName()), $model);
