@@ -28,22 +28,15 @@ trait SortableTrait
         static::creating(
             function ($model) {
                 /* @var Model $model */
-                $sortableField = static::getSortableField();
-                $query = static::applySortableGroup(static::on($model->getConnectionName()), $model);
-
-                // only automatically calculate next position with max+1 when a position has not been set already
-                if ($model->$sortableField === null) {
-                    $model->setAttribute($sortableField, $query->max($sortableField) + 1);
-                }
+                self::_setOrder($model);
             }
         );
 
         static::saving(
             function ($model) {
                 /* @var Model $model */
-                $sortableField = static::getSortableField();
-
                 if ($model->exists && $model->isDirty()) {
+                    $sortableField = static::getSortableField();
                     $plainOldModel = (object) $model->getOriginal();
 
                     try {
@@ -54,15 +47,26 @@ trait SortableTrait
                     }
                 }
 
-                // todo: pull up and share between 'creating' and 'saving' event handlers
-                // only automatically calculate next position with max+1 when a position has not been set already
-                // i.e. moves model to the end of the group
-                if ($model->$sortableField === null) {
-                    $query = static::applySortableGroup(static::on($model->getConnectionName()), $model);
-                    $model->setAttribute($sortableField, $query->max($sortableField) + 1);
-                }
+                self::_setOrder($model);
             }
         );
+    }
+
+    /**
+     * Set model order if not set
+     *
+     * @param Model $model
+     */
+    private static function _setOrder(Model $model) {
+        /* @var Model $model */
+        $sortableField = static::getSortableField();
+        $query = static::applySortableGroup(static::on($model->getConnectionName()), $model);
+
+        // only automatically calculate next position with max+1 when a position has not been set already
+        // i.e. move the model to the end of the group if order is not set
+        if ($model->$sortableField === null) {
+            $model->setAttribute($sortableField, $query->max($sortableField) + 1);
+        }
     }
 
     /**
