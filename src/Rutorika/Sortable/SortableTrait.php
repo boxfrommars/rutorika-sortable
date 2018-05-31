@@ -25,7 +25,6 @@ trait SortableTrait
      */
     public static function bootSortableTrait()
     {
-        
         static::creating(
             function ($model) {
                 /* @var Model $model */
@@ -63,7 +62,6 @@ trait SortableTrait
                 }
             }
         );
-
     }
 
     /**
