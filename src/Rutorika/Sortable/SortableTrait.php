@@ -35,16 +35,12 @@ trait SortableTrait
         static::saving(
             function ($model) {
                 /* @var Model $model */
-                if ($model->exists && $model->isDirty()) {
+                // Trusting isDirty(), not calling checkSortableGroupField to confirm
+                if ($model->exists && $model->isDirty(static::getSortableGroupField())) {
                     $sortableField = static::getSortableField();
-                    $plainOldModel = (object) $model->getOriginal();
 
-                    try {
-                        $model->checkSortableGroupField(static::getSortableGroupField(), $plainOldModel);
-                    } catch (SortableException $e) {
-                        // signal to reset order
-                        $model->$sortableField = null;
-                    }
+                    // signal to reset order
+                    $model->$sortableField = null;
                 }
 
                 self::_setOrder($model);
