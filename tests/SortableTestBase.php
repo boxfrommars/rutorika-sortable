@@ -34,9 +34,4 @@ class SortableTestBase extends Orchestra\Testbench\TestCase
             ]
         );
     }
-
-    protected function getPackageProviders($app)
-    {
-        return ['Orchestra\Database\ConsoleServiceProvider'];
-    }
 }
