@@ -317,7 +317,7 @@ trait SortableTrait
             return;
         }
 
-        if ($entity1->$field !== $entity2->$field) {
+        if ($entity1->$field != $entity2->$field) {
             throw new SortableException($entity1->$field, $entity2->$field);
         }
     }
