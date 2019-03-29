@@ -50,7 +50,7 @@ trait BelongsToSortedManyTrait
         // models using underscores in alphabetical order. The two model names
         // are transformed to snake case from their default CamelCase also.
         if (is_null($table)) {
-            $table = $this->joiningTable($related);
+            $table = $this->joiningTable($related, $instance);
         }
 
         return new BelongsToSortedMany(
@@ -67,7 +67,7 @@ trait BelongsToSortedManyTrait
      *
      * @return string
      */
-    abstract public function joiningTable($related);
+    abstract public function joiningTable($related, $instance = null);
 
     /**
      * Get the default foreign key name for the model.

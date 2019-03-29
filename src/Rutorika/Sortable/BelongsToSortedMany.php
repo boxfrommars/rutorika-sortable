@@ -39,7 +39,7 @@ class BelongsToSortedMany extends BelongsToMany
 
     public function getRelatedKey()
     {
-        return $this->relatedKey;
+        return $this->relatedPivotKey;
     }
 
     public function getForeignKey()

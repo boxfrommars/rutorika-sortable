@@ -399,9 +399,4 @@ class SortableControllerSpecificDatabaseTest extends Orchestra\Testbench\TestCas
             ],
         ];
     }
-
-    protected function getPackageProviders($app)
-    {
-        return ['Orchestra\Database\ConsoleServiceProvider'];
-    }
 }
