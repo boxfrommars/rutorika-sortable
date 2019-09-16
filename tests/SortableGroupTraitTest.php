@@ -250,9 +250,6 @@ class SortableGroupTraitTest extends SortableTestBase
         $this->assertEquals($relativeEntityId + 1, $entity->position);
     }
 
-    /**
-     * @expectedException \Rutorika\Sortable\SortableException
-     */
     public function testInvalidAfterMove()
     {
         $entity1 = new SortableEntityGroup();
@@ -263,12 +260,10 @@ class SortableGroupTraitTest extends SortableTestBase
         $entity2->category = 'second_category';
         $entity2->save();
 
+        $this->expectException(\Rutorika\Sortable\SortableException::class);
         $entity1->moveAfter($entity2);
     }
 
-    /**
-     * @expectedException \Rutorika\Sortable\SortableException
-     */
     public function testInvalidBeforeMove()
     {
         $entity1 = new SortableEntityGroup();
@@ -279,6 +274,7 @@ class SortableGroupTraitTest extends SortableTestBase
         $entity2->category = 'second_category';
         $entity2->save();
 
+        $this->expectException(\Rutorika\Sortable\SortableException::class);
         $entity1->moveBefore($entity2);
     }
 
