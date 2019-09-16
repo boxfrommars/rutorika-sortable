@@ -5,6 +5,7 @@ namespace Rutorika\Sortable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class SortableController extends Controller
 {
@@ -105,7 +106,7 @@ class SortableController extends Controller
     {
         $relation = false;
 
-        $entityConfig = $entityName ? array_get($sortableEntities, $entityName, false) : false;
+        $entityConfig = $entityName ? Arr::get($sortableEntities, $entityName, false) : false;
 
         if (is_array($entityConfig)) {
             $entityClass = $entityConfig['entity'];
