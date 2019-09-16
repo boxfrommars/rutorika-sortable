@@ -3,8 +3,8 @@ language: php
 sudo: false
 
 php:
-  - 7.1
   - 7.2
+  - 7.3
 
 before_install:
   - echo "memory_limit=3000M" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini

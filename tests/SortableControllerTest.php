@@ -6,7 +6,7 @@ require_once 'stubs/M2mRelatedEntity.php';
 
 class SortableControllerTest extends Orchestra\Testbench\TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->loadMigrationsFrom([

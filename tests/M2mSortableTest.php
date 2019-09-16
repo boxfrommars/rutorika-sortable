@@ -6,7 +6,7 @@ require_once 'SortableTestBase.php';
 
 class M2mSortableTest extends SortableTestBase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

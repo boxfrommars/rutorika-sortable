@@ -5,7 +5,7 @@ require_once 'SortableTestBase.php';
 
 class SortableTraitWithSpecificDatabaseTest extends SortableTestBase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
