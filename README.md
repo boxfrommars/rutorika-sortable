@@ -2,11 +2,7 @@
 
 ## Laravel 5 - Demo
 
-* http://sortable5.boxfrommars.ru/
-* http://sortable5.boxfrommars.ru/grouped (sortable groups demo)
-* http://sortable5.boxfrommars.ru/posts (many to many demo)
-
-(demo repo code: https://github.com/boxfrommars/rutorika-sortable-demo5)
+https://github.com/boxfrommars/rutorika-sortable-demo5
 
 ## Install
 
