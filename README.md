@@ -21,6 +21,7 @@ composer require rutorika/sortable
  5.5      | 4.2.x
  5.7      | 4.7.x
  6.0      | 6.0.x
+ 7.0      | 7.x.x
 
 ## Sortable Trait
 
