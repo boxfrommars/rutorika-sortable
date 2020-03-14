@@ -11,7 +11,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
         parent::setUp();
         $this->loadMigrationsFrom([
             '--database' => 'testbench',
-            '--realpath' => realpath(__DIR__ . '/migrations'),
+            '--path' => realpath(__DIR__ . '/migrations'),
         ]);
 
         for ($i = 1; $i <= 30; ++$i) {
