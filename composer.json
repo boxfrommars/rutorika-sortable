@@ -3,7 +3,6 @@
     "description": "Adds sortable behavior and ordering to Laravel Eloquent models. Grouping and many to many supported.",
     "keywords": ["laravel", "sort", "sortable", "orderable", "sorting", "order", "ordering", "eloquent", "laravel5", "laravel4"],
     "license": "MIT",
-    "version": "1.0.0",
     "authors": [
         {
             "name": "Dmitry Groza",
