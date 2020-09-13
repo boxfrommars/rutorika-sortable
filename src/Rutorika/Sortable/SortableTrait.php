@@ -13,10 +13,10 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  *
  * @property string $sortableGroupField
  *
- * @method null creating($callback)
+ * @method null         creating($callback)
  * @method QueryBuilder on($connection = null)
  * @method QueryBuilder where($column, $operator = null, $value = null, $boolean = 'and')
- * @method float|int max($column)
+ * @method float|int    max($column)
  */
 trait SortableTrait
 {

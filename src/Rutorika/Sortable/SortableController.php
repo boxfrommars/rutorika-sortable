@@ -69,6 +69,7 @@ class SortableController extends Controller
 
         if (!class_exists($entityClass)) {
             $rules['entityClass'] = 'required'; // fake rule for not exist field
+
             return $validator->make($request->all(), $rules);
         }
 
