@@ -14,15 +14,15 @@ composer require rutorika/sortable
 ### Version Compatibility
 
  Laravel   | Rutorika Sortable
-:----------|:----------
- 4         | 1.2.x (branch laravel4)
- <=5.3     | 3.2.x
- 5.4       | 3.4.x
- 5.5       | 4.2.x
- 5.7       | 4.7.x
- 6.0       | 6.0.x
- 7.x, 8.x  | 8.x.x
- 9.x, 10.x | 9.x.x
+:----------------|:----------
+ 4               | 1.2.x (branch laravel4)
+ <=5.3           | 3.2.x
+ 5.4             | 3.4.x
+ 5.5             | 4.2.x
+ 5.7             | 4.7.x
+ 6.0             | 6.0.x
+ 7.x, 8.x        | 8.x.x
+ 9.x, 10.x, 11.x | 9.x.x
 
 ## Sortable Trait
 
