@@ -31,10 +31,40 @@ public function up()
 {
     Schema::create('articles', function (Blueprint $table) {
         // ... other fields ...
-        $table->string('position'); // Your model must have position field:
+        $table->string('position'); // Your model must have position field
     });
 }
 ```
+
+#### Important: Database Collation for Position Column
+
+This package uses **LexoRank** for position management, which relies on lexicographic (ASCII-based) string sorting. The position values use characters in the range `'0'` to `'z'` (ASCII 48-122).
+
+**For SQLite and PostgreSQL:**
+- ✅ Default text collation works correctly
+- No additional configuration needed
+
+**For MySQL/MariaDB (CRITICAL):**
+- ⚠️ You **must** specify binary collation for the position column
+- Default collations like `utf8mb4_unicode_ci` will sort incorrectly
+
+```php
+// MySQL/MariaDB - REQUIRED for correct sorting
+public function up()
+{
+    Schema::create('articles', function (Blueprint $table) {
+        // ... other fields ...
+        $table->string('position')->charset('utf8mb4')->collation('utf8mb4_bin');
+        // or use binary type for guaranteed ASCII sorting:
+        // $table->binary('position', 255);
+    });
+}
+```
+
+**Why this matters:**
+- Unicode collations (like `utf8mb4_unicode_ci`) apply language-specific sorting rules that don't preserve ASCII ordering
+- Binary collation ensures positions sort in correct lexicographic order (e.g., `'U'` < `'V'` < `'X'` < `'Z'`)
+- Without this, drag-and-drop reordering may produce unexpected results on MySQL/MariaDB
 
 
 Add `\AlexCrawford\Sortable\SortableTrait` to your Eloquent model.
@@ -136,8 +166,25 @@ Add `position` column to the pivot table (you can use any name you want, but `po
 post_tag
     post_id
     tag_id
-    position
+    position (string with binary collation for MySQL/MariaDB)
 ```
+
+**Migration example:**
+
+```php
+Schema::create('post_tag', function (Blueprint $table) {
+    $table->unsignedInteger('post_id');
+    $table->unsignedInteger('tag_id');
+    $table->string('position')->charset('utf8mb4')->collation('utf8mb4_bin'); // MySQL/MariaDB
+    // or for SQLite/PostgreSQL: $table->string('position');
+    
+    $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
+    $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade');
+    $table->primary(['post_id', 'tag_id']);
+});
+```
+
+⚠️ **Remember:** The `position` column must use binary collation on MySQL/MariaDB for correct sorting.
 
 Add `\AlexCrawford\Sortable\BelongsToSortedManyTrait` to your `Post` model and define `belongsToSortedMany` relation provided by this trait:
 
@@ -193,10 +240,27 @@ tags
 
 taggables
     tag_id
-    position
+    position (string with binary collation for MySQL/MariaDB)
     taggable_id
     taggable_type
 ```
+
+**Migration example:**
+
+```php
+Schema::create('taggables', function (Blueprint $table) {
+    $table->unsignedInteger('tag_id');
+    $table->string('position')->charset('utf8mb4')->collation('utf8mb4_bin'); // MySQL/MariaDB
+    // or for SQLite/PostgreSQL: $table->string('position');
+    $table->unsignedInteger('taggable_id');
+    $table->string('taggable_type');
+    
+    $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade');
+    $table->index(['taggable_id', 'taggable_type']);
+});
+```
+
+⚠️ **Remember:** The `position` column must use binary collation on MySQL/MariaDB for correct sorting.
 
 And your model like
 
@@ -393,8 +457,40 @@ Template for many to many ordering
 
 ## Development
 
+### Setup
+
+Build the Docker image:
+
+```bash
+docker build -t alexcrawford-sortable .
 ```
-sudo docker build -t alexcrawford-sortable .
-sudo docker run --volume $PWD:/project --rm --interactive --tty --user $(id -u):$(id -g) alexcrawford-sortable vendor/bin/phpunit
+
+### Running Tests
+
+```bash
+docker run --volume $PWD:/project --rm --user $(id -u):$(id -g) alexcrawford-sortable vendor/bin/phpunit
+```
+
+### Code Quality Tools
+
+This project includes modern PHP development tools:
+
+**Code Formatting (Laravel Pint):**
+
+```bash
+vendor/bin/pint              # Check and fix code style
+vendor/bin/pint --test       # Check only (don't modify)
+```
+
+**Static Analysis (PHPStan):**
+
+```bash
+vendor/bin/phpstan analyse   # Run type safety checks
+```
+
+**Running All Tests:**
+
+```bash
+docker run --volume $PWD:/project --rm --user $(id -u):$(id -g) alexcrawford-sortable bash -c "vendor/bin/phpunit && vendor/bin/phpstan analyse && vendor/bin/pint --test"
 ```
 
