@@ -1,7 +1,8 @@
 <?php
 
-namespace Rutorika\Sortable;
+namespace AlexCrawford\Sortable;
 
+use AlexCrawford\LexoRank\Rank;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -25,7 +26,7 @@ trait SortableTrait
      */
     public static function bootSortableTrait()
     {
-        static::creating(
+        static::saving(
             function ($model) {
                 /* @var Model $model */
                 $sortableField = static::getSortableField();
@@ -33,7 +34,8 @@ trait SortableTrait
 
                 // only automatically calculate next position with max+1 when a position has not been set already
                 if ($model->$sortableField === null) {
-                    $model->setAttribute($sortableField, $query->max($sortableField) + 1);
+                    $max = $query->max($sortableField) ?: 'gggggggggg';
+                    $model->setAttribute($sortableField, ++$max);
                 }
             }
         );
@@ -87,49 +89,29 @@ trait SortableTrait
 
         $this->_transaction(function () use ($entity, $action) {
             $sortableField = static::getSortableField();
+            $entityPosition = $entity->getAttribute($sortableField);
 
-            $oldPosition = $this->getAttribute($sortableField);
-            $newPosition = $entity->getAttribute($sortableField);
-
-            if ($oldPosition === $newPosition) {
-                return;
-            }
-
-            $isMoveBefore = $action === 'moveBefore'; // otherwise moveAfter
-            $isMoveForward = $oldPosition < $newPosition;
-
-            if ($isMoveForward) {
-                $this->queryBetween($oldPosition, $newPosition)->decrement($sortableField);
+            if ($action === 'moveBefore') {
+                $previous = optional($entity->previous()->first())->$sortableField;
+                $next = $entityPosition;
             } else {
-                $this->queryBetween($newPosition, $oldPosition)->increment($sortableField);
+                $previous = $entityPosition;
+                $next = optional($entity->next()->first())->$sortableField;
             }
 
-            $this->setAttribute($sortableField, $this->getNewPosition($isMoveBefore, $isMoveForward, $newPosition));
-            $entity->setAttribute($sortableField, $this->getNewPosition(!$isMoveBefore, $isMoveForward, $newPosition));
-
+            $this->setAttribute($sortableField, static::getNewPosition($previous, $next));
             $this->save();
-            $entity->save();
         });
     }
 
     /**
-     * @param bool $isMoveBefore
-     * @param bool $isMoveForward
-     * @param      $position
-     *
+     * @param string $prev
+     * @param string $next
      * @return mixed
      */
-    protected function getNewPosition($isMoveBefore, $isMoveForward, $position)
+    public static function getNewPosition($prev, $next = ''): string
     {
-        if (!$isMoveBefore) {
-            ++$position;
-        }
-
-        if ($isMoveForward) {
-            --$position;
-        }
-
-        return $position;
+        return (new Rank((string)$prev, (string)$next))->get();
     }
 
     /**

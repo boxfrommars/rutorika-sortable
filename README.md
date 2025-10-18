@@ -1,28 +1,22 @@
-[![Build Status](https://travis-ci.org/boxfrommars/rutorika-sortable.svg?branch=master)](https://travis-ci.org/boxfrommars/rutorika-sortable) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/boxfrommars/rutorika-sortable/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/boxfrommars/rutorika-sortable/?branch=master) [![Latest Stable Version](https://poser.pugx.org/rutorika/sortable/v/stable)](https://packagist.org/packages/rutorika/sortable) [![Total Downloads](https://poser.pugx.org/rutorika/sortable/downloads)](https://packagist.org/packages/rutorika/sortable) [![Latest Unstable Version](https://poser.pugx.org/rutorika/sortable/v/unstable)](https://packagist.org/packages/rutorika/sortable) [![License](https://poser.pugx.org/rutorika/sortable/license)](https://packagist.org/packages/rutorika/sortable)
-
-## Laravel 5 - Demo
-
-https://github.com/boxfrommars/rutorika-sortable-demo5
-
 ## Install
 
 Install package through Composer
 
 ```bash
-composer require rutorika/sortable
+composer require alexcrawford/lexorank-sortable
 ```
 ### Version Compatibility
 
- Laravel   | Rutorika Sortable
-:----------------|:----------
- 4               | 1.2.x (branch laravel4)
- <=5.3           | 3.2.x
- 5.4             | 3.4.x
- 5.5             | 4.2.x
- 5.7             | 4.7.x
- 6.0             | 6.0.x
- 7.x, 8.x        | 8.x.x
- 9.x, 10.x, 11.x, 12.x | 9.x.x
+| Laravel               | Sortable                |
+|:----------------------|:------------------------|
+| 4                     | 1.2.x (branch laravel4) |
+| <=5.3                 | 3.2.x                   |
+| 5.4                   | 3.4.x                   |
+| 5.5                   | 4.2.x                   |
+| 5.7                   | 4.7.x                   |
+| 6.0                   | 6.0.x                   |
+| 7.x, 8.x              | 8.x.x                   |
+| 9.x, 10.x, 11.x, 12.x | 9.x.x                   |
 
 ## Sortable Trait
 
@@ -37,18 +31,18 @@ public function up()
 {
     Schema::create('articles', function (Blueprint $table) {
         // ... other fields ...
-        $table->integer('position'); // Your model must have position field:
+        $table->string('position'); // Your model must have position field:
     });
 }
 ```
 
 
-Add `\Rutorika\Sortable\SortableTrait` to your Eloquent model.
+Add `\AlexCrawford\Sortable\SortableTrait` to your Eloquent model.
 
 ```php
 class Article extends Model
 {
-    use \Rutorika\Sortable\SortableTrait;
+    use \AlexCrawford\Sortable\SortableTrait;
 }
 ```
 
@@ -56,7 +50,7 @@ if you want to use custom column name for position, set `$sortableField`:
 ```php
 class Article extends Model
 {
-    use \Rutorika\Sortable\SortableTrait;
+    use \AlexCrawford\Sortable\SortableTrait;
 
     protected static $sortableField = 'somefield';
 }
@@ -72,7 +66,7 @@ $positionEntity = Article::find(10)
 
 $entity->moveAfter($positionEntity);
 
-// if $positionEntity->position is 14, then $entity->position is 15 now
+// if $positionEntity->position is aaa, then $entity->position is aab now
 ```
 
 Also this trait automatically defines entity position on the `create` event, so you do not need to add `position` manually, just create entities as usual:
@@ -101,7 +95,7 @@ YourModel::deleting(function ($model) {
     $model->next()->decrement('position');
 });
 ```
- > You need rutorika-sortable >=2.3 to use `->next()`
+ > You need alexcrawford-sortable >=2.3 to use `->next()`
 
 ### Sortable groups
 
@@ -145,7 +139,7 @@ post_tag
     position
 ```
 
-Add `\Rutorika\Sortable\BelongsToSortedManyTrait` to your `Post` model and define `belongsToSortedMany` relation provided by this trait:
+Add `\AlexCrawford\Sortable\BelongsToSortedManyTrait` to your `Post` model and define `belongsToSortedMany` relation provided by this trait:
 
 ```php
 class Post extends Model {
@@ -182,7 +176,7 @@ You can reorder tags for given post
     $post->tags()->moveAfter($entityToMove, $whereToMoveEntity);
 ```
 
-Many to many demo: http://sortable5.boxfrommars.ru/posts ([code](https://github.com/boxfrommars/rutorika-sortable-demo5))
+Many to many demo: http://sortable5.boxfrommars.ru/posts ([code](https://github.com/boxfrommars/alexcrawford-sortable-demo5))
 
 You can also use polymorphic many to many relation with sortable behavour by using the `MorphsToSortedManyTrait` trait and returning `$this->morphToSortedMany()` from relation method.
 
@@ -220,7 +214,7 @@ class Post extends Model {
 
 ## Sortable Controller
 
-Also this package provides `\Rutorika\Sortable\SortableController`, which handle requests to sort entities
+Also this package provides `\AlexCrawford\Sortable\SortableController`, which handle requests to sort entities
 
 ### Usage
 Add the service provider to `config/app.php`
@@ -229,7 +223,7 @@ Add the service provider to `config/app.php`
 'providers' => array(
     // providers...
 
-    'Rutorika\Sortable\SortableServiceProvider',
+    'AlexCrawford\Sortable\SortableServiceProvider',
 )
 ```
 
@@ -257,7 +251,7 @@ Add models you need to sort in the config `config/sortable.php`:
 Add route to the `sort` method of the controller:
 
 ```php
-Route::post('sort', '\Rutorika\Sortable\SortableController@sort');
+Route::post('sort', '\AlexCrawford\Sortable\SortableController@sort');
 ```
 
 Now if you post to this route valid data:
@@ -400,7 +394,7 @@ Template for many to many ordering
 ## Development
 
 ```
-sudo docker build -t rutorika-sortable .
-sudo docker run --volume $PWD:/project --rm --interactive --tty --user $(id -u):$(id -g) rutorika-sortable vendor/bin/phpunit
+sudo docker build -t alexcrawford-sortable .
+sudo docker run --volume $PWD:/project --rm --interactive --tty --user $(id -u):$(id -g) alexcrawford-sortable vendor/bin/phpunit
 ```
 

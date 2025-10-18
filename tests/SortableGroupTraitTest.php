@@ -260,7 +260,7 @@ class SortableGroupTraitTest extends SortableTestBase
         $entity2->category = 'second_category';
         $entity2->save();
 
-        $this->expectException(\Rutorika\Sortable\SortableException::class);
+        $this->expectException(\AlexCrawford\Sortable\SortableException::class);
         $entity1->moveAfter($entity2);
     }
 
@@ -274,7 +274,7 @@ class SortableGroupTraitTest extends SortableTestBase
         $entity2->category = 'second_category';
         $entity2->save();
 
-        $this->expectException(\Rutorika\Sortable\SortableException::class);
+        $this->expectException(\AlexCrawford\Sortable\SortableException::class);
         $entity1->moveBefore($entity2);
     }
 

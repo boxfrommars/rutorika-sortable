@@ -2,7 +2,7 @@
 
 class SortableEntityGroup extends \Illuminate\Database\Eloquent\Model
 {
-    use Rutorika\Sortable\SortableTrait;
+    use AlexCrawford\Sortable\SortableTrait;
 
     protected $table = 'sortable_entities_group';
 

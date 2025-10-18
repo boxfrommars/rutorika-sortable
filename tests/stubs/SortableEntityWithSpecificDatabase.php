@@ -2,7 +2,7 @@
 
 class SortableEntityWithSpecificDatabase extends \Illuminate\Database\Eloquent\Model
 {
-    use Rutorika\Sortable\SortableTrait;
+    use AlexCrawford\Sortable\SortableTrait;
 
     protected $connection = 'other';
 }

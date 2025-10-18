@@ -2,7 +2,7 @@
 
 class M2mEntity extends \Illuminate\Database\Eloquent\Model
 {
-    use \Rutorika\Sortable\BelongsToSortedManyTrait;
+    use \AlexCrawford\Sortable\BelongsToSortedManyTrait;
 
     public function relatedEntities()
     {

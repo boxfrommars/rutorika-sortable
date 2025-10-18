@@ -1,6 +1,6 @@
 <?php
 
-namespace Rutorika\Sortable;
+namespace AlexCrawford\Sortable;
 
 /**
  * Define a custom exception class.

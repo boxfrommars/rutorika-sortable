@@ -17,11 +17,11 @@ class SortableTraitTest extends SortableTestBase
     {
         $entity = new SortableEntity();
         $entity->save();
-        $this->assertEquals(1, $entity->position);
+        $this->assertEquals('U', $entity->position);
 
         $entity2 = new SortableEntity();
         $entity2->save();
-        $this->assertEquals(2, $entity2->position);
+        $this->assertEquals('g', $entity2->position);
     }
 
     public function testPosition()

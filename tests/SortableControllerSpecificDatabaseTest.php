@@ -74,7 +74,7 @@ class SortableControllerSpecificDatabaseTest extends Orchestra\Testbench\TestCas
             ]
         );
 
-        $app['router']->post('sort', '\Rutorika\Sortable\SortableController@sort');
+        $app['router']->post('sort', '\AlexCrawford\Sortable\SortableController@sort');
     }
 
     public function testOK()

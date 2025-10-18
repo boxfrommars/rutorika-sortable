@@ -1,6 +1,6 @@
 <?php
 
-namespace Rutorika\Sortable;
+namespace AlexCrawford\Sortable;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Model;

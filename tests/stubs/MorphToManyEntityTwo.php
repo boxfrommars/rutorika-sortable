@@ -2,7 +2,7 @@
 
 class MorphToManyEntityTwo extends \Illuminate\Database\Eloquent\Model
 {
-    use \Rutorika\Sortable\MorphToSortedManyTrait;
+    use \AlexCrawford\Sortable\MorphToSortedManyTrait;
 
     public function relatedEntities()
     {

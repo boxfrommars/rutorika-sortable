@@ -1,7 +1,8 @@
 <?php
 
-namespace Rutorika\Sortable;
+namespace AlexCrawford\Sortable;
 
+use AlexCrawford\LexoRank\Rank;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -65,34 +66,18 @@ trait ToSortedManyTrait
     public function move($action, $entity, $positionEntity)
     {
         $positionColumn = $this->getOrderColumnName();
+        $entityPosition = $positionEntity->pivot->$positionColumn;
 
-        $oldPosition = $entity->pivot->$positionColumn;
-        $newPosition = $positionEntity->pivot->$positionColumn;
-
-        $isMoveBefore = $action === 'moveBefore'; // otherwise moveAfter
-
-        if ($oldPosition > $newPosition) {
-            $this->queryBetween($newPosition, $oldPosition, $isMoveBefore, false)->increment($positionColumn);
-            $newEntityPosition = $newPosition;
-            $newPositionEntityPosition = $newPosition + 1;
-        } elseif ($oldPosition < $newPosition) {
-            $this->queryBetween($oldPosition, $newPosition, false, !$isMoveBefore)->decrement($positionColumn);
-            $newEntityPosition = $newPosition - 1;
-            $newPositionEntityPosition = $newPosition;
+        if ($action === 'moveBefore') {
+            $previous = optional($this->newPivotQuery()->where($positionColumn, '<', $entityPosition)->first())->$positionColumn;
+            $next = $entityPosition;
         } else {
-            return;
+            $previous = $entityPosition;
+            $next = optional($this->newPivotQuery()->where($positionColumn, '>', $entityPosition)->first())->$positionColumn;
         }
 
-        if ($isMoveBefore) {
-            $entity->pivot->$positionColumn = $newEntityPosition;
-            $positionEntity->pivot->$positionColumn = $newPositionEntityPosition;
-        } else {
-            $entity->pivot->$positionColumn = $newEntityPosition + 1;
-            $positionEntity->pivot->$positionColumn = $newPositionEntityPosition - 1;
-        }
-
+        $entity->pivot->$positionColumn = static::getNewPosition($previous, $next);
         $entity->pivot->save();
-        $positionEntity->pivot->save();
     }
 
     /**
@@ -122,7 +107,18 @@ trait ToSortedManyTrait
      */
     protected function getNextPosition()
     {
-        return 1 + $this->newPivotQuery()->max($this->getOrderColumnName());
+        $max = $this->newPivotQuery()->max($this->getOrderColumnName());
+        return ++$max;
+    }
+
+    /**
+     * @param string $prev
+     * @param string $next
+     * @return mixed
+     */
+    public static function getNewPosition($prev, $next = ''): string
+    {
+        return (new Rank((string)$prev, (string)$next))->get();
     }
 
     /**
