@@ -281,7 +281,7 @@ class SortableGroupTraitTest extends SortableTestBase
     /**
      * @return array
      */
-    public function fixedEntitiesProvider()
+    public static function fixedEntitiesProvider()
     {
         return [
             [2, 5, 'before', 30],
@@ -325,7 +325,7 @@ class SortableGroupTraitTest extends SortableTestBase
     /**
      * @return array
      */
-    public function moveWhenMovedEntityComesAfterRelativeEntityProvider()
+    public static function moveWhenMovedEntityComesAfterRelativeEntityProvider()
     {
         return [
             [7, 1, 30],
@@ -340,7 +340,7 @@ class SortableGroupTraitTest extends SortableTestBase
     /**
      * @return array
      */
-    public function moveWhenMovedEntityComesBeforeRelativeEntityProvider()
+    public static function moveWhenMovedEntityComesBeforeRelativeEntityProvider()
     {
         return [
             [2, 5, 30],
@@ -357,7 +357,7 @@ class SortableGroupTraitTest extends SortableTestBase
     /**
      * @return array
      */
-    public function moveWhenMovedEntityIsRelativeEntityProvider()
+    public static function moveWhenMovedEntityIsRelativeEntityProvider()
     {
         return [
             [1, 30],

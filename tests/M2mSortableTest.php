@@ -512,7 +512,7 @@ class M2mSortableTest extends SortableTestBase
     /**
      * @return array
      */
-    public function moveWhenMovedEntityComesBeforeRelativeEntityProvider()
+    public static function moveWhenMovedEntityComesBeforeRelativeEntityProvider()
     {
         return [
             [1, 7, 30],
@@ -527,7 +527,7 @@ class M2mSortableTest extends SortableTestBase
     /**
      * @return array
      */
-    public function moveWhenMovedEntityComesAfterRelativeEntityProvider()
+    public static function moveWhenMovedEntityComesAfterRelativeEntityProvider()
     {
         return [
             [7, 1, 30],
@@ -542,7 +542,7 @@ class M2mSortableTest extends SortableTestBase
     /**
      * @return array
      */
-    public function moveWhenMovedEntityIsRelativeEntityProvider()
+    public static function moveWhenMovedEntityIsRelativeEntityProvider()
     {
         return [
             [1, 30],
@@ -554,7 +554,7 @@ class M2mSortableTest extends SortableTestBase
     /**
      * @return array
      */
-    public function syncProvider()
+    public static function syncProvider()
     {
         return [
             [[12, 13, 16]],
@@ -567,11 +567,11 @@ class M2mSortableTest extends SortableTestBase
     /**
      * @return array
      */
-    public function allProvider()
+    public static function allProvider()
     {
         return array_merge(
-            $this->moveWhenMovedEntityComesAfterRelativeEntityProvider(),
-            $this->moveWhenMovedEntityComesBeforeRelativeEntityProvider(),
+            self::moveWhenMovedEntityComesAfterRelativeEntityProvider(),
+            self::moveWhenMovedEntityComesBeforeRelativeEntityProvider(),
             [
                 [1, 1, 30],
                 [7, 7, 30],

@@ -88,22 +88,22 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
         $response->assertStatus(200);
         $responseData = $this->parseJSON($response);
 
-        $this->assertObjectHasAttribute('errors', $responseData);
-        $this->assertObjectHasAttribute('success', $responseData);
+        $this->assertTrue(property_exists($responseData, 'errors'));
+        $this->assertTrue(property_exists($responseData, 'success'));
 
         $this->assertFalse($responseData->success);
 
         $failed = $responseData->failed;
 
-        $this->assertObjectHasAttribute('type', $failed);
-        $this->assertObjectHasAttribute('entityName', $failed);
-        $this->assertObjectHasAttribute('positionEntityId', $failed);
-        $this->assertObjectHasAttribute('id', $failed);
+        $this->assertTrue(property_exists($failed, 'type'));
+        $this->assertTrue(property_exists($failed, 'entityName'));
+        $this->assertTrue(property_exists($failed, 'positionEntityId'));
+        $this->assertTrue(property_exists($failed, 'id'));
 
-        $this->assertObjectHasAttribute('Required', $failed->type);
-        $this->assertObjectHasAttribute('Required', $failed->entityName);
-        $this->assertObjectHasAttribute('Required', $failed->positionEntityId);
-        $this->assertObjectHasAttribute('Required', $failed->id);
+        $this->assertTrue(property_exists($failed->type, 'Required'));
+        $this->assertTrue(property_exists($failed->entityName, 'Required'));
+        $this->assertTrue(property_exists($failed->positionEntityId, 'Required'));
+        $this->assertTrue(property_exists($failed->id, 'Required'));
     }
 
     /**
@@ -141,7 +141,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
         $responseData = $this->parseJSON($response);
         $this->assertFalse($responseData->success);
 
-        $this->assertObjectHasAttribute('errors', $responseData);
+        $this->assertTrue(property_exists($responseData, 'errors'));
         $errors = $responseData->errors;
         $failed = $responseData->failed;
 
@@ -152,24 +152,24 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
 
         switch ($error) {
             case 'invalidEntityId':
-                $this->assertObjectHasAttribute('Exists', $failed->id);
+                $this->assertTrue(property_exists($failed->id, 'Exists'));
                 break;
 
             case 'invalidPositionEntityId':
-                $this->assertObjectHasAttribute('Exists', $failed->positionEntityId);
+                $this->assertTrue(property_exists($failed->positionEntityId, 'Exists'));
                 break;
 
             case 'invalidEntityName':
-                $this->assertObjectHasAttribute('In', $failed->entityName);
-                $this->assertObjectHasAttribute('Required', $failed->entityClass);
+                $this->assertTrue(property_exists($failed->entityName, 'In'));
+                $this->assertTrue(property_exists($failed->entityClass, 'Required'));
                 break;
 
             case 'invalidEntityClass':
-                $this->assertObjectHasAttribute('Required', $failed->entityClass);
+                $this->assertTrue(property_exists($failed->entityClass, 'Required'));
                 break;
 
             case 'invalidType':
-                $this->assertObjectHasAttribute('In', $failed->type);
+                $this->assertTrue(property_exists($failed->type, 'In'));
                 break;
         }
     }
@@ -185,7 +185,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
         $responseData = $this->parseJSON($response);
         $this->assertFalse($responseData->success);
 
-        $this->assertObjectHasAttribute('errors', $responseData);
+        $this->assertTrue(property_exists($responseData, 'errors'));
         $failed = $responseData->failed;
 
         $this->assertContains(
@@ -195,28 +195,28 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
 
         switch ($error) {
             case 'invalidEntityId':
-                $this->assertObjectHasAttribute('Exists', $failed->id);
+                $this->assertTrue(property_exists($failed->id, 'Exists'));
                 break;
 
             case 'invalidPositionEntityId':
-                $this->assertObjectHasAttribute('Exists', $failed->positionEntityId);
+                $this->assertTrue(property_exists($failed->positionEntityId, 'Exists'));
                 break;
 
             case 'parentEntityId':
-                $this->assertObjectHasAttribute('Exists', $failed->parentId);
+                $this->assertTrue(property_exists($failed->parentId, 'Exists'));
                 break;
 
             case 'invalidEntityName':
-                $this->assertObjectHasAttribute('In', $failed->entityName);
-                $this->assertObjectHasAttribute('Required', $failed->entityClass);
+                $this->assertTrue(property_exists($failed->entityName, 'In'));
+                $this->assertTrue(property_exists($failed->entityClass, 'Required'));
                 break;
 
             case 'invalidEntityClass':
-                $this->assertObjectHasAttribute('Required', $failed->entityClass);
+                $this->assertTrue(property_exists($failed->entityClass, 'Required'));
                 break;
 
             case 'invalidType':
-                $this->assertObjectHasAttribute('In', $failed->type);
+                $this->assertTrue(property_exists($failed->type, 'In'));
                 break;
         }
     }
@@ -231,7 +231,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
         return json_decode($response->getContent());
     }
 
-    public function validParamsProvider()
+    public static function validParamsProvider()
     {
         return [
             [
@@ -269,7 +269,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
         ];
     }
 
-    public function validParamsM2mProvider()
+    public static function validParamsM2mProvider()
     {
         return [
             [
@@ -302,7 +302,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
         ];
     }
 
-    public function invalidParamsProvider()
+    public static function invalidParamsProvider()
     {
         return [
             [
@@ -353,7 +353,7 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
         ];
     }
 
-    public function invalidM2mParamsProvider()
+    public static function invalidM2mParamsProvider()
     {
         return [
             [

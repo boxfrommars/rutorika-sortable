@@ -424,7 +424,7 @@ class SortableTraitWithChangedFieldTest extends SortableTestBase
     /**
      * @return array
      */
-    public function moveWhenMovedEntityComesAfterRelativeEntityProvider()
+    public static function moveWhenMovedEntityComesAfterRelativeEntityProvider()
     {
         return [
             [7, 1, 30],
@@ -436,7 +436,7 @@ class SortableTraitWithChangedFieldTest extends SortableTestBase
     /**
      * @return array
      */
-    public function moveWhenMovedEntityComesBeforeRelativeEntityProvider()
+    public static function moveWhenMovedEntityComesBeforeRelativeEntityProvider()
     {
         return [
             [1, 7, 30],
@@ -448,7 +448,7 @@ class SortableTraitWithChangedFieldTest extends SortableTestBase
     /**
      * @return array
      */
-    public function moveWhenMovedEntityIsRelativeEntityProvider()
+    public static function moveWhenMovedEntityIsRelativeEntityProvider()
     {
         return [
             [1, 30],
@@ -460,7 +460,7 @@ class SortableTraitWithChangedFieldTest extends SortableTestBase
     /**
      * @return array
      */
-    public function getPreviousNextEntityProvider()
+    public static function getPreviousNextEntityProvider()
     {
         return [
             [5, 0],
