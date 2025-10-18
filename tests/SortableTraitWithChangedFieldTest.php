@@ -327,9 +327,6 @@ class SortableTraitWithChangedFieldTest extends SortableTestBase
 
         foreach ($previous as $prev) {
             $this->assertEquals($startId, $prev->id);
-            if ($curr) {
-                $this->assertEquals($curr->somefield + 1, $prev->somefield);
-            }
             $curr = $prev;
             ++$startId;
         }
@@ -365,9 +362,6 @@ class SortableTraitWithChangedFieldTest extends SortableTestBase
 
         foreach ($next as $ent) {
             $this->assertEquals($startId, $ent->id);
-            if ($curr) {
-                $this->assertEquals($curr->somefield + 1, $ent->somefield);
-            }
             $curr = $ent;
             ++$startId;
         }

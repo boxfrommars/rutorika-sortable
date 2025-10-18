@@ -103,12 +103,15 @@ trait ToSortedManyTrait
     /**
      * Get position of new relation.
      *
-     * @return float
+     * @return string
      */
     protected function getNextPosition()
     {
         $max = $this->newPivotQuery()->max($this->getOrderColumnName());
-        return ++$max;
+        if ($max === null) {
+            return Rank::forEmptySequence()->get();
+        }
+        return Rank::after(Rank::fromString((string)$max))->get();
     }
 
     /**
@@ -118,7 +121,21 @@ trait ToSortedManyTrait
      */
     public static function getNewPosition($prev, $next = ''): string
     {
-        return (new Rank((string)$prev, (string)$next))->get();
+        if ($prev === null || $prev === '') {
+            if ($next === null || $next === '') {
+                return Rank::forEmptySequence()->get();
+            }
+            return Rank::before(Rank::fromString((string)$next))->get();
+        }
+        
+        if ($next === null || $next === '') {
+            return Rank::after(Rank::fromString((string)$prev))->get();
+        }
+        
+        return Rank::betweenRanks(
+            Rank::fromString((string)$prev),
+            Rank::fromString((string)$next)
+        )->get();
     }
 
     /**

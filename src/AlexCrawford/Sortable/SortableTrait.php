@@ -32,10 +32,14 @@ trait SortableTrait
                 $sortableField = static::getSortableField();
                 $query = static::applySortableGroup(static::on($model->getConnectionName()), $model);
 
-                // only automatically calculate next position with max+1 when a position has not been set already
+                // only automatically calculate next position when a position has not been set already
                 if ($model->$sortableField === null) {
-                    $max = $query->max($sortableField) ?: 'gggggggggg';
-                    $model->setAttribute($sortableField, ++$max);
+                    $max = $query->max($sortableField);
+                    if ($max === null) {
+                        $model->setAttribute($sortableField, Rank::forEmptySequence()->get());
+                    } else {
+                        $model->setAttribute($sortableField, Rank::after(Rank::fromString((string)$max))->get());
+                    }
                 }
             }
         );
@@ -87,6 +91,11 @@ trait SortableTrait
     {
         $this->checkSortableGroupField(static::getSortableGroupField(), $entity);
 
+        // Don't move if moving the entity to itself
+        if ($this->getAttribute(static::getSortableField()) === $entity->getAttribute(static::getSortableField())) {
+            return;
+        }
+
         $this->_transaction(function () use ($entity, $action) {
             $sortableField = static::getSortableField();
             $entityPosition = $entity->getAttribute($sortableField);
@@ -111,7 +120,21 @@ trait SortableTrait
      */
     public static function getNewPosition($prev, $next = ''): string
     {
-        return (new Rank((string)$prev, (string)$next))->get();
+        if ($prev === null || $prev === '') {
+            if ($next === null || $next === '') {
+                return Rank::forEmptySequence()->get();
+            }
+            return Rank::before(Rank::fromString((string)$next))->get();
+        }
+        
+        if ($next === null || $next === '') {
+            return Rank::after(Rank::fromString((string)$prev))->get();
+        }
+        
+        return Rank::betweenRanks(
+            Rank::fromString((string)$prev),
+            Rank::fromString((string)$next)
+        )->get();
     }
 
     /**

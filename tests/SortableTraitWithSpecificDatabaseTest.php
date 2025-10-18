@@ -327,9 +327,6 @@ class SortableTraitWithSpecificDatabaseTest extends SortableTestBase
 
         foreach ($previous as $prev) {
             $this->assertEquals($startId, $prev->id);
-            if ($curr) {
-                $this->assertEquals($curr->position + 1, $prev->position);
-            }
             $curr = $prev;
             ++$startId;
         }
@@ -365,9 +362,6 @@ class SortableTraitWithSpecificDatabaseTest extends SortableTestBase
 
         foreach ($next as $ent) {
             $this->assertEquals($startId, $ent->id);
-            if ($curr) {
-                $this->assertEquals($curr->position + 1, $ent->position);
-            }
             $curr = $ent;
             ++$startId;
         }
