@@ -1,0 +1,29 @@
+name: Tests
+
+on:
+  push:
+    branches: [main, master, upstream-update]
+  pull_request:
+    branches: [main, master, upstream-update]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        php: ['8.3', '8.4']
+        laravel: ['11', '12']
+    name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, sqlite, pdo_sqlite
+          coverage: xdebug
+      - uses: ramsey/composer-install@v2
+        with:
+          dependency-versions: "prefer-lowest"
+      - name: Run PHPUnit tests
+        run: vendor/bin/phpunit

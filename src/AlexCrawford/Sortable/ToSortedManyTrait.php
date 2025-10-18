@@ -58,11 +58,6 @@ trait ToSortedManyTrait
         $this->move('moveAfter', $entity, $positionEntity);
     }
 
-    /**
-     * @param  string  $action
-     * @param  Model  $entity
-     * @param  Model  $positionEntity
-     */
     public function move(string $action, Model $entity, Model $positionEntity): void
     {
         $positionColumn = $this->getOrderColumnName();
@@ -103,8 +98,6 @@ trait ToSortedManyTrait
 
     /**
      * Get position of new relation.
-     *
-     * @return string
      */
     protected function getNextPosition(): string
     {
@@ -116,11 +109,6 @@ trait ToSortedManyTrait
         return Rank::after(Rank::fromString((string) $max))->get();
     }
 
-    /**
-     * @param  string|null  $prev
-     * @param  string|null  $next
-     * @return string
-     */
     public static function getNewPosition(?string $prev, ?string $next = ''): string
     {
         if ($prev === null || $prev === '') {
@@ -156,7 +144,6 @@ trait ToSortedManyTrait
      *
      * @param  \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|array  $ids
      * @param  bool  $detaching
-     * @return array
      */
     public function sync($ids, $detaching = true): array
     {

@@ -1,3 +1,7 @@
+[![Tests](https://github.com/AlexCrawford/lexorank-sortable/actions/workflows/tests.yml/badge.svg)](https://github.com/AlexCrawford/lexorank-sortable/actions/workflows/tests.yml)
+[![Code Formatting](https://github.com/AlexCrawford/lexorank-sortable/actions/workflows/pint.yml/badge.svg)](https://github.com/AlexCrawford/lexorank-sortable/actions/workflows/pint.yml)
+[![Static Analysis](https://github.com/AlexCrawford/lexorank-sortable/actions/workflows/phpstan.yml/badge.svg)](https://github.com/AlexCrawford/lexorank-sortable/actions/workflows/phpstan.yml)
+
 ## Install
 
 Install package through Composer
