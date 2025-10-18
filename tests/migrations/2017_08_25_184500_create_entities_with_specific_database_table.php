@@ -12,7 +12,7 @@ class CreateEntitiesWithSpecificDatabaseTable extends Migration
     {
         Schema::connection('other')->create('sortable_entity_with_specific_databases', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('position')->default(1);
+            $table->string('position')->default('U');
 
             $table->timestamps();
         });

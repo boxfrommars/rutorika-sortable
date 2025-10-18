@@ -12,7 +12,7 @@ class CreateEntitiesTable extends Migration
     {
         Schema::create('sortable_entities', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('position')->default(1);
+            $table->string('position')->default('U');
 
             $table->timestamps();
         });

@@ -12,7 +12,7 @@ class CreateEntitiesGroupTable extends Migration
     {
         Schema::create('sortable_entities_group', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('position')->default(1);
+            $table->string('position')->default('U');
             $table->string('category');
 
             $table->timestamps();

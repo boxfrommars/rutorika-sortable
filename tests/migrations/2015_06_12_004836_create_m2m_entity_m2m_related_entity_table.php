@@ -12,7 +12,7 @@ class CreateM2mEntityM2mRelatedEntityTable extends Migration
     {
         Schema::create('m2m_entity_m2m_related_entity', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('m2m_related_entity_position')->unsigned();
+            $table->string('m2m_related_entity_position');
 
             $table->integer('m2m_entity_id')->unsigned()->index();
             $table->foreign('m2m_entity_id')->references('id')->on('m2m_entity')->onDelete('cascade');
