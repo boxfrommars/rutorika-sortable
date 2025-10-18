@@ -1,4 +1,6 @@
 <?php
+use PHPUnit\Framework\Attributes\DataProvider;
+
 
 require_once 'stubs/MorphToManyEntityOne.php';
 require_once 'stubs/MorphToManyRelatedEntity.php';
@@ -72,10 +74,8 @@ class MorphToManySortableTest extends SortableTestBase
         }
     }
 
-    /**
-     * @param
-     * @dataProvider syncProvider
-     */
+    
+    #[DataProvider('syncProvider')]
     public function testPositionOnSync($entitiesToSync)
     {
         $entity = new MorphToManyEntityOne();
@@ -110,10 +110,8 @@ class MorphToManySortableTest extends SortableTestBase
         }
     }
 
-    /**
-     * @param
-     * @dataProvider syncProvider
-     */
+    
+    #[DataProvider('syncProvider')]
     public function testPositionOnSyncWithExistedRelations($entitiesToSync)
     {
         $entity = new MorphToManyEntityOne();
@@ -206,12 +204,8 @@ class MorphToManySortableTest extends SortableTestBase
         }
     }
 
-    /**
-     * @param
-     * @param
-     * @param
-     * @dataProvider moveWhenMovedEntityComesBeforeRelativeEntityProvider
-     */
+    
+    #[DataProvider('moveWhenMovedEntityComesBeforeRelativeEntityProvider')]
     public function testMoveAfterWhenMovedEntityComesBeforeRelativeEntity($entityId, $relativeEntityId, $countTotal)
     {
         $entity = new MorphToManyEntityOne();
@@ -247,12 +241,8 @@ class MorphToManySortableTest extends SortableTestBase
         }
     }
 
-    /**
-     * @param
-     * @param
-     * @param
-     * @dataProvider moveWhenMovedEntityComesAfterRelativeEntityProvider
-     */
+    
+    #[DataProvider('moveWhenMovedEntityComesAfterRelativeEntityProvider')]
     public function testMoveAfterWhenMovedEntityComesAfterRelativeEntity($entityId, $relativeEntityId, $countTotal)
     {
         $entity = new MorphToManyEntityOne();
@@ -288,12 +278,8 @@ class MorphToManySortableTest extends SortableTestBase
         }
     }
 
-    /**
-     * @param
-     * @param
-     * @param
-     * @dataProvider moveWhenMovedEntityComesAfterRelativeEntityProvider
-     */
+    
+    #[DataProvider('moveWhenMovedEntityComesAfterRelativeEntityProvider')]
     public function testMoveBeforeWhenMovedEntityComesAfterRelativeEntity($entityId, $relativeEntityId, $countTotal)
     {
         $entity = new MorphToManyEntityOne();
@@ -329,12 +315,8 @@ class MorphToManySortableTest extends SortableTestBase
         }
     }
 
-    /**
-     * @param
-     * @param
-     * @param
-     * @dataProvider moveWhenMovedEntityComesBeforeRelativeEntityProvider
-     */
+    
+    #[DataProvider('moveWhenMovedEntityComesBeforeRelativeEntityProvider')]
     public function testMoveBeforeWhenMovedEntityComesBeforeRelativeEntity($entityId, $relativeEntityId, $countTotal)
     {
         $entity = new MorphToManyEntityOne();
@@ -370,11 +352,8 @@ class MorphToManySortableTest extends SortableTestBase
         }
     }
 
-    /**
-     * @param
-     * @param
-     * @dataProvider moveWhenMovedEntityIsRelativeEntityProvider
-     */
+    
+    #[DataProvider('moveWhenMovedEntityIsRelativeEntityProvider')]
     public function testMoveBeforeWhenMovedEntityIsRelativeEntity($entityId, $countTotal)
     {
         $entity = new MorphToManyEntityOne();
@@ -404,11 +383,8 @@ class MorphToManySortableTest extends SortableTestBase
         }
     }
 
-    /**
-     * @param
-     * @param
-     * @dataProvider moveWhenMovedEntityIsRelativeEntityProvider
-     */
+    
+    #[DataProvider('moveWhenMovedEntityIsRelativeEntityProvider')]
     public function testMoveAfterWhenMovedEntityIsRelativeEntity($entityId, $countTotal)
     {
         $entity = new MorphToManyEntityOne();
@@ -438,12 +414,8 @@ class MorphToManySortableTest extends SortableTestBase
         }
     }
 
-    /**
-     * @param
-     * @param
-     * @param
-     * @dataProvider allProvider
-     */
+    
+    #[DataProvider('allProvider')]
     public function testMoveAfterOtherRelatedNotChanged($entityId, $relativeEntityId, $countTotal)
     {
         $entity = new MorphToManyEntityOne();
@@ -478,12 +450,8 @@ class MorphToManySortableTest extends SortableTestBase
         }
     }
 
-    /**
-     * @param
-     * @param
-     * @param
-     * @dataProvider allProvider
-     */
+    
+    #[DataProvider('allProvider')]
     public function testMoveBeforeOtherRelatedNotChanged($entityId, $relativeEntityId, $countTotal)
     {
         $entity = new MorphToManyEntityOne();

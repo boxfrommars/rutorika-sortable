@@ -1,4 +1,6 @@
 <?php
+use PHPUnit\Framework\Attributes\DataProvider;
+
 
 require_once 'stubs/SortableEntityWithSpecificDatabase.php';
 require_once 'SortableTestBase.php';
@@ -44,12 +46,8 @@ class SortableTraitWithSpecificDatabaseTest extends SortableTestBase
         }
     }
 
-    /**
-     * @param
-     * @param
-     * @param
-     * @dataProvider moveWhenMovedEntityComesBeforeRelativeEntityProvider
-     */
+    
+    #[DataProvider('moveWhenMovedEntityComesBeforeRelativeEntityProvider')]
     public function testMoveAfterWhenMovedEntityComesBeforeRelativeEntity($entityId, $relativeEntityId, $countTotal)
     {
 
@@ -87,12 +85,8 @@ class SortableTraitWithSpecificDatabaseTest extends SortableTestBase
         $this->assertGreaterThan($relativeIndex, $movedIndex);
     }
 
-    /**
-     * @param
-     * @param
-     * @param
-     * @dataProvider moveWhenMovedEntityComesAfterRelativeEntityProvider
-     */
+    
+    #[DataProvider('moveWhenMovedEntityComesAfterRelativeEntityProvider')]
     public function testMoveAfterWhenMovedEntityComesAfterRelativeEntity($entityId, $relativeEntityId, $countTotal)
     {
         // interavls: [1 .. $relativeEntityId], , [$relativeEntityId + 1 .. $entityId - 1], [$entityId], [$entityId + 1 .. $countTotal]
@@ -129,11 +123,8 @@ class SortableTraitWithSpecificDatabaseTest extends SortableTestBase
         $this->assertGreaterThan($relativeIndex, $movedIndex);
     }
 
-    /**
-     * @param
-     * @param
-     * @dataProvider moveWhenMovedEntityIsRelativeEntityProvider
-     */
+    
+    #[DataProvider('moveWhenMovedEntityIsRelativeEntityProvider')]
     public function testMoveAfterWhenMovedEntityIsRelativeEntity($entityId, $countTotal)
     {
 
@@ -159,12 +150,8 @@ class SortableTraitWithSpecificDatabaseTest extends SortableTestBase
         $this->assertEquals($countTotal, $allEntities->count());
     }
 
-    /**
-     * @param
-     * @param
-     * @param
-     * @dataProvider moveWhenMovedEntityComesBeforeRelativeEntityProvider
-     */
+    
+    #[DataProvider('moveWhenMovedEntityComesBeforeRelativeEntityProvider')]
     public function testMoveBeforeWhenMovedEntityComesBeforeRelativeEntity($entityId, $relativeEntityId, $countTotal)
     {
 
@@ -200,12 +187,8 @@ class SortableTraitWithSpecificDatabaseTest extends SortableTestBase
         $this->assertLessThan($relativeIndex, $movedIndex);
     }
 
-    /**
-     * @param
-     * @param
-     * @param
-     * @dataProvider moveWhenMovedEntityComesAfterRelativeEntityProvider
-     */
+    
+    #[DataProvider('moveWhenMovedEntityComesAfterRelativeEntityProvider')]
     public function testMoveBeforeWhenMovedEntityComesAfterRelativeEntity($entityId, $relativeEntityId, $countTotal)
     {
 
@@ -241,11 +224,8 @@ class SortableTraitWithSpecificDatabaseTest extends SortableTestBase
         $this->assertLessThan($relativeIndex, $movedIndex);
     }
 
-    /**
-     * @param
-     * @param
-     * @dataProvider moveWhenMovedEntityIsRelativeEntityProvider
-     */
+    
+    #[DataProvider('moveWhenMovedEntityIsRelativeEntityProvider')]
     public function testMoveBeforeWhenMovedEntityIsRelativeEntity($entityId, $countTotal)
     {
 
@@ -296,12 +276,8 @@ class SortableTraitWithSpecificDatabaseTest extends SortableTestBase
         }
     }
 
-    /**
-     * @param
-     * @param
-     * @param
-     * @dataProvider getPreviousNextEntityProvider
-     */
+    
+    #[DataProvider('getPreviousNextEntityProvider')]
     public function testGetPrevious($entityId, $limit)
     {
         /** @var SortableEntity[] $entities */
@@ -330,12 +306,8 @@ class SortableTraitWithSpecificDatabaseTest extends SortableTestBase
         }
     }
 
-    /**
-     * @param
-     * @param
-     * @param
-     * @dataProvider getPreviousNextEntityProvider
-     */
+    
+    #[DataProvider('getPreviousNextEntityProvider')]
     public function testGetNext($entityId, $limit)
     {
         /** @var SortableEntity[] $entities */
@@ -365,12 +337,8 @@ class SortableTraitWithSpecificDatabaseTest extends SortableTestBase
         }
     }
 
-    /**
-     * @param
-     * @param
-     * @param
-     * @dataProvider getPreviousNextEntityProvider
-     */
+    
+    #[DataProvider('getPreviousNextEntityProvider')]
     public function testDefaultsPrevious($entityId, $limit)
     {
         $entities = [];
@@ -389,12 +357,8 @@ class SortableTraitWithSpecificDatabaseTest extends SortableTestBase
         }
     }
 
-    /**
-     * @param
-     * @param
-     * @param
-     * @dataProvider getPreviousNextEntityProvider
-     */
+    
+    #[DataProvider('getPreviousNextEntityProvider')]
     public function testDefaultsNext($entityId, $limit)
     {
         $entities = [];

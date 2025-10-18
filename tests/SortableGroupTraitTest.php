@@ -1,4 +1,6 @@
 <?php
+use PHPUnit\Framework\Attributes\DataProvider;
+
 
 require_once 'stubs/SortableGroupEntity.php';
 require_once 'SortableTestBase.php';
@@ -61,13 +63,8 @@ class SortableGroupTraitTest extends SortableTestBase
         }
     }
 
-    /**
-     * @param
-     * @param
-     * @param
-     * @param
-     * @dataProvider fixedEntitiesProvider
-     */
+    
+    #[DataProvider('fixedEntitiesProvider')]
     public function testFixedEntities($entityId, $relativeEntityId, $method, $countTotal)
     {
 
@@ -159,12 +156,8 @@ class SortableGroupTraitTest extends SortableTestBase
         return $entities;
     }
 
-    /**
-     * @param
-     * @param
-     * @param
-     * @dataProvider moveWhenMovedEntityComesBeforeRelativeEntityProvider
-     */
+    
+    #[DataProvider('moveWhenMovedEntityComesBeforeRelativeEntityProvider')]
     public function testMoveAfterWhenMovedEntityComesBeforeRelativeEntity($entityId, $relativeEntityId, $countTotal)
     {
         /** @var SortableEntity[] $entities */
@@ -196,12 +189,8 @@ class SortableGroupTraitTest extends SortableTestBase
         $this->assertGreaterThan($relativeIndex, $movedIndex);
     }
 
-    /**
-     * @param
-     * @param
-     * @param
-     * @dataProvider moveWhenMovedEntityComesAfterRelativeEntityProvider
-     */
+    
+    #[DataProvider('moveWhenMovedEntityComesAfterRelativeEntityProvider')]
     public function testMoveAfterWhenMovedEntityComesAfterRelativeEntity($entityId, $relativeEntityId, $countTotal)
     {
         /* @var SortableEntityGroup[] $entity */
@@ -234,12 +223,8 @@ class SortableGroupTraitTest extends SortableTestBase
         $this->assertGreaterThan($relativeIndex, $movedIndex);
     }
 
-    /**
-     * @param
-     * @param
-     * @param
-     * @dataProvider moveWhenMovedEntityComesBeforeRelativeEntityProvider
-     */
+    
+    #[DataProvider('moveWhenMovedEntityComesBeforeRelativeEntityProvider')]
     public function testMoveBeforeWhenMovedEntityComesBeforeRelativeEntity($entityId, $relativeEntityId, $countTotal)
     {
         /** @var SortableEntity[] $entities */
@@ -271,12 +256,8 @@ class SortableGroupTraitTest extends SortableTestBase
         $this->assertLessThan($relativeIndex, $movedIndex);
     }
 
-    /**
-     * @param
-     * @param
-     * @param
-     * @dataProvider moveWhenMovedEntityComesAfterRelativeEntityProvider
-     */
+    
+    #[DataProvider('moveWhenMovedEntityComesAfterRelativeEntityProvider')]
     public function testMoveBeforeWhenMovedEntityComesAfterRelativeEntity($entityId, $relativeEntityId, $countTotal)
     {
         /** @var SortableEntity[] $entities */

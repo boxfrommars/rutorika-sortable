@@ -1,4 +1,6 @@
 <?php
+use PHPUnit\Framework\Attributes\DataProvider;
+
 
 require_once 'stubs/SortableEntity.php';
 require_once 'stubs/M2mEntity.php';
@@ -106,10 +108,8 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
         $this->assertTrue(property_exists($failed->id, 'Required'));
     }
 
-    /**
-     * @param
-     * @dataProvider validParamsProvider
-     */
+    
+    #[DataProvider('validParamsProvider')]
     public function testControllerWithValidParams($parameters)
     {
         $response = $this->call('POST', 'sort', $parameters);
@@ -118,10 +118,8 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
         $this->assertTrue($responseData->success);
     }
 
-    /**
-     * @param
-     * @dataProvider validParamsM2mProvider
-     */
+    
+    #[DataProvider('validParamsM2mProvider')]
     public function testControllerM2mWithValidParams($parameters)
     {
         $response = $this->call('POST', 'sort', $parameters);
@@ -130,11 +128,8 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
         $this->assertTrue($responseData->success);
     }
 
-    /**
-     * @param
-     * @param
-     * @dataProvider invalidParamsProvider
-     */
+    
+    #[DataProvider('invalidParamsProvider')]
     public function testControllerWithInvalidParams($parameters, $error)
     {
         $response = $this->call('POST', 'sort', $parameters);
@@ -174,11 +169,8 @@ class SortableControllerTest extends Orchestra\Testbench\TestCase
         }
     }
 
-    /**
-     * @param
-     * @param
-     * @dataProvider invalidM2mParamsProvider
-     */
+    
+    #[DataProvider('invalidM2mParamsProvider')]
     public function testM2mControllerWithInvalidParams($parameters, $error)
     {
         $response = $this->call('POST', 'sort', $parameters);
