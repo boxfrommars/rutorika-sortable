@@ -1,0 +1,24 @@
+parameters:
+  level: 5
+  paths:
+    - src
+  excludePaths:
+    - vendor
+    - tests
+  ignoreErrors:
+    # Traits are used via composition, not directly
+    - '#Trait.*is used zero times and is not analysed#'
+    # Laravel generics - we don't fully type these
+    - '#does not specify its types: TRelatedModel, TDeclaringModel#'
+    - '#does not specify its types: TKey, TValue#'
+    # Dynamic property access from Laravel models
+    - '#Access to an undefined property.*pivot#'
+    # SortableController uses traits dynamically
+    - '#PHPDoc tag @var for variable.*has invalid type.*SortableTrait#'
+    - '#Call to method moveAfter.*on an unknown class.*SortableTrait#'
+    - '#Call to method moveBefore.*on an unknown class.*SortableTrait#'
+    # SortableController validates class before calling find()
+    - '#Cannot call static method find\(\) on bool#'
+    # ToSortedManyTrait - these are never actually null at runtime
+    - '#Strict comparison using === between string and null will always evaluate to false#'
+  reportUnmatchedIgnoredErrors: false

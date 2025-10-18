@@ -7,7 +7,7 @@ namespace AlexCrawford\Sortable;
  */
 class SortableException extends \Exception
 {
-    public function __construct($field1, $field2)
+    public function __construct(string $field1, string $field2)
     {
         parent::__construct(sprintf('You can\'t move entities with different sortable group: %s %s', $field1, $field2));
     }

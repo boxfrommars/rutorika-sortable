@@ -14,9 +14,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 trait ToSortedManyTrait
 {
-    protected $orderColumn;
+    protected ?string $orderColumn = null;
 
-    protected function setOrderColumn($orderColumn)
+    protected function setOrderColumn(string $orderColumn): void
     {
         $this->orderColumn = $orderColumn;
         $this->withPivot($orderColumn);
@@ -29,7 +29,7 @@ trait ToSortedManyTrait
      * @param  mixed  $id
      * @param  bool  $touch
      */
-    public function attach($id, array $attributes = [], $touch = true)
+    public function attach($id, array $attributes = [], $touch = true): void
     {
         $attributes[$this->getOrderColumnName()] = $this->getNextPosition();
 
@@ -42,7 +42,7 @@ trait ToSortedManyTrait
      * @param  Model  $entity  What to move
      * @param  Model  $positionEntity  Where to move
      */
-    public function moveBefore($entity, $positionEntity)
+    public function moveBefore(Model $entity, Model $positionEntity): void
     {
         $this->move('moveBefore', $entity, $positionEntity);
     }
@@ -53,7 +53,7 @@ trait ToSortedManyTrait
      * @param  Model  $entity  What to move
      * @param  Model  $positionEntity  Where to move
      */
-    public function moveAfter($entity, $positionEntity)
+    public function moveAfter(Model $entity, Model $positionEntity): void
     {
         $this->move('moveAfter', $entity, $positionEntity);
     }
@@ -63,7 +63,7 @@ trait ToSortedManyTrait
      * @param  Model  $entity
      * @param  Model  $positionEntity
      */
-    public function move($action, $entity, $positionEntity)
+    public function move(string $action, Model $entity, Model $positionEntity): void
     {
         $positionColumn = $this->getOrderColumnName();
 
@@ -89,7 +89,7 @@ trait ToSortedManyTrait
     /**
      * @return \Illuminate\Database\Query\Builder
      */
-    protected function queryBetween($left, $right, $leftIncluded = false, $rightIncluded = false)
+    protected function queryBetween(string $left, string $right, bool $leftIncluded = false, bool $rightIncluded = false)
     {
         $positionColumn = $this->getOrderColumnName();
 
@@ -106,7 +106,7 @@ trait ToSortedManyTrait
      *
      * @return string
      */
-    protected function getNextPosition()
+    protected function getNextPosition(): string
     {
         $max = $this->newPivotQuery()->max($this->getOrderColumnName());
         if ($max === null) {
@@ -117,11 +117,11 @@ trait ToSortedManyTrait
     }
 
     /**
-     * @param  string  $prev
-     * @param  string  $next
-     * @return mixed
+     * @param  string|null  $prev
+     * @param  string|null  $next
+     * @return string
      */
-    public static function getNewPosition($prev, $next = ''): string
+    public static function getNewPosition(?string $prev, ?string $next = ''): string
     {
         if ($prev === null || $prev === '') {
             if ($next === null || $next === '') {
@@ -158,7 +158,7 @@ trait ToSortedManyTrait
      * @param  bool  $detaching
      * @return array
      */
-    public function sync($ids, $detaching = true)
+    public function sync($ids, $detaching = true): array
     {
         if ($detaching) {
             $this->detach();

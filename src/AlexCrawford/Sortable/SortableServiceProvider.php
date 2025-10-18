@@ -18,7 +18,7 @@ class SortableServiceProvider extends ServiceProvider
      */
     public function register() {}
 
-    public function boot()
+    public function boot(): void
     {
         $this->publishes([
             __DIR__.'/../../config/sortable.php' => config_path('sortable.php'),
@@ -28,9 +28,9 @@ class SortableServiceProvider extends ServiceProvider
     /**
      * Get the services provided by the provider.
      *
-     * @return array
+     * @return array<int, string>
      */
-    public function provides()
+    public function provides(): array
     {
         return [];
     }
