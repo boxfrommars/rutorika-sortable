@@ -546,4 +546,194 @@ class MorphToManySortableTest extends SortableTestBase
             ]
         );
     }
+
+    public function test_morphed_by_sorted_many_position_on_save()
+    {
+        $relatedEntity = new MorphToManyRelatedEntity;
+        $relatedEntity->save();
+
+        for ($i = 1; $i < 10; $i++) {
+            $entity = new MorphToManyEntityOne;
+            $relatedEntity->entities()->save($entity);
+        }
+
+        $relatedEntity = new MorphToManyRelatedEntity;
+        $relatedEntity->save();
+
+        for ($i = 1; $i < 10; $i++) {
+            $entity = new MorphToManyEntityOne;
+            $relatedEntity->entities()->save($entity);
+        }
+
+        $prevPosition = null;
+
+        foreach ($relatedEntity->entities as $entity) {
+            if ($prevPosition !== null) {
+                $this->assertGreaterThan($prevPosition, $entity->pivot->morph_to_many_related_entity_position);
+            }
+            $prevPosition = $entity->pivot->morph_to_many_related_entity_position;
+        }
+    }
+
+    public function test_morphed_by_sorted_many_position_on_attach()
+    {
+        $relatedEntity = new MorphToManyRelatedEntity;
+        $relatedEntity->save();
+
+        for ($i = 1; $i < 10; $i++) {
+            $entity = new MorphToManyEntityOne;
+            $entity->save();
+            $relatedEntity->entities()->attach($entity->id);
+        }
+
+        $relatedEntity = new MorphToManyRelatedEntity;
+        $relatedEntity->save();
+
+        for ($i = 1; $i < 10; $i++) {
+            $entity = new MorphToManyEntityOne;
+            $entity->save();
+            $relatedEntity->entities()->attach($entity->id);
+        }
+
+        $prevPosition = null;
+
+        foreach ($relatedEntity->entities as $entity) {
+            if ($prevPosition !== null) {
+                $this->assertGreaterThan($prevPosition, $entity->pivot->morph_to_many_related_entity_position);
+            }
+            $prevPosition = $entity->pivot->morph_to_many_related_entity_position;
+        }
+    }
+
+    #[DataProvider('syncProvider')]
+    public function test_morphed_by_sorted_many_position_on_sync($entitiesToSync)
+    {
+        $relatedEntity = new MorphToManyRelatedEntity;
+        $relatedEntity->save();
+
+        for ($i = 1; $i < 10; $i++) {
+            $entity = new MorphToManyEntityOne;
+            $relatedEntity->entities()->save($entity);
+        }
+
+        $relatedEntity = new MorphToManyRelatedEntity;
+        $relatedEntity->save();
+
+        for ($i = 1; $i < 10; $i++) {
+            $entity = new MorphToManyEntityOne;
+            $entity->save();
+        }
+
+        $relatedEntity->entities()->sync($entitiesToSync);
+
+        $prevPosition = null;
+        $index = 0;
+
+        foreach ($relatedEntity->entities as $entity) {
+            if ($prevPosition !== null) {
+                $this->assertGreaterThan($prevPosition, $entity->pivot->morph_to_many_related_entity_position);
+            }
+            $this->assertEquals($entity->id, $entitiesToSync[$index]);
+
+            $prevPosition = $entity->pivot->morph_to_many_related_entity_position;
+            $index++;
+        }
+    }
+
+    #[DataProvider('syncProvider')]
+    public function test_morphed_by_sorted_many_position_on_sync_with_existed_relations($entitiesToSync)
+    {
+        $relatedEntity = new MorphToManyRelatedEntity;
+        $relatedEntity->save();
+
+        for ($i = 1; $i < 10; $i++) {
+            $entity = new MorphToManyEntityOne;
+            $relatedEntity->entities()->save($entity);
+        }
+
+        for ($i = 1; $i < 10; $i++) {
+            $entity = new MorphToManyEntityOne;
+            $entity->save();
+        }
+        $relatedEntity->entities()->sync($entitiesToSync);
+
+        $prevPosition = null;
+        $index = 0;
+
+        foreach ($relatedEntity->entities as $entity) {
+            if ($prevPosition !== null) {
+                $this->assertGreaterThan($prevPosition, $entity->pivot->morph_to_many_related_entity_position);
+            }
+            $this->assertEquals($entity->id, $entitiesToSync[$index]);
+
+            $prevPosition = $entity->pivot->morph_to_many_related_entity_position;
+            $index++;
+        }
+    }
+
+    public function test_morphed_by_sorted_many_move_after()
+    {
+        $relatedEntity = new MorphToManyRelatedEntity;
+        $relatedEntity->save();
+
+        $entities = [];
+        for ($i = 1; $i <= 10; $i++) {
+            $entity = new MorphToManyEntityOne;
+            $relatedEntity->entities()->save($entity);
+            $entities[$i] = $entity;
+        }
+
+        $moveEntity = $relatedEntity->entities()->find($entities[2]->id);
+        $relyEntity = $relatedEntity->entities()->find($entities[8]->id);
+        $relativePosition = $relyEntity->pivot->morph_to_many_related_entity_position;
+
+        $relatedEntity->entities()->moveAfter($moveEntity, $relyEntity);
+
+        $this->assertGreaterThan($relativePosition, $moveEntity->pivot->morph_to_many_related_entity_position);
+
+        $relyEntity->refresh();
+        $this->assertEquals($relativePosition, $relyEntity->pivot->morph_to_many_related_entity_position);
+
+        $sortedEntities = $relatedEntity->entities()->get();
+        $prevPosition = null;
+        foreach ($sortedEntities as $entity) {
+            if ($prevPosition !== null) {
+                $this->assertGreaterThan($prevPosition, $entity->pivot->morph_to_many_related_entity_position);
+            }
+            $prevPosition = $entity->pivot->morph_to_many_related_entity_position;
+        }
+    }
+
+    public function test_morphed_by_sorted_many_move_before()
+    {
+        $relatedEntity = new MorphToManyRelatedEntity;
+        $relatedEntity->save();
+
+        $entities = [];
+        for ($i = 1; $i <= 10; $i++) {
+            $entity = new MorphToManyEntityOne;
+            $relatedEntity->entities()->save($entity);
+            $entities[$i] = $entity;
+        }
+
+        $moveEntity = $relatedEntity->entities()->find($entities[8]->id);
+        $relyEntity = $relatedEntity->entities()->find($entities[2]->id);
+        $relativePosition = $relyEntity->pivot->morph_to_many_related_entity_position;
+
+        $relatedEntity->entities()->moveBefore($moveEntity, $relyEntity);
+
+        $this->assertLessThan($relativePosition, $moveEntity->pivot->morph_to_many_related_entity_position);
+
+        $relyEntity->refresh();
+        $this->assertEquals($relativePosition, $relyEntity->pivot->morph_to_many_related_entity_position);
+
+        $sortedEntities = $relatedEntity->entities()->get();
+        $prevPosition = null;
+        foreach ($sortedEntities as $entity) {
+            if ($prevPosition !== null) {
+                $this->assertGreaterThan($prevPosition, $entity->pivot->morph_to_many_related_entity_position);
+            }
+            $prevPosition = $entity->pivot->morph_to_many_related_entity_position;
+        }
+    }
 }
