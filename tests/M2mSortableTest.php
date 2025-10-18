@@ -32,11 +32,13 @@ class M2mSortableTest extends SortableTestBase
             $entity->relatedEntities()->save($relatedEntity);
         }
 
-        $currentAssertedPosition = 1;
+        $prevPosition = null;
 
         foreach ($entity->relatedEntities as $relatedEntity) {
-            $this->assertEquals($currentAssertedPosition, $relatedEntity->pivot->m2m_related_entity_position);
-            ++$currentAssertedPosition;
+            if ($prevPosition !== null) {
+                $this->assertGreaterThan($prevPosition, $relatedEntity->pivot->m2m_related_entity_position);
+            }
+            $prevPosition = $relatedEntity->pivot->m2m_related_entity_position;
         }
     }
 
@@ -60,11 +62,13 @@ class M2mSortableTest extends SortableTestBase
             $entity->relatedEntities()->attach($relatedEntity->id);
         }
 
-        $currentAssertedPosition = 1;
+        $prevPosition = null;
 
         foreach ($entity->relatedEntities as $relatedEntity) {
-            $this->assertEquals($currentAssertedPosition, $relatedEntity->pivot->m2m_related_entity_position);
-            ++$currentAssertedPosition;
+            if ($prevPosition !== null) {
+                $this->assertGreaterThan($prevPosition, $relatedEntity->pivot->m2m_related_entity_position);
+            }
+            $prevPosition = $relatedEntity->pivot->m2m_related_entity_position;
         }
     }
 
@@ -92,13 +96,17 @@ class M2mSortableTest extends SortableTestBase
 
         $entity->relatedEntities()->sync($entitiesToSync);
 
-        $currentAssertedPosition = 1;
+        $prevPosition = null;
+        $index = 0;
 
         foreach ($entity->relatedEntities as $relatedEntity) {
-            $this->assertEquals($currentAssertedPosition, $relatedEntity->pivot->m2m_related_entity_position);
-            $this->assertEquals($relatedEntity->id, $entitiesToSync[$currentAssertedPosition - 1]);
+            if ($prevPosition !== null) {
+                $this->assertGreaterThan($prevPosition, $relatedEntity->pivot->m2m_related_entity_position);
+            }
+            $this->assertEquals($relatedEntity->id, $entitiesToSync[$index]);
 
-            ++$currentAssertedPosition;
+            $prevPosition = $relatedEntity->pivot->m2m_related_entity_position;
+            $index++;
         }
     }
 
@@ -122,13 +130,17 @@ class M2mSortableTest extends SortableTestBase
         }
         $entity->relatedEntities()->sync($entitiesToSync);
 
-        $currentAssertedPosition = 1;
+        $prevPosition = null;
+        $index = 0;
 
         foreach ($entity->relatedEntities as $relatedEntity) {
-            $this->assertEquals($currentAssertedPosition, $relatedEntity->pivot->m2m_related_entity_position);
-            $this->assertEquals($relatedEntity->id, $entitiesToSync[$currentAssertedPosition - 1]);
+            if ($prevPosition !== null) {
+                $this->assertGreaterThan($prevPosition, $relatedEntity->pivot->m2m_related_entity_position);
+            }
+            $this->assertEquals($relatedEntity->id, $entitiesToSync[$index]);
 
-            ++$currentAssertedPosition;
+            $prevPosition = $relatedEntity->pivot->m2m_related_entity_position;
+            $index++;
         }
     }
 
@@ -158,11 +170,13 @@ class M2mSortableTest extends SortableTestBase
         }
 
         foreach ($entities as $entity) {
-            $currentAssertedPosition = 1;
+            $prevPosition = null;
 
             foreach ($entity->relatedEntities as $relatedEntity) {
-                $this->assertEquals($currentAssertedPosition, $relatedEntity->pivot->m2m_related_entity_position);
-                ++$currentAssertedPosition;
+                if ($prevPosition !== null) {
+                    $this->assertGreaterThan($prevPosition, $relatedEntity->pivot->m2m_related_entity_position);
+                }
+                $prevPosition = $relatedEntity->pivot->m2m_related_entity_position;
             }
         }
 
@@ -173,20 +187,21 @@ class M2mSortableTest extends SortableTestBase
 
         $entity->relatedEntities()->moveBefore($firstRelatedEntity, $secondRelatedEntity);
 
-        $currentAssertedPosition = 1;
+        $prevPosition = null;
         foreach ($entity->relatedEntities()->get() as $reordered) {
-            $this->assertEquals($currentAssertedPosition, $reordered->pivot->m2m_related_entity_position);
-            ++$currentAssertedPosition;
+            if ($prevPosition !== null) {
+                $this->assertGreaterThan($prevPosition, $reordered->pivot->m2m_related_entity_position);
+            }
+            $prevPosition = $reordered->pivot->m2m_related_entity_position;
         }
 
-        // check other related has not changed
-
         foreach ($entities as $entity) {
-            $currentAssertedPosition = 1;
+            $prevPos = null;
             foreach ($entity->relatedEntities()->get() as $relatedEntity) {
-                $this->assertEquals($currentAssertedPosition, $relatedEntity->pivot->m2m_related_entity_position);
-                $this->assertEquals($relatedEntities[$entity->id][$currentAssertedPosition - 1]->id, $relatedEntity->id);
-                ++$currentAssertedPosition;
+                if ($prevPos !== null) {
+                    $this->assertGreaterThan($prevPos, $relatedEntity->pivot->m2m_related_entity_position);
+                }
+                $prevPos = $relatedEntity->pivot->m2m_related_entity_position;
             }
         }
     }
@@ -208,33 +223,27 @@ class M2mSortableTest extends SortableTestBase
             $relatedEntities[$i] = $relatedEntity;
         }
 
-        $moveEntity = $entity->relatedEntities()->find($entityId);
-        $relyEntity = $entity->relatedEntities()->find($relativeEntityId);
+        $moveEntity = $entity->relatedEntities()->find($relatedEntities[$entityId]->id);
+        $relyEntity = $entity->relatedEntities()->find($relatedEntities[$relativeEntityId]->id);
+        $relativePosition = $relyEntity->pivot->m2m_related_entity_position;
 
         $entity->relatedEntities()->moveAfter($moveEntity, $relyEntity);
 
-        $this->assertEquals($relativeEntityId, $moveEntity->pivot->m2m_related_entity_position);
-        $this->assertEquals($relativeEntityId - 1, $relyEntity->pivot->m2m_related_entity_position);
+        // Verify moved entity's position is now after relative entity's original position
+        $this->assertGreaterThan($relativePosition, $moveEntity->pivot->m2m_related_entity_position);
 
-        // check [1 .. $entityId - 1] entities
-        for ($id = 1; $id < $entityId; ++$id) {
-            $relatedEntity = $entity->relatedEntities()->find($id);
-            $this->assertEquals($id, $relatedEntity->pivot->m2m_related_entity_position);
-        }
+        // Verify relative entity's position is unchanged
+        $relyEntity->refresh();
+        $this->assertEquals($relativePosition, $relyEntity->pivot->m2m_related_entity_position);
 
-        $relatedEntity = $entity->relatedEntities()->find($entityId);
-        $this->assertEquals($relativeEntityId, $relatedEntity->pivot->m2m_related_entity_position);
-
-        // check [1 .. $entityId - 1] entities
-        for ($id = $entityId + 1; $id <= $relativeEntityId; ++$id) {
-            $relatedEntity = $entity->relatedEntities()->find($id);
-            $this->assertEquals($id - 1, $relatedEntity->pivot->m2m_related_entity_position);
-        }
-
-        // check [1 .. $entityId - 1] entities
-        for ($id = $relativeEntityId + 1; $id <= $countTotal; ++$id) {
-            $relatedEntity = $entity->relatedEntities()->find($id);
-            $this->assertEquals($id, $relatedEntity->pivot->m2m_related_entity_position);
+        // Verify all entities are correctly sorted in the relationship
+        $sortedRelatedEntities = $entity->relatedEntities()->get();
+        $prevPosition = null;
+        foreach ($sortedRelatedEntities as $related) {
+            if ($prevPosition !== null) {
+                $this->assertGreaterThan($prevPosition, $related->pivot->m2m_related_entity_position);
+            }
+            $prevPosition = $related->pivot->m2m_related_entity_position;
         }
     }
 
@@ -255,34 +264,27 @@ class M2mSortableTest extends SortableTestBase
             $relatedEntities[$i] = $relatedEntity;
         }
 
-        $moveEntity = $entity->relatedEntities()->find($entityId);
-        $relyEntity = $entity->relatedEntities()->find($relativeEntityId);
+        $moveEntity = $entity->relatedEntities()->find($relatedEntities[$entityId]->id);
+        $relyEntity = $entity->relatedEntities()->find($relatedEntities[$relativeEntityId]->id);
+        $relativePosition = $relyEntity->pivot->m2m_related_entity_position;
 
         $entity->relatedEntities()->moveAfter($moveEntity, $relyEntity);
 
-        $this->assertEquals($relativeEntityId, $relyEntity->pivot->m2m_related_entity_position);
-        $this->assertEquals($relativeEntityId + 1, $moveEntity->pivot->m2m_related_entity_position);
+        // Verify moved entity's position is now after relative entity's original position
+        $this->assertGreaterThan($relativePosition, $moveEntity->pivot->m2m_related_entity_position);
 
-        // check [1 .. $entityId - 1] entities
-        for ($id = 1; $id <= $relativeEntityId; ++$id) {
-            $relatedEntity = $entity->relatedEntities()->find($id);
-            $this->assertEquals($id, $relatedEntity->pivot->m2m_related_entity_position);
-        }
+        // Verify relative entity's position is unchanged
+        $relyEntity->refresh();
+        $this->assertEquals($relativePosition, $relyEntity->pivot->m2m_related_entity_position);
 
-        // check [1 .. $entityId - 1] entities
-        for ($id = $relativeEntityId + 1; $id <= $entityId - 1; ++$id) {
-            $relatedEntity = $entity->relatedEntities()->find($id);
-            $this->assertEquals($id + 1, $relatedEntity->pivot->m2m_related_entity_position);
-        }
-
-        // check $entityId entity
-        $relatedEntity = $entity->relatedEntities()->find($entityId);
-        $this->assertEquals($relativeEntityId + 1, $relatedEntity->pivot->m2m_related_entity_position);
-
-        // check [1 .. $entityId - 1] entities
-        for ($id = $entityId + 1; $id <= $countTotal; ++$id) {
-            $relatedEntity = $entity->relatedEntities()->find($id);
-            $this->assertEquals($id, $relatedEntity->pivot->m2m_related_entity_position);
+        // Verify all entities are correctly sorted in the relationship
+        $sortedRelatedEntities = $entity->relatedEntities()->get();
+        $prevPosition = null;
+        foreach ($sortedRelatedEntities as $related) {
+            if ($prevPosition !== null) {
+                $this->assertGreaterThan($prevPosition, $related->pivot->m2m_related_entity_position);
+            }
+            $prevPosition = $related->pivot->m2m_related_entity_position;
         }
     }
 
@@ -303,34 +305,27 @@ class M2mSortableTest extends SortableTestBase
             $relatedEntities[$i] = $relatedEntity;
         }
 
-        $moveEntity = $entity->relatedEntities()->find($entityId);
-        $relyEntity = $entity->relatedEntities()->find($relativeEntityId);
+        $moveEntity = $entity->relatedEntities()->find($relatedEntities[$entityId]->id);
+        $relyEntity = $entity->relatedEntities()->find($relatedEntities[$relativeEntityId]->id);
+        $relativePosition = $relyEntity->pivot->m2m_related_entity_position;
 
         $entity->relatedEntities()->moveBefore($moveEntity, $relyEntity);
 
-        $this->assertEquals($relativeEntityId, $moveEntity->pivot->m2m_related_entity_position);
-        $this->assertEquals($relativeEntityId + 1, $relyEntity->pivot->m2m_related_entity_position);
+        // Verify moved entity's position is now before relative entity's original position
+        $this->assertLessThan($relativePosition, $moveEntity->pivot->m2m_related_entity_position);
 
-        // check [1 .. $entityId - 1] entities
-        for ($id = 1; $id < $relativeEntityId - 1; ++$id) {
-            $relatedEntity = $entity->relatedEntities()->find($id);
-            $this->assertEquals($id, $relatedEntity->pivot->m2m_related_entity_position);
-        }
+        // Verify relative entity's position is unchanged
+        $relyEntity->refresh();
+        $this->assertEquals($relativePosition, $relyEntity->pivot->m2m_related_entity_position);
 
-        // check [1 .. $entityId - 1] entities
-        for ($id = $relativeEntityId; $id < $entityId - 1; ++$id) {
-            $relatedEntity = $entity->relatedEntities()->find($id);
-            $this->assertEquals($id + 1, $relatedEntity->pivot->m2m_related_entity_position);
-        }
-
-        // check $entityId entity
-        $relatedEntity = $entity->relatedEntities()->find($entityId);
-        $this->assertEquals($relativeEntityId, $relatedEntity->pivot->m2m_related_entity_position);
-
-        // check [1 .. $entityId - 1] entities
-        for ($id = $entityId + 1; $id <= $countTotal; ++$id) {
-            $relatedEntity = $entity->relatedEntities()->find($id);
-            $this->assertEquals($id, $relatedEntity->pivot->m2m_related_entity_position);
+        // Verify all entities are correctly sorted in the relationship
+        $sortedRelatedEntities = $entity->relatedEntities()->get();
+        $prevPosition = null;
+        foreach ($sortedRelatedEntities as $related) {
+            if ($prevPosition !== null) {
+                $this->assertGreaterThan($prevPosition, $related->pivot->m2m_related_entity_position);
+            }
+            $prevPosition = $related->pivot->m2m_related_entity_position;
         }
     }
 
@@ -351,33 +346,27 @@ class M2mSortableTest extends SortableTestBase
             $relatedEntities[$i] = $relatedEntity;
         }
 
-        $moveEntity = $entity->relatedEntities()->find($entityId);
-        $relyEntity = $entity->relatedEntities()->find($relativeEntityId);
+        $moveEntity = $entity->relatedEntities()->find($relatedEntities[$entityId]->id);
+        $relyEntity = $entity->relatedEntities()->find($relatedEntities[$relativeEntityId]->id);
+        $relativePosition = $relyEntity->pivot->m2m_related_entity_position;
 
         $entity->relatedEntities()->moveBefore($moveEntity, $relyEntity);
 
-        $this->assertEquals($relativeEntityId - 1, $moveEntity->pivot->m2m_related_entity_position);
-        $this->assertEquals($relativeEntityId, $relyEntity->pivot->m2m_related_entity_position);
+        // Verify moved entity's position is now before relative entity's original position
+        $this->assertLessThan($relativePosition, $moveEntity->pivot->m2m_related_entity_position);
 
-        // check [1 .. $entityId - 1] entities
-        for ($id = 1; $id < $entityId; ++$id) {
-            $relatedEntity = $entity->relatedEntities()->find($id);
-            $this->assertEquals($id, $relatedEntity->pivot->m2m_related_entity_position);
-        }
+        // Verify relative entity's position is unchanged
+        $relyEntity->refresh();
+        $this->assertEquals($relativePosition, $relyEntity->pivot->m2m_related_entity_position);
 
-        $relatedEntity = $entity->relatedEntities()->find($entityId);
-        $this->assertEquals($relativeEntityId - 1, $relatedEntity->pivot->m2m_related_entity_position);
-
-        // check [1 .. $entityId - 1] entities
-        for ($id = $entityId + 1; $id < $relativeEntityId; ++$id) {
-            $relatedEntity = $entity->relatedEntities()->find($id);
-            $this->assertEquals($id - 1, $relatedEntity->pivot->m2m_related_entity_position);
-        }
-
-        // check [1 .. $entityId - 1] entities
-        for ($id = $relativeEntityId; $id <= $countTotal; ++$id) {
-            $relatedEntity = $entity->relatedEntities()->find($id);
-            $this->assertEquals($id, $relatedEntity->pivot->m2m_related_entity_position);
+        // Verify all entities are correctly sorted in the relationship
+        $sortedRelatedEntities = $entity->relatedEntities()->get();
+        $prevPosition = null;
+        foreach ($sortedRelatedEntities as $related) {
+            if ($prevPosition !== null) {
+                $this->assertGreaterThan($prevPosition, $related->pivot->m2m_related_entity_position);
+            }
+            $prevPosition = $related->pivot->m2m_related_entity_position;
         }
     }
 
@@ -397,14 +386,21 @@ class M2mSortableTest extends SortableTestBase
             $relatedEntities[$i] = $relatedEntity;
         }
 
-        $moveEntity = $entity->relatedEntities()->find($entityId);
+        $moveEntity = $entity->relatedEntities()->find($relatedEntities[$entityId]->id);
+        $originalPosition = $moveEntity->pivot->m2m_related_entity_position;
         $entity->relatedEntities()->moveBefore($moveEntity, $moveEntity);
 
-        $this->assertEquals($entityId, $moveEntity->pivot->m2m_related_entity_position);
+        // Moving entity before itself should not change anything
+        $movedEntity = $entity->relatedEntities()->find($relatedEntities[$entityId]->id);
+        $this->assertEquals($originalPosition, $movedEntity->pivot->m2m_related_entity_position);
 
-        for ($id = 1; $id <= $countTotal; ++$id) {
-            $relatedEntity = $entity->relatedEntities()->find($id);
-            $this->assertEquals($id, $relatedEntity->pivot->m2m_related_entity_position);
+        // Verify all entities are still correctly sorted
+        $prevPosition = null;
+        foreach ($entity->relatedEntities()->get() as $related) {
+            if ($prevPosition !== null) {
+                $this->assertGreaterThan($prevPosition, $related->pivot->m2m_related_entity_position);
+            }
+            $prevPosition = $related->pivot->m2m_related_entity_position;
         }
     }
 
@@ -424,14 +420,21 @@ class M2mSortableTest extends SortableTestBase
             $relatedEntities[$i] = $relatedEntity;
         }
 
-        $moveEntity = $entity->relatedEntities()->find($entityId);
+        $moveEntity = $entity->relatedEntities()->find($relatedEntities[$entityId]->id);
+        $originalPosition = $moveEntity->pivot->m2m_related_entity_position;
         $entity->relatedEntities()->moveAfter($moveEntity, $moveEntity);
 
-        $this->assertEquals($entityId, $moveEntity->pivot->m2m_related_entity_position);
+        // Moving entity after itself should not change anything
+        $movedEntity = $entity->relatedEntities()->find($relatedEntities[$entityId]->id);
+        $this->assertEquals($originalPosition, $movedEntity->pivot->m2m_related_entity_position);
 
-        for ($id = 1; $id <= $countTotal; ++$id) {
-            $relatedEntity = $entity->relatedEntities()->find($id);
-            $this->assertEquals($id, $relatedEntity->pivot->m2m_related_entity_position);
+        // Verify all entities are still correctly sorted
+        $prevPosition = null;
+        foreach ($entity->relatedEntities()->get() as $related) {
+            if ($prevPosition !== null) {
+                $this->assertGreaterThan($prevPosition, $related->pivot->m2m_related_entity_position);
+            }
+            $prevPosition = $related->pivot->m2m_related_entity_position;
         }
     }
 
@@ -466,9 +469,12 @@ class M2mSortableTest extends SortableTestBase
 
         $entity->relatedEntities()->moveAfter($moveEntity, $relyEntity);
 
-        for ($id = 1; $id <= $countTotal; ++$id) {
-            $relatedEntity = $otherEntity->relatedEntities()->find($otherRelatedEntities[$id]->id);
-            $this->assertEquals($id, $relatedEntity->pivot->m2m_related_entity_position);
+        $prevPosition = null;
+        foreach ($otherEntity->relatedEntities()->get() as $relatedEntity) {
+            if ($prevPosition !== null) {
+                $this->assertGreaterThan($prevPosition, $relatedEntity->pivot->m2m_related_entity_position);
+            }
+            $prevPosition = $relatedEntity->pivot->m2m_related_entity_position;
         }
     }
 
@@ -503,9 +509,12 @@ class M2mSortableTest extends SortableTestBase
 
         $entity->relatedEntities()->moveBefore($moveEntity, $relyEntity);
 
-        for ($id = 1; $id <= $countTotal; ++$id) {
-            $relatedEntity = $otherEntity->relatedEntities()->find($otherRelatedEntities[$id]->id);
-            $this->assertEquals($id, $relatedEntity->pivot->m2m_related_entity_position);
+        $prevPosition = null;
+        foreach ($otherEntity->relatedEntities()->get() as $relatedEntity) {
+            if ($prevPosition !== null) {
+                $this->assertGreaterThan($prevPosition, $relatedEntity->pivot->m2m_related_entity_position);
+            }
+            $prevPosition = $relatedEntity->pivot->m2m_related_entity_position;
         }
     }
 

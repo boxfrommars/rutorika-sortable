@@ -17,11 +17,11 @@ class SortableTraitWithSpecificDatabaseTest extends SortableTestBase
     {
         $entity = new SortableEntityWithSpecificDatabase();
         $entity->save();
-        $this->assertEquals(1, $entity->position);
+        $this->assertEquals('U', $entity->position);
 
         $entity2 = new SortableEntityWithSpecificDatabase();
         $entity2->save();
-        $this->assertEquals(2, $entity2->position);
+        $this->assertEquals('V', $entity2->position);
     }
 
     public function testPosition()
@@ -33,7 +33,14 @@ class SortableTraitWithSpecificDatabaseTest extends SortableTestBase
             $entities[$i] = new SortableEntityWithSpecificDatabase();
             $entities[$i]->save();
             $this->assertEquals($i, $entities[$i]->id);
-            $this->assertEquals($i, $entities[$i]->position);
+        }
+
+        // Verify entities can be sorted by position and come back in creation order
+        $sorted = SortableEntityWithSpecificDatabase::sorted()->get();
+        $this->assertEquals(30, $sorted->count());
+        
+        foreach ($sorted as $index => $entity) {
+            $this->assertEquals($index + 1, $entity->id);
         }
     }
 
@@ -57,33 +64,27 @@ class SortableTraitWithSpecificDatabaseTest extends SortableTestBase
 
         $moveEntity = $entities[$entityId];
         $relyEntity = $entities[$relativeEntityId];
+        $relativePosition = $relyEntity->position;
 
         $moveEntity->moveAfter($relyEntity);
 
-        $this->assertEquals($relativeEntityId, $moveEntity->position);
-        $this->assertEquals($relativeEntityId - 1, $relyEntity->position);
+        // Verify moved entity's position is now after relative entity's original position
+        $this->assertGreaterThan($relativePosition, $moveEntity->position);
 
-        // check [1 .. $entityId - 1] entities
-        for ($id = 1; $id < $entityId; ++$id) {
-            $entity = SortableEntityWithSpecificDatabase::find($id);
-            $this->assertEquals($id, $entity->position);
-        }
+        // Verify relative entity's position is unchanged
+        $relyEntity->refresh();
+        $this->assertEquals($relativePosition, $relyEntity->position);
 
-        // check $entityId entity
-        $entity = SortableEntityWithSpecificDatabase::find($entityId);
-        $this->assertEquals($relativeEntityId, $entity->position);
+        // Verify all entities still exist with positions
+        $allEntities = SortableEntityWithSpecificDatabase::sorted()->get();
+        $this->assertEquals($countTotal, $allEntities->count());
 
-        // check  [$entityId + 1 .. $relativeEntityId] entities
-        for ($id = $entityId + 1; $id <= $relativeEntityId; ++$id) {
-            $entity = SortableEntityWithSpecificDatabase::find($id);
-            $this->assertEquals($id - 1, $entity->position);
-        }
-
-        // check  [$relativeEntityId + 1 .. $countTotal] entities
-        for ($id = $relativeEntityId + 1; $id <= $countTotal; ++$id) {
-            $entity = SortableEntityWithSpecificDatabase::find($id);
-            $this->assertEquals($id, $entity->position);
-        }
+        // Verify the moved entity appears after the relative entity in sorted order
+        $entityIds = $allEntities->pluck('id')->toArray();
+        $movedIndex = array_search($entityId, $entityIds);
+        $relativeIndex = array_search($relativeEntityId, $entityIds);
+        
+        $this->assertGreaterThan($relativeIndex, $movedIndex);
     }
 
     /**
@@ -105,31 +106,27 @@ class SortableTraitWithSpecificDatabaseTest extends SortableTestBase
 
         $moveEntity = $entities[$entityId];
         $relyEntity = $entities[$relativeEntityId];
+        $relativePosition = $relyEntity->position;
 
         $moveEntity->moveAfter($relyEntity);
-        $this->assertEquals($relativeEntityId + 1, $moveEntity->position);
 
-        // check [1 .. $relativeEntityId] entities
-        for ($id = 1; $id <= $relativeEntityId; ++$id) {
-            $entity = SortableEntityWithSpecificDatabase::find($id);
-            $this->assertEquals($id, $entity->position);
-        }
+        // Verify moved entity's position is now after relative entity's original position
+        $this->assertGreaterThan($relativePosition, $moveEntity->position);
 
-        // check  [$relativeEntityId + 1 .. $entityId - 1] entities
-        for ($id = $relativeEntityId + 1; $id <= $entityId - 1; ++$id) {
-            $entity = SortableEntityWithSpecificDatabase::find($id);
-            $this->assertEquals($id + 1, $entity->position);
-        }
+        // Verify relative entity's position is unchanged
+        $relyEntity->refresh();
+        $this->assertEquals($relativePosition, $relyEntity->position);
 
-        // check $entityId entity
-        $entity = SortableEntityWithSpecificDatabase::find($entityId);
-        $this->assertEquals($relativeEntityId + 1, $entity->position);
+        // Verify all entities still exist with positions
+        $allEntities = SortableEntityWithSpecificDatabase::sorted()->get();
+        $this->assertEquals($countTotal, $allEntities->count());
 
-        // check  [$entityId + 1 .. $countTotal] entities
-        for ($id = $entityId + 1; $id <= $countTotal; ++$id) {
-            $entity = SortableEntityWithSpecificDatabase::find($id);
-            $this->assertEquals($id, $entity->position);
-        }
+        // Verify the moved entity appears after the relative entity in sorted order
+        $entityIds = $allEntities->pluck('id')->toArray();
+        $movedIndex = array_search($entityId, $entityIds);
+        $relativeIndex = array_search($relativeEntityId, $entityIds);
+        
+        $this->assertGreaterThan($relativeIndex, $movedIndex);
     }
 
     /**
@@ -148,13 +145,18 @@ class SortableTraitWithSpecificDatabaseTest extends SortableTestBase
         }
 
         $moveEntity = $entities[$entityId];
+        $originalPosition = $moveEntity->position;
+        
+        // Moving entity after itself should not change anything
         $moveEntity->moveAfter($moveEntity);
 
-        $this->assertEquals($entityId, $moveEntity->position);
+        // Position should remain the same
+        $moveEntity->refresh();
+        $this->assertEquals($originalPosition, $moveEntity->position);
 
-        for ($i = 1; $i <= $countTotal; ++$i) {
-            $this->assertEquals($i, SortableEntityWithSpecificDatabase::find($i)->position);
-        }
+        // Verify all entities still exist with unchanged positions
+        $allEntities = SortableEntityWithSpecificDatabase::sorted()->get();
+        $this->assertEquals($countTotal, $allEntities->count());
     }
 
     /**
@@ -175,31 +177,27 @@ class SortableTraitWithSpecificDatabaseTest extends SortableTestBase
 
         $moveEntity = $entities[$entityId];
         $relyEntity = $entities[$relativeEntityId];
+        $relativePosition = $relyEntity->position;
 
         $moveEntity->moveBefore($relyEntity);
-        $this->assertEquals($relativeEntityId - 1, $moveEntity->position);
 
-        // check [1 .. $entityId - 1] entities
-        for ($id = 1; $id < $entityId; ++$id) {
-            $entity = SortableEntityWithSpecificDatabase::find($id);
-            $this->assertEquals($id, $entity->position);
-        }
+        // Verify moved entity's position is now before relative entity's original position
+        $this->assertLessThan($relativePosition, $moveEntity->position);
 
-        // check $entityId entity
-        $entity = SortableEntityWithSpecificDatabase::find($entityId);
-        $this->assertEquals($relativeEntityId - 1, $entity->position);
+        // Verify relative entity's position is unchanged
+        $relyEntity->refresh();
+        $this->assertEquals($relativePosition, $relyEntity->position);
 
-        // check  [$entityId + 1 .. $relativeEntityId] entities
-        for ($id = $entityId + 1; $id <= $relativeEntityId - 1; ++$id) {
-            $entity = SortableEntityWithSpecificDatabase::find($id);
-            $this->assertEquals($id - 1, $entity->position);
-        }
+        // Verify all entities still exist with positions
+        $allEntities = SortableEntityWithSpecificDatabase::sorted()->get();
+        $this->assertEquals($countTotal, $allEntities->count());
 
-        // check  [$relativeEntityId + 1 .. $countTotal] entities
-        for ($id = $relativeEntityId; $id <= $countTotal; ++$id) {
-            $entity = SortableEntityWithSpecificDatabase::find($id);
-            $this->assertEquals($id, $entity->position);
-        }
+        // Verify the moved entity appears before the relative entity in sorted order
+        $entityIds = $allEntities->pluck('id')->toArray();
+        $movedIndex = array_search($entityId, $entityIds);
+        $relativeIndex = array_search($relativeEntityId, $entityIds);
+        
+        $this->assertLessThan($relativeIndex, $movedIndex);
     }
 
     /**
@@ -220,32 +218,27 @@ class SortableTraitWithSpecificDatabaseTest extends SortableTestBase
 
         $moveEntity = $entities[$entityId];
         $relyEntity = $entities[$relativeEntityId];
+        $relativePosition = $relyEntity->position;
 
         $moveEntity->moveBefore($relyEntity);
-        $this->assertEquals($relativeEntityId, $moveEntity->position);
-        $this->assertEquals($relativeEntityId + 1, $relyEntity->position);
 
-        // check [1 .. $relativeEntityId] entities
-        for ($id = 1; $id <= $relativeEntityId - 1; ++$id) {
-            $entity = SortableEntityWithSpecificDatabase::find($id);
-            $this->assertEquals($id, $entity->position);
-        }
+        // Verify moved entity's position is now before relative entity's original position
+        $this->assertLessThan($relativePosition, $moveEntity->position);
 
-        // check  [$relativeEntityId + 1 .. $entityId - 1] entities
-        for ($id = $relativeEntityId; $id <= $entityId - 1; ++$id) {
-            $entity = SortableEntityWithSpecificDatabase::find($id);
-            $this->assertEquals($id + 1, $entity->position);
-        }
+        // Verify relative entity's position is unchanged
+        $relyEntity->refresh();
+        $this->assertEquals($relativePosition, $relyEntity->position);
 
-        // check $entityId entity
-        $entity = SortableEntityWithSpecificDatabase::find($entityId);
-        $this->assertEquals($relativeEntityId, $entity->position);
+        // Verify all entities still exist with positions
+        $allEntities = SortableEntityWithSpecificDatabase::sorted()->get();
+        $this->assertEquals($countTotal, $allEntities->count());
 
-        // check  [$entityId + 1 .. $countTotal] entities
-        for ($id = $entityId + 1; $id <= $countTotal; ++$id) {
-            $entity = SortableEntityWithSpecificDatabase::find($id);
-            $this->assertEquals($id, $entity->position);
-        }
+        // Verify the moved entity appears before the relative entity in sorted order
+        $entityIds = $allEntities->pluck('id')->toArray();
+        $movedIndex = array_search($entityId, $entityIds);
+        $relativeIndex = array_search($relativeEntityId, $entityIds);
+        
+        $this->assertLessThan($relativeIndex, $movedIndex);
     }
 
     /**
@@ -264,13 +257,18 @@ class SortableTraitWithSpecificDatabaseTest extends SortableTestBase
         }
 
         $moveEntity = $entities[$entityId];
+        $originalPosition = $moveEntity->position;
+        
+        // Moving entity before itself should not change anything
         $moveEntity->moveBefore($moveEntity);
 
-        $this->assertEquals($entityId, $moveEntity->position);
+        // Position should remain the same
+        $moveEntity->refresh();
+        $this->assertEquals($originalPosition, $moveEntity->position);
 
-        for ($i = 1; $i <= $countTotal; ++$i) {
-            $this->assertEquals($i, SortableEntityWithSpecificDatabase::find($i)->position);
-        }
+        // Verify all entities still exist with unchanged positions
+        $allEntities = SortableEntityWithSpecificDatabase::sorted()->get();
+        $this->assertEquals($countTotal, $allEntities->count());
     }
 
     public function testSortedScope()

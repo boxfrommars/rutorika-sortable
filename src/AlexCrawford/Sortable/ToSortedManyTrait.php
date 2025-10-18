@@ -66,14 +66,20 @@ trait ToSortedManyTrait
     public function move($action, $entity, $positionEntity)
     {
         $positionColumn = $this->getOrderColumnName();
+        
+        // Guard: don't move an entity to itself
+        if ($entity->pivot->$positionColumn === $positionEntity->pivot->$positionColumn) {
+            return;
+        }
+        
         $entityPosition = $positionEntity->pivot->$positionColumn;
 
         if ($action === 'moveBefore') {
-            $previous = optional($this->newPivotQuery()->where($positionColumn, '<', $entityPosition)->first())->$positionColumn;
+            $previous = optional($this->newPivotQuery()->where($positionColumn, '<', $entityPosition)->orderBy($positionColumn, 'DESC')->first())->$positionColumn;
             $next = $entityPosition;
         } else {
             $previous = $entityPosition;
-            $next = optional($this->newPivotQuery()->where($positionColumn, '>', $entityPosition)->first())->$positionColumn;
+            $next = optional($this->newPivotQuery()->where($positionColumn, '>', $entityPosition)->orderBy($positionColumn, 'ASC')->first())->$positionColumn;
         }
 
         $entity->pivot->$positionColumn = static::getNewPosition($previous, $next);
