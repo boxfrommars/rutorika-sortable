@@ -22,7 +22,8 @@
         "phpunit/phpunit": "^10.0|^11.0",
         "orchestra/testbench": "^8.0|^9.0",
         "laravel/pint": "^1.25",
-        "phpstan/phpstan": "^2.1"
+        "phpstan/phpstan": "^2.1",
+        "phpunit/php-code-coverage": "^11.0"
     },
     "autoload": {
         "psr-0": {

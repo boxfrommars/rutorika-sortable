@@ -5,3 +5,5 @@ composer.lock
 /.idea
 /.c9
 /.phpunit.result.cache
+/.phpunit.cache/
+/coverage-report/
