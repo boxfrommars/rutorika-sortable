@@ -2,19 +2,19 @@
 
 class SortableTestBase extends Orchestra\Testbench\TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->loadMigrationsFrom([
             '--database' => 'testbench',
-            '--path' => realpath(__DIR__ . '/migrations'),
+            '--path' => realpath(__DIR__.'/migrations'),
         ]);
     }
 
     protected function getEnvironmentSetUp($app)
     {
-        $app['path.base'] = __DIR__ . '/../src';
+        $app['path.base'] = __DIR__.'/../src';
 
         $app['config']->set('database.default', 'testbench');
         $app['config']->set(

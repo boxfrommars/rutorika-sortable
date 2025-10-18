@@ -16,14 +16,12 @@ class SortableServiceProvider extends ServiceProvider
     /**
      * Register the service provider.
      */
-    public function register()
-    {
-    }
+    public function register() {}
 
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../../config/sortable.php' => config_path('sortable.php'),
+            __DIR__.'/../../config/sortable.php' => config_path('sortable.php'),
         ]);
     }
 

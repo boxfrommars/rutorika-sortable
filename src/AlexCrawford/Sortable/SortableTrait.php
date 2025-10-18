@@ -14,10 +14,10 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  *
  * @property string $sortableGroupField
  *
- * @method null         creating($callback)
+ * @method null creating($callback)
  * @method QueryBuilder on($connection = null)
  * @method QueryBuilder where($column, $operator = null, $value = null, $boolean = 'and')
- * @method float|int    max($column)
+ * @method float|int max($column)
  */
 trait SortableTrait
 {
@@ -38,7 +38,7 @@ trait SortableTrait
                     if ($max === null) {
                         $model->setAttribute($sortableField, Rank::forEmptySequence()->get());
                     } else {
-                        $model->setAttribute($sortableField, Rank::after(Rank::fromString((string)$max))->get());
+                        $model->setAttribute($sortableField, Rank::after(Rank::fromString((string) $max))->get());
                     }
                 }
             }
@@ -46,8 +46,7 @@ trait SortableTrait
     }
 
     /**
-     * @param QueryBuilder $query
-     *
+     * @param  QueryBuilder  $query
      * @return QueryBuilder
      */
     public function scopeSorted($query)
@@ -60,7 +59,7 @@ trait SortableTrait
     /**
      * moves $this model after $entity model (and rearrange all entities).
      *
-     * @param Model $entity
+     * @param  Model  $entity
      *
      * @throws \Exception
      */
@@ -72,7 +71,7 @@ trait SortableTrait
     /**
      * moves $this model before $entity model (and rearrange all entities).
      *
-     * @param Model $entity
+     * @param  Model  $entity
      *
      * @throws SortableException
      */
@@ -82,8 +81,8 @@ trait SortableTrait
     }
 
     /**
-     * @param string $action moveAfter/moveBefore
-     * @param Model  $entity
+     * @param  string  $action  moveAfter/moveBefore
+     * @param  Model  $entity
      *
      * @throws SortableException
      */
@@ -114,8 +113,8 @@ trait SortableTrait
     }
 
     /**
-     * @param string $prev
-     * @param string $next
+     * @param  string  $prev
+     * @param  string  $next
      * @return mixed
      */
     public static function getNewPosition($prev, $next = ''): string
@@ -124,23 +123,21 @@ trait SortableTrait
             if ($next === null || $next === '') {
                 return Rank::forEmptySequence()->get();
             }
-            return Rank::before(Rank::fromString((string)$next))->get();
+
+            return Rank::before(Rank::fromString((string) $next))->get();
         }
-        
+
         if ($next === null || $next === '') {
-            return Rank::after(Rank::fromString((string)$prev))->get();
+            return Rank::after(Rank::fromString((string) $prev))->get();
         }
-        
+
         return Rank::betweenRanks(
-            Rank::fromString((string)$prev),
-            Rank::fromString((string)$next)
+            Rank::fromString((string) $prev),
+            Rank::fromString((string) $next)
         )->get();
     }
 
     /**
-     * @param $left
-     * @param $right
-     *
      * @return QueryBuilder
      */
     protected function queryBetween($left, $right)
@@ -152,8 +149,7 @@ trait SortableTrait
     }
 
     /**
-     * @param int $limit
-     *
+     * @param  int  $limit
      * @return QueryBuilder
      */
     public function previous($limit = 0)
@@ -162,8 +158,7 @@ trait SortableTrait
     }
 
     /**
-     * @param int $limit
-     *
+     * @param  int  $limit
      * @return QueryBuilder
      */
     public function next($limit = 0)
@@ -172,9 +167,8 @@ trait SortableTrait
     }
 
     /**
-     * @param bool $isNext is next, otherwise before
-     * @param int  $limit
-     *
+     * @param  bool  $isNext  is next, otherwise before
+     * @param  int  $limit
      * @return QueryBuilder
      */
     public function siblings($isNext, $limit = 0)
@@ -192,8 +186,7 @@ trait SortableTrait
     }
 
     /**
-     * @param int $limit
-     *
+     * @param  int  $limit
      * @return Collection|static[]
      */
     public function getPrevious($limit = 0)
@@ -205,8 +198,7 @@ trait SortableTrait
     }
 
     /**
-     * @param int $limit
-     *
+     * @param  int  $limit
      * @return Collection
      */
     public function getNext($limit = 0)
@@ -215,8 +207,6 @@ trait SortableTrait
     }
 
     /**
-     * @param \Closure $callback
-     *
      * @return mixed
      */
     protected function _transaction(\Closure $callback)
@@ -225,9 +215,8 @@ trait SortableTrait
     }
 
     /**
-     * @param QueryBuilder        $query
-     * @param Model|SortableTrait $model
-     *
+     * @param  QueryBuilder  $query
+     * @param  Model|SortableTrait  $model
      * @return QueryBuilder
      */
     protected static function applySortableGroup($query, $model)
@@ -266,8 +255,8 @@ trait SortableTrait
     }
 
     /**
-     * @param string|array $sortableGroupField
-     * @param Model        $entity
+     * @param  string|array  $sortableGroupField
+     * @param  Model  $entity
      *
      * @throws SortableException
      */
@@ -283,9 +272,9 @@ trait SortableTrait
     }
 
     /**
-     * @param Model|SortableTrait $entity1
-     * @param Model               $entity2
-     * @param string              $field
+     * @param  Model|SortableTrait  $entity1
+     * @param  Model  $entity2
+     * @param  string  $field
      *
      * @throws SortableException
      */
@@ -324,7 +313,6 @@ trait SortableTrait
     /**
      * Save the model to the database.
      *
-     * @param array $options
      *
      * @return bool
      */
@@ -333,8 +321,7 @@ trait SortableTrait
     /**
      * Get an attribute from the model.
      *
-     * @param string $key
-     *
+     * @param  string  $key
      * @return mixed
      */
     abstract public function getAttribute($key);
@@ -342,9 +329,8 @@ trait SortableTrait
     /**
      * Set a given attribute on the model.
      *
-     * @param string $key
-     * @param mixed  $value
-     *
+     * @param  string  $key
+     * @param  mixed  $value
      * @return $this
      */
     abstract public function setAttribute($key, $value);

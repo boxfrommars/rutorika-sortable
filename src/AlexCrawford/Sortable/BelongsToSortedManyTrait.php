@@ -16,20 +16,26 @@ trait BelongsToSortedManyTrait
      *
      * Just copy of belongsToMany except last line where we return new BelongsToSortedMany instance with additional orderColumn param
      *
-     * @param string $related
-     * @param string $orderColumn
-     * @param string $table
-     * @param string $foreignPivotKey
-     * @param string $relatedPivotKey
-     * @param string $parentKey
-     * @param string $relatedKey
-     * @param string $relation
-     *
+     * @param  string  $related
+     * @param  string  $orderColumn
+     * @param  string  $table
+     * @param  string  $foreignPivotKey
+     * @param  string  $relatedPivotKey
+     * @param  string  $parentKey
+     * @param  string  $relatedKey
+     * @param  string  $relation
      * @return BelongsToSortedMany
      */
-    public function belongsToSortedMany($related, $orderColumn = 'position', $table = null, $foreignPivotKey = null, $relatedPivotKey = null,
-                                  $parentKey = null, $relatedKey = null, $relation = null)
-    {
+    public function belongsToSortedMany(
+        $related,
+        $orderColumn = 'position',
+        $table = null,
+        $foreignPivotKey = null,
+        $relatedPivotKey = null,
+        $parentKey = null,
+        $relatedKey = null,
+        $relation = null
+    ) {
         // If no relationship name was passed, we will pull backtraces to get the
         // name of the calling function. We will use that function name as the
         // title of this relation since that is a great convention to apply.
@@ -54,17 +60,22 @@ trait BelongsToSortedManyTrait
         }
 
         return new BelongsToSortedMany(
-            $instance->newQuery(), $this, $table, $foreignPivotKey,
-            $relatedPivotKey, $parentKey ?: $this->getKeyName(),
-            $relatedKey ?: $instance->getKeyName(), $relation, $orderColumn
+            $instance->newQuery(),
+            $this,
+            $table,
+            $foreignPivotKey,
+            $relatedPivotKey,
+            $parentKey ?: $this->getKeyName(),
+            $relatedKey ?: $instance->getKeyName(),
+            $relation,
+            $orderColumn
         );
     }
 
     /**
      * Get the joining table name for a many-to-many relation.
      *
-     * @param string $related
-     *
+     * @param  string  $related
      * @return string
      */
     abstract public function joiningTable($related, $instance = null);
@@ -93,8 +104,7 @@ trait BelongsToSortedManyTrait
     /**
      * Create a new model instance for a related model.
      *
-     * @param string $class
-     *
+     * @param  string  $class
      * @return mixed
      */
     abstract protected function newRelatedInstance($class);

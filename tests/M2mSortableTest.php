@@ -1,6 +1,6 @@
 <?php
-use PHPUnit\Framework\Attributes\DataProvider;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 
 require_once 'stubs/M2mEntity.php';
 require_once 'stubs/M2mRelatedEntity.php';
@@ -8,7 +8,7 @@ require_once 'SortableTestBase.php';
 
 class M2mSortableTest extends SortableTestBase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -16,21 +16,21 @@ class M2mSortableTest extends SortableTestBase
         M2mRelatedEntity::boot();
     }
 
-    public function testPositionOnSave()
+    public function test_position_on_save()
     {
-        $entity = new M2mEntity();
+        $entity = new M2mEntity;
         $entity->save();
 
-        for ($i = 1; $i < 10; ++$i) {
-            $relatedEntity = new M2mRelatedEntity();
+        for ($i = 1; $i < 10; $i++) {
+            $relatedEntity = new M2mRelatedEntity;
             $entity->relatedEntities()->save($relatedEntity);
         }
 
-        $entity = new M2mEntity();
+        $entity = new M2mEntity;
         $entity->save();
 
-        for ($i = 1; $i < 10; ++$i) {
-            $relatedEntity = new M2mRelatedEntity();
+        for ($i = 1; $i < 10; $i++) {
+            $relatedEntity = new M2mRelatedEntity;
             $entity->relatedEntities()->save($relatedEntity);
         }
 
@@ -44,22 +44,22 @@ class M2mSortableTest extends SortableTestBase
         }
     }
 
-    public function testPositionOnAttach()
+    public function test_position_on_attach()
     {
-        $entity = new M2mEntity();
+        $entity = new M2mEntity;
         $entity->save();
 
-        for ($i = 1; $i < 10; ++$i) {
-            $relatedEntity = new M2mRelatedEntity();
+        for ($i = 1; $i < 10; $i++) {
+            $relatedEntity = new M2mRelatedEntity;
             $relatedEntity->save();
             $entity->relatedEntities()->attach($relatedEntity->id);
         }
 
-        $entity = new M2mEntity();
+        $entity = new M2mEntity;
         $entity->save();
 
-        for ($i = 1; $i < 10; ++$i) {
-            $relatedEntity = new M2mRelatedEntity();
+        for ($i = 1; $i < 10; $i++) {
+            $relatedEntity = new M2mRelatedEntity;
             $relatedEntity->save();
             $entity->relatedEntities()->attach($relatedEntity->id);
         }
@@ -74,23 +74,22 @@ class M2mSortableTest extends SortableTestBase
         }
     }
 
-    
     #[DataProvider('syncProvider')]
-    public function testPositionOnSync($entitiesToSync)
+    public function test_position_on_sync($entitiesToSync)
     {
-        $entity = new M2mEntity();
+        $entity = new M2mEntity;
         $entity->save();
 
-        for ($i = 1; $i < 10; ++$i) {
-            $relatedEntity = new M2mRelatedEntity();
+        for ($i = 1; $i < 10; $i++) {
+            $relatedEntity = new M2mRelatedEntity;
             $entity->relatedEntities()->save($relatedEntity);
         }
 
-        $entity = new M2mEntity();
+        $entity = new M2mEntity;
         $entity->save();
 
-        for ($i = 1; $i < 10; ++$i) {
-            $relatedEntity = new M2mRelatedEntity();
+        for ($i = 1; $i < 10; $i++) {
+            $relatedEntity = new M2mRelatedEntity;
             $relatedEntity->save();
         }
 
@@ -110,20 +109,19 @@ class M2mSortableTest extends SortableTestBase
         }
     }
 
-    
     #[DataProvider('syncProvider')]
-    public function testPositionOnSyncWithExistedRelations($entitiesToSync)
+    public function test_position_on_sync_with_existed_relations($entitiesToSync)
     {
-        $entity = new M2mEntity();
+        $entity = new M2mEntity;
         $entity->save();
 
-        for ($i = 1; $i < 10; ++$i) {
-            $relatedEntity = new M2mRelatedEntity();
+        for ($i = 1; $i < 10; $i++) {
+            $relatedEntity = new M2mRelatedEntity;
             $entity->relatedEntities()->save($relatedEntity);
         }
 
-        for ($i = 1; $i < 10; ++$i) {
-            $relatedEntity = new M2mRelatedEntity();
+        for ($i = 1; $i < 10; $i++) {
+            $relatedEntity = new M2mRelatedEntity;
             $relatedEntity->save();
         }
         $entity->relatedEntities()->sync($entitiesToSync);
@@ -142,18 +140,18 @@ class M2mSortableTest extends SortableTestBase
         }
     }
 
-    public function testmoveBeforeRePositionNotChangeNotRelated()
+    public function testmove_before_re_position_not_change_not_related()
     {
         $entities = [];
         $relatedEntities = [];
 
-        for ($i = 1; $i < 5; ++$i) {
-            $entity = new M2mEntity();
+        for ($i = 1; $i < 5; $i++) {
+            $entity = new M2mEntity;
             $entity->save();
             $entities[] = $entity;
         }
 
-        for ($i = 1; $i < 50; ++$i) {
+        for ($i = 1; $i < 50; $i++) {
             $entityKey = array_rand($entities);
             /** @var M2mEntity $entity */
             $entity = $entities[$entityKey];
@@ -162,7 +160,7 @@ class M2mSortableTest extends SortableTestBase
                 $relatedEntities[$entity->id] = [];
             }
 
-            $relatedEntity = new M2mRelatedEntity();
+            $relatedEntity = new M2mRelatedEntity;
             $entity->relatedEntities()->save($relatedEntity);
             $relatedEntities[$entity->id][] = $relatedEntity;
         }
@@ -204,15 +202,14 @@ class M2mSortableTest extends SortableTestBase
         }
     }
 
-    
     #[DataProvider('moveWhenMovedEntityComesBeforeRelativeEntityProvider')]
-    public function testMoveAfterWhenMovedEntityComesBeforeRelativeEntity($entityId, $relativeEntityId, $countTotal)
+    public function test_move_after_when_moved_entity_comes_before_relative_entity($entityId, $relativeEntityId, $countTotal)
     {
-        $entity = new M2mEntity();
+        $entity = new M2mEntity;
         $entity->save();
         $relatedEntities = [];
-        for ($i = 1; $i <= $countTotal; ++$i) {
-            $relatedEntity = new M2mRelatedEntity();
+        for ($i = 1; $i <= $countTotal; $i++) {
+            $relatedEntity = new M2mRelatedEntity;
             $entity->relatedEntities()->save($relatedEntity);
             $relatedEntities[$i] = $relatedEntity;
         }
@@ -241,15 +238,14 @@ class M2mSortableTest extends SortableTestBase
         }
     }
 
-    
     #[DataProvider('moveWhenMovedEntityComesAfterRelativeEntityProvider')]
-    public function testMoveAfterWhenMovedEntityComesAfterRelativeEntity($entityId, $relativeEntityId, $countTotal)
+    public function test_move_after_when_moved_entity_comes_after_relative_entity($entityId, $relativeEntityId, $countTotal)
     {
-        $entity = new M2mEntity();
+        $entity = new M2mEntity;
         $entity->save();
         $relatedEntities = [];
-        for ($i = 1; $i <= $countTotal; ++$i) {
-            $relatedEntity = new M2mRelatedEntity();
+        for ($i = 1; $i <= $countTotal; $i++) {
+            $relatedEntity = new M2mRelatedEntity;
             $entity->relatedEntities()->save($relatedEntity);
             $relatedEntities[$i] = $relatedEntity;
         }
@@ -278,15 +274,14 @@ class M2mSortableTest extends SortableTestBase
         }
     }
 
-    
     #[DataProvider('moveWhenMovedEntityComesAfterRelativeEntityProvider')]
-    public function testMoveBeforeWhenMovedEntityComesAfterRelativeEntity($entityId, $relativeEntityId, $countTotal)
+    public function test_move_before_when_moved_entity_comes_after_relative_entity($entityId, $relativeEntityId, $countTotal)
     {
-        $entity = new M2mEntity();
+        $entity = new M2mEntity;
         $entity->save();
         $relatedEntities = [];
-        for ($i = 1; $i <= $countTotal; ++$i) {
-            $relatedEntity = new M2mRelatedEntity();
+        for ($i = 1; $i <= $countTotal; $i++) {
+            $relatedEntity = new M2mRelatedEntity;
             $entity->relatedEntities()->save($relatedEntity);
             $relatedEntities[$i] = $relatedEntity;
         }
@@ -315,15 +310,14 @@ class M2mSortableTest extends SortableTestBase
         }
     }
 
-    
     #[DataProvider('moveWhenMovedEntityComesBeforeRelativeEntityProvider')]
-    public function testMoveBeforeWhenMovedEntityComesBeforeRelativeEntity($entityId, $relativeEntityId, $countTotal)
+    public function test_move_before_when_moved_entity_comes_before_relative_entity($entityId, $relativeEntityId, $countTotal)
     {
-        $entity = new M2mEntity();
+        $entity = new M2mEntity;
         $entity->save();
         $relatedEntities = [];
-        for ($i = 1; $i <= $countTotal; ++$i) {
-            $relatedEntity = new M2mRelatedEntity();
+        for ($i = 1; $i <= $countTotal; $i++) {
+            $relatedEntity = new M2mRelatedEntity;
             $entity->relatedEntities()->save($relatedEntity);
             $relatedEntities[$i] = $relatedEntity;
         }
@@ -352,15 +346,14 @@ class M2mSortableTest extends SortableTestBase
         }
     }
 
-    
     #[DataProvider('moveWhenMovedEntityIsRelativeEntityProvider')]
-    public function testMoveBeforeWhenMovedEntityIsRelativeEntity($entityId, $countTotal)
+    public function test_move_before_when_moved_entity_is_relative_entity($entityId, $countTotal)
     {
-        $entity = new M2mEntity();
+        $entity = new M2mEntity;
         $entity->save();
         $relatedEntities = [];
-        for ($i = 1; $i <= $countTotal; ++$i) {
-            $relatedEntity = new M2mRelatedEntity();
+        for ($i = 1; $i <= $countTotal; $i++) {
+            $relatedEntity = new M2mRelatedEntity;
             $entity->relatedEntities()->save($relatedEntity);
             $relatedEntities[$i] = $relatedEntity;
         }
@@ -383,15 +376,14 @@ class M2mSortableTest extends SortableTestBase
         }
     }
 
-    
     #[DataProvider('moveWhenMovedEntityIsRelativeEntityProvider')]
-    public function testMoveAfterWhenMovedEntityIsRelativeEntity($entityId, $countTotal)
+    public function test_move_after_when_moved_entity_is_relative_entity($entityId, $countTotal)
     {
-        $entity = new M2mEntity();
+        $entity = new M2mEntity;
         $entity->save();
         $relatedEntities = [];
-        for ($i = 1; $i <= $countTotal; ++$i) {
-            $relatedEntity = new M2mRelatedEntity();
+        for ($i = 1; $i <= $countTotal; $i++) {
+            $relatedEntity = new M2mRelatedEntity;
             $entity->relatedEntities()->save($relatedEntity);
             $relatedEntities[$i] = $relatedEntity;
         }
@@ -414,24 +406,23 @@ class M2mSortableTest extends SortableTestBase
         }
     }
 
-    
     #[DataProvider('allProvider')]
-    public function testMoveAfterOtherRelatedNotChanged($entityId, $relativeEntityId, $countTotal)
+    public function test_move_after_other_related_not_changed($entityId, $relativeEntityId, $countTotal)
     {
-        $entity = new M2mEntity();
+        $entity = new M2mEntity;
         $entity->save();
         $relatedEntities = [];
 
-        $otherEntity = new M2mEntity();
+        $otherEntity = new M2mEntity;
         $otherEntity->save();
         $otherRelatedEntities = [];
 
-        for ($i = 1; $i <= $countTotal; ++$i) {
-            $relatedEntity = new M2mRelatedEntity();
+        for ($i = 1; $i <= $countTotal; $i++) {
+            $relatedEntity = new M2mRelatedEntity;
             $entity->relatedEntities()->save($relatedEntity);
             $relatedEntities[$i] = $relatedEntity;
 
-            $otherRelatedEntity = new M2mRelatedEntity();
+            $otherRelatedEntity = new M2mRelatedEntity;
             $otherEntity->relatedEntities()->save($otherRelatedEntity);
             $otherRelatedEntities[$i] = $otherRelatedEntity;
         }
@@ -450,24 +441,23 @@ class M2mSortableTest extends SortableTestBase
         }
     }
 
-    
     #[DataProvider('allProvider')]
-    public function testMoveBeforeOtherRelatedNotChanged($entityId, $relativeEntityId, $countTotal)
+    public function test_move_before_other_related_not_changed($entityId, $relativeEntityId, $countTotal)
     {
-        $entity = new M2mEntity();
+        $entity = new M2mEntity;
         $entity->save();
         $relatedEntities = [];
 
-        $otherEntity = new M2mEntity();
+        $otherEntity = new M2mEntity;
         $otherEntity->save();
         $otherRelatedEntities = [];
 
-        for ($i = 1; $i <= $countTotal; ++$i) {
-            $relatedEntity = new M2mRelatedEntity();
+        for ($i = 1; $i <= $countTotal; $i++) {
+            $relatedEntity = new M2mRelatedEntity;
             $entity->relatedEntities()->save($relatedEntity);
             $relatedEntities[$i] = $relatedEntity;
 
-            $otherRelatedEntity = new M2mRelatedEntity();
+            $otherRelatedEntity = new M2mRelatedEntity;
             $otherEntity->relatedEntities()->save($otherRelatedEntity);
             $otherRelatedEntities[$i] = $otherRelatedEntity;
         }

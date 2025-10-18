@@ -1,5 +1,3 @@
 <?php
 
-class MorphToManyRelatedEntity extends \Illuminate\Database\Eloquent\Model
-{
-}
+class MorphToManyRelatedEntity extends \Illuminate\Database\Eloquent\Model {}

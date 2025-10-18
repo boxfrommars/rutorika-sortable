@@ -3,15 +3,13 @@
 namespace AlexCrawford\Sortable;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Arr;
 
 class SortableController extends Controller
 {
     /**
-     * @param Request $request
-     *
      * @return array
      */
     public function sort(Request $request)
@@ -19,7 +17,7 @@ class SortableController extends Controller
         $sortableEntities = app('config')->get('sortable.entities', []);
         $validator = $this->getValidator($sortableEntities, $request);
 
-        if (!$validator->passes()) {
+        if (! $validator->passes()) {
             return [
                 'success' => false,
                 'errors' => $validator->errors(),
@@ -28,10 +26,10 @@ class SortableController extends Controller
         }
 
         /** @var Model|bool $entityClass */
-        list($entityClass, $relation) = $this->getEntityInfo($sortableEntities, (string) $request->input('entityName'));
+        [$entityClass, $relation] = $this->getEntityInfo($sortableEntities, (string) $request->input('entityName'));
         $method = ($request->input('type') === 'moveAfter') ? 'moveAfter' : 'moveBefore';
 
-        if (!$relation) {
+        if (! $relation) {
             /** @var SortableTrait $entity */
             $entity = $entityClass::find($request->input('id'));
             $postionEntity = $entityClass::find($request->input('positionEntityId'));
@@ -47,9 +45,8 @@ class SortableController extends Controller
     }
 
     /**
-     * @param array   $sortableEntities
-     * @param Request $request
-     *
+     * @param  array  $sortableEntities
+     * @param  Request  $request
      * @return \Illuminate\Validation\Validator
      */
     protected function getValidator($sortableEntities, $request)
@@ -59,48 +56,47 @@ class SortableController extends Controller
 
         $rules = [
             'type' => ['required', 'in:moveAfter,moveBefore'],
-            'entityName' => ['required', 'in:' . implode(',', array_keys($sortableEntities))],
+            'entityName' => ['required', 'in:'.implode(',', array_keys($sortableEntities))],
             'id' => 'required',
             'positionEntityId' => 'required',
         ];
 
         /** @var Model|bool $entityClass */
-        list($entityClass, $relation) = $this->getEntityInfo($sortableEntities, (string) $request->input('entityName'));
+        [$entityClass, $relation] = $this->getEntityInfo($sortableEntities, (string) $request->input('entityName'));
 
-        if (!class_exists($entityClass)) {
+        if (! class_exists($entityClass)) {
             $rules['entityClass'] = 'required'; // fake rule for not exist field
 
             return $validator->make($request->all(), $rules);
         }
 
-        $connectionName = with(new $entityClass())->getConnectionName();
-        $tableName = with(new $entityClass())->getTable();
-        $primaryKey = with(new $entityClass())->getKeyName();
+        $connectionName = with(new $entityClass)->getConnectionName();
+        $tableName = with(new $entityClass)->getTable();
+        $primaryKey = with(new $entityClass)->getKeyName();
 
-        if (!empty($connectionName)) {
-            $tableName = $connectionName . '.' . $tableName;
+        if (! empty($connectionName)) {
+            $tableName = $connectionName.'.'.$tableName;
         }
 
-        if (!$relation) {
-            $rules['id'] .= '|exists:' . $tableName . ',' . $primaryKey;
-            $rules['positionEntityId'] .= '|exists:' . $tableName . ',' . $primaryKey;
+        if (! $relation) {
+            $rules['id'] .= '|exists:'.$tableName.','.$primaryKey;
+            $rules['positionEntityId'] .= '|exists:'.$tableName.','.$primaryKey;
         } else {
             /** @var BelongsToSortedMany $relationObject */
-            $relationObject = with(new $entityClass())->$relation();
+            $relationObject = with(new $entityClass)->$relation();
             $pivotTable = $relationObject->getTable();
 
-            $rules['parentId'] = 'required|exists:' . $tableName . ',' . $primaryKey;
-            $rules['id'] .= '|exists:' . $pivotTable . ',' . $relationObject->getRelatedKey() . ',' . $relationObject->getForeignKey() . ',' . $request->input('parentId');
-            $rules['positionEntityId'] .= '|exists:' . $pivotTable . ',' . $relationObject->getRelatedKey() . ',' . $relationObject->getForeignKey() . ',' . $request->input('parentId');
+            $rules['parentId'] = 'required|exists:'.$tableName.','.$primaryKey;
+            $rules['id'] .= '|exists:'.$pivotTable.','.$relationObject->getRelatedKey().','.$relationObject->getForeignKey().','.$request->input('parentId');
+            $rules['positionEntityId'] .= '|exists:'.$pivotTable.','.$relationObject->getRelatedKey().','.$relationObject->getForeignKey().','.$request->input('parentId');
         }
 
         return $validator->make($request->all(), $rules);
     }
 
     /**
-     * @param array  $sortableEntities
-     * @param string $entityName
-     *
+     * @param  array  $sortableEntities
+     * @param  string  $entityName
      * @return array
      */
     protected function getEntityInfo($sortableEntities, $entityName)
@@ -111,7 +107,7 @@ class SortableController extends Controller
 
         if (is_array($entityConfig)) {
             $entityClass = $entityConfig['entity'];
-            $relation = !empty($entityConfig['relation']) ? $entityConfig['relation'] : false;
+            $relation = ! empty($entityConfig['relation']) ? $entityConfig['relation'] : false;
         } else {
             $entityClass = $entityConfig;
         }

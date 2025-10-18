@@ -1,13 +1,13 @@
 <?php
-use PHPUnit\Framework\Attributes\DataProvider;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 
 require_once 'stubs/SortableGroupEntity.php';
 require_once 'SortableTestBase.php';
 
 class SortableGroupTraitTest extends SortableTestBase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -15,14 +15,14 @@ class SortableGroupTraitTest extends SortableTestBase
         SortableEntityGroup::boot();
     }
 
-    public function testGroupName()
+    public function test_group_name()
     {
         $this->assertEquals('category', SortableEntityGroup::getSortableGroupField());
     }
 
-    public function testSortableGroupField()
+    public function test_sortable_group_field()
     {
-        $entity = new SortableEntityGroup();
+        $entity = new SortableEntityGroup;
         $entity->category = 'some_category';
         $entity->save();
 
@@ -31,15 +31,15 @@ class SortableGroupTraitTest extends SortableTestBase
         $this->assertEquals('some_category', $entity->$sortableGroupField);
     }
 
-    public function testPosition()
+    public function test_position()
     {
         $categories = ['first', 'second', 'third'];
 
         /** @var SortableEntity[] $entities */
         $entities = [];
-        for ($i = 0; $i < 30; ++$i) {
+        for ($i = 0; $i < 30; $i++) {
             $category = $categories[array_rand($categories)];
-            $entity = new SortableEntityGroup();
+            $entity = new SortableEntityGroup;
             $entity->category = $category;
             $entity->save();
 
@@ -51,7 +51,7 @@ class SortableGroupTraitTest extends SortableTestBase
                 $categoryEntities = SortableEntityGroup::where('category', $category)
                     ->sorted()
                     ->get();
-                    
+
                 $prevPosition = null;
                 foreach ($categoryEntities as $entity) {
                     if ($prevPosition !== null) {
@@ -63,27 +63,26 @@ class SortableGroupTraitTest extends SortableTestBase
         }
     }
 
-    
     #[DataProvider('fixedEntitiesProvider')]
-    public function testFixedEntities($entityId, $relativeEntityId, $method, $countTotal)
+    public function test_fixed_entities($entityId, $relativeEntityId, $method, $countTotal)
     {
 
         /** @var SortableEntity[] $entities */
         $entities = [];
         $fixedEntities = [];
-        for ($i = 1; $i <= $countTotal; ++$i) {
-            $entities[$i] = new SortableEntityGroup();
+        for ($i = 1; $i <= $countTotal; $i++) {
+            $entities[$i] = new SortableEntityGroup;
             $entities[$i]->category = 'first_category';
             $entities[$i]->save();
 
-            $fixedEntities[$i] = new SortableEntityGroup();
+            $fixedEntities[$i] = new SortableEntityGroup;
             $fixedEntities[$i]->category = 'second_category';
             $fixedEntities[$i]->save();
         }
 
         $moveEntity = $entities[$entityId];
         $relyEntity = $entities[$relativeEntityId];
-        
+
         // Store original positions to verify they don't change for unaffected entities
         $originalPositions = [];
         foreach ($entities as $id => $entity) {
@@ -104,12 +103,12 @@ class SortableGroupTraitTest extends SortableTestBase
         $right = max($entityId, $relativeEntityId);
 
         // Verify entities outside the affected range kept their original positions
-        for ($id = 1; $id < $left; ++$id) {
+        for ($id = 1; $id < $left; $id++) {
             $entity = SortableEntityGroup::find($entities[$id]->id);
             $this->assertEquals($originalPositions[$id], $entity->position);
         }
 
-        for ($id = $right + 1; $id <= $countTotal; ++$id) {
+        for ($id = $right + 1; $id <= $countTotal; $id++) {
             $entity = SortableEntityGroup::find($entities[$id]->id);
             $this->assertEquals($originalPositions[$id], $entity->position);
         }
@@ -143,12 +142,12 @@ class SortableGroupTraitTest extends SortableTestBase
         /** @var SortableEntity[] $entities */
         $entities = [];
         $fixedEntities = [];
-        for ($i = 1; $i <= $count; ++$i) {
-            $entities[$i] = new SortableEntityGroup();
+        for ($i = 1; $i <= $count; $i++) {
+            $entities[$i] = new SortableEntityGroup;
             $entities[$i]->category = 'first_category';
             $entities[$i]->save();
 
-            $fixedEntities[$i] = new SortableEntityGroup();
+            $fixedEntities[$i] = new SortableEntityGroup;
             $fixedEntities[$i]->category = 'second_category';
             $fixedEntities[$i]->save();
         }
@@ -156,9 +155,8 @@ class SortableGroupTraitTest extends SortableTestBase
         return $entities;
     }
 
-    
     #[DataProvider('moveWhenMovedEntityComesBeforeRelativeEntityProvider')]
-    public function testMoveAfterWhenMovedEntityComesBeforeRelativeEntity($entityId, $relativeEntityId, $countTotal)
+    public function test_move_after_when_moved_entity_comes_before_relative_entity($entityId, $relativeEntityId, $countTotal)
     {
         /** @var SortableEntity[] $entities */
         $entities = $this->generateEntities($countTotal);
@@ -189,9 +187,8 @@ class SortableGroupTraitTest extends SortableTestBase
         $this->assertGreaterThan($relativeIndex, $movedIndex);
     }
 
-    
     #[DataProvider('moveWhenMovedEntityComesAfterRelativeEntityProvider')]
-    public function testMoveAfterWhenMovedEntityComesAfterRelativeEntity($entityId, $relativeEntityId, $countTotal)
+    public function test_move_after_when_moved_entity_comes_after_relative_entity($entityId, $relativeEntityId, $countTotal)
     {
         /* @var SortableEntityGroup[] $entity */
         /** @var SortableEntityGroup[] $entities */
@@ -223,9 +220,8 @@ class SortableGroupTraitTest extends SortableTestBase
         $this->assertGreaterThan($relativeIndex, $movedIndex);
     }
 
-    
     #[DataProvider('moveWhenMovedEntityComesBeforeRelativeEntityProvider')]
-    public function testMoveBeforeWhenMovedEntityComesBeforeRelativeEntity($entityId, $relativeEntityId, $countTotal)
+    public function test_move_before_when_moved_entity_comes_before_relative_entity($entityId, $relativeEntityId, $countTotal)
     {
         /** @var SortableEntity[] $entities */
         $entities = $this->generateEntities($countTotal);
@@ -256,9 +252,8 @@ class SortableGroupTraitTest extends SortableTestBase
         $this->assertLessThan($relativeIndex, $movedIndex);
     }
 
-    
     #[DataProvider('moveWhenMovedEntityComesAfterRelativeEntityProvider')]
-    public function testMoveBeforeWhenMovedEntityComesAfterRelativeEntity($entityId, $relativeEntityId, $countTotal)
+    public function test_move_before_when_moved_entity_comes_after_relative_entity($entityId, $relativeEntityId, $countTotal)
     {
         /** @var SortableEntity[] $entities */
         $entities = $this->generateEntities($countTotal);
@@ -289,13 +284,13 @@ class SortableGroupTraitTest extends SortableTestBase
         $this->assertLessThan($relativeIndex, $movedIndex);
     }
 
-    public function testInvalidAfterMove()
+    public function test_invalid_after_move()
     {
-        $entity1 = new SortableEntityGroup();
+        $entity1 = new SortableEntityGroup;
         $entity1->category = 'first_category';
         $entity1->save();
 
-        $entity2 = new SortableEntityGroup();
+        $entity2 = new SortableEntityGroup;
         $entity2->category = 'second_category';
         $entity2->save();
 
@@ -303,13 +298,13 @@ class SortableGroupTraitTest extends SortableTestBase
         $entity1->moveAfter($entity2);
     }
 
-    public function testInvalidBeforeMove()
+    public function test_invalid_before_move()
     {
-        $entity1 = new SortableEntityGroup();
+        $entity1 = new SortableEntityGroup;
         $entity1->category = 'first_category';
         $entity1->save();
 
-        $entity2 = new SortableEntityGroup();
+        $entity2 = new SortableEntityGroup;
         $entity2->category = 'second_category';
         $entity2->save();
 

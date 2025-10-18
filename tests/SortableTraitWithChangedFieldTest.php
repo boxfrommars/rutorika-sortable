@@ -1,13 +1,13 @@
 <?php
-use PHPUnit\Framework\Attributes\DataProvider;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 
 require_once 'stubs/SortableEntityWithChangedField.php';
 require_once 'SortableTestBase.php';
 
 class SortableTraitWithChangedFieldTest extends SortableTestBase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -15,24 +15,24 @@ class SortableTraitWithChangedFieldTest extends SortableTestBase
         SortableEntityWithChangedField::boot();
     }
 
-    public function testPositionOnCreate()
+    public function test_position_on_create()
     {
-        $entity = new SortableEntityWithChangedField();
+        $entity = new SortableEntityWithChangedField;
         $entity->save();
         $this->assertEquals('U', $entity->somefield);
 
-        $entity2 = new SortableEntityWithChangedField();
+        $entity2 = new SortableEntityWithChangedField;
         $entity2->save();
         $this->assertEquals('V', $entity2->somefield);
     }
 
-    public function testPosition()
+    public function test_position()
     {
 
         /** @var SortableEntity[] $entities */
         $entities = [];
-        for ($i = 1; $i <= 30; ++$i) {
-            $entities[$i] = new SortableEntityWithChangedField();
+        for ($i = 1; $i <= 30; $i++) {
+            $entities[$i] = new SortableEntityWithChangedField;
             $entities[$i]->save();
             $this->assertEquals($i, $entities[$i]->id);
         }
@@ -40,15 +40,14 @@ class SortableTraitWithChangedFieldTest extends SortableTestBase
         // Verify entities can be sorted by somefield and come back in creation order
         $sorted = SortableEntityWithChangedField::sorted()->get();
         $this->assertEquals(30, $sorted->count());
-        
+
         foreach ($sorted as $index => $entity) {
             $this->assertEquals($index + 1, $entity->id);
         }
     }
 
-    
     #[DataProvider('moveWhenMovedEntityComesBeforeRelativeEntityProvider')]
-    public function testMoveAfterWhenMovedEntityComesBeforeRelativeEntity($entityId, $relativeEntityId, $countTotal)
+    public function test_move_after_when_moved_entity_comes_before_relative_entity($entityId, $relativeEntityId, $countTotal)
     {
 
         // intervals: [1 .. $entityId - 1], [$entityId], [$entityId + 1 .. $relativeEntityId], [$relativeEntityId .. $countTotal]
@@ -56,8 +55,8 @@ class SortableTraitWithChangedFieldTest extends SortableTestBase
 
         /** @var SortableEntity[] $entities */
         $entities = [];
-        for ($i = 1; $i <= $countTotal; ++$i) {
-            $entities[$i] = new SortableEntityWithChangedField();
+        for ($i = 1; $i <= $countTotal; $i++) {
+            $entities[$i] = new SortableEntityWithChangedField;
             $entities[$i]->save();
         }
 
@@ -82,20 +81,19 @@ class SortableTraitWithChangedFieldTest extends SortableTestBase
         $entityIds = $allEntities->pluck('id')->toArray();
         $movedIndex = array_search($entityId, $entityIds);
         $relativeIndex = array_search($relativeEntityId, $entityIds);
-        
+
         $this->assertGreaterThan($relativeIndex, $movedIndex);
     }
 
-    
     #[DataProvider('moveWhenMovedEntityComesAfterRelativeEntityProvider')]
-    public function testMoveAfterWhenMovedEntityComesAfterRelativeEntity($entityId, $relativeEntityId, $countTotal)
+    public function test_move_after_when_moved_entity_comes_after_relative_entity($entityId, $relativeEntityId, $countTotal)
     {
         // interavls: [1 .. $relativeEntityId], , [$relativeEntityId + 1 .. $entityId - 1], [$entityId], [$entityId + 1 .. $countTotal]
 
         /** @var SortableEntity[] $entities */
         $entities = [];
-        for ($i = 1; $i <= $countTotal; ++$i) {
-            $entities[$i] = new SortableEntityWithChangedField();
+        for ($i = 1; $i <= $countTotal; $i++) {
+            $entities[$i] = new SortableEntityWithChangedField;
             $entities[$i]->save();
         }
 
@@ -120,25 +118,24 @@ class SortableTraitWithChangedFieldTest extends SortableTestBase
         $entityIds = $allEntities->pluck('id')->toArray();
         $movedIndex = array_search($entityId, $entityIds);
         $relativeIndex = array_search($relativeEntityId, $entityIds);
-        
+
         $this->assertGreaterThan($relativeIndex, $movedIndex);
     }
 
-    
     #[DataProvider('moveWhenMovedEntityIsRelativeEntityProvider')]
-    public function testMoveAfterWhenMovedEntityIsRelativeEntity($entityId, $countTotal)
+    public function test_move_after_when_moved_entity_is_relative_entity($entityId, $countTotal)
     {
 
         /** @var SortableEntity[] $entities */
         $entities = [];
-        for ($i = 1; $i <= $countTotal; ++$i) {
-            $entities[$i] = new SortableEntityWithChangedField();
+        for ($i = 1; $i <= $countTotal; $i++) {
+            $entities[$i] = new SortableEntityWithChangedField;
             $entities[$i]->save();
         }
 
         $moveEntity = $entities[$entityId];
         $originalPosition = $moveEntity->somefield;
-        
+
         // Moving entity after itself should not change anything
         $moveEntity->moveAfter($moveEntity);
 
@@ -151,15 +148,14 @@ class SortableTraitWithChangedFieldTest extends SortableTestBase
         $this->assertEquals($countTotal, $allEntities->count());
     }
 
-    
     #[DataProvider('moveWhenMovedEntityComesBeforeRelativeEntityProvider')]
-    public function testMoveBeforeWhenMovedEntityComesBeforeRelativeEntity($entityId, $relativeEntityId, $countTotal)
+    public function test_move_before_when_moved_entity_comes_before_relative_entity($entityId, $relativeEntityId, $countTotal)
     {
 
         /** @var SortableEntity[] $entities */
         $entities = [];
-        for ($i = 1; $i <= $countTotal; ++$i) {
-            $entities[$i] = new SortableEntityWithChangedField();
+        for ($i = 1; $i <= $countTotal; $i++) {
+            $entities[$i] = new SortableEntityWithChangedField;
             $entities[$i]->save();
         }
 
@@ -184,19 +180,18 @@ class SortableTraitWithChangedFieldTest extends SortableTestBase
         $entityIds = $allEntities->pluck('id')->toArray();
         $movedIndex = array_search($entityId, $entityIds);
         $relativeIndex = array_search($relativeEntityId, $entityIds);
-        
+
         $this->assertLessThan($relativeIndex, $movedIndex);
     }
 
-    
     #[DataProvider('moveWhenMovedEntityComesAfterRelativeEntityProvider')]
-    public function testMoveBeforeWhenMovedEntityComesAfterRelativeEntity($entityId, $relativeEntityId, $countTotal)
+    public function test_move_before_when_moved_entity_comes_after_relative_entity($entityId, $relativeEntityId, $countTotal)
     {
 
         /** @var SortableEntity[] $entities */
         $entities = [];
-        for ($i = 1; $i <= $countTotal; ++$i) {
-            $entities[$i] = new SortableEntityWithChangedField();
+        for ($i = 1; $i <= $countTotal; $i++) {
+            $entities[$i] = new SortableEntityWithChangedField;
             $entities[$i]->save();
         }
 
@@ -221,25 +216,24 @@ class SortableTraitWithChangedFieldTest extends SortableTestBase
         $entityIds = $allEntities->pluck('id')->toArray();
         $movedIndex = array_search($entityId, $entityIds);
         $relativeIndex = array_search($relativeEntityId, $entityIds);
-        
+
         $this->assertLessThan($relativeIndex, $movedIndex);
     }
 
-    
     #[DataProvider('moveWhenMovedEntityIsRelativeEntityProvider')]
-    public function testMoveBeforeWhenMovedEntityIsRelativeEntity($entityId, $countTotal)
+    public function test_move_before_when_moved_entity_is_relative_entity($entityId, $countTotal)
     {
 
         /** @var SortableEntity[] $entities */
         $entities = [];
-        for ($i = 1; $i <= $countTotal; ++$i) {
-            $entities[$i] = new SortableEntityWithChangedField();
+        for ($i = 1; $i <= $countTotal; $i++) {
+            $entities[$i] = new SortableEntityWithChangedField;
             $entities[$i]->save();
         }
 
         $moveEntity = $entities[$entityId];
         $originalPosition = $moveEntity->somefield;
-        
+
         // Moving entity before itself should not change anything
         $moveEntity->moveBefore($moveEntity);
 
@@ -252,12 +246,12 @@ class SortableTraitWithChangedFieldTest extends SortableTestBase
         $this->assertEquals($countTotal, $allEntities->count());
     }
 
-    public function testSortedScope()
+    public function test_sorted_scope()
     {
         /** @var SortableEntity[] $entities */
         $entities = [];
-        for ($i = 1; $i <= 30; ++$i) {
-            $entities[$i] = new SortableEntityWithChangedField();
+        for ($i = 1; $i <= 30; $i++) {
+            $entities[$i] = new SortableEntityWithChangedField;
             $entities[$i]->save();
         }
 
@@ -277,14 +271,13 @@ class SortableTraitWithChangedFieldTest extends SortableTestBase
         }
     }
 
-    
     #[DataProvider('getPreviousNextEntityProvider')]
-    public function testGetPrevious($entityId, $limit)
+    public function test_get_previous($entityId, $limit)
     {
         /** @var SortableEntity[] $entities */
         $entities = [];
-        for ($i = 1; $i <= 30; ++$i) {
-            $entities[$i] = new SortableEntityWithChangedField();
+        for ($i = 1; $i <= 30; $i++) {
+            $entities[$i] = new SortableEntityWithChangedField;
             $entities[$i]->save();
         }
         /** @var SortableEntity $entity */
@@ -303,18 +296,17 @@ class SortableTraitWithChangedFieldTest extends SortableTestBase
         foreach ($previous as $prev) {
             $this->assertEquals($startId, $prev->id);
             $curr = $prev;
-            ++$startId;
+            $startId++;
         }
     }
 
-    
     #[DataProvider('getPreviousNextEntityProvider')]
-    public function testGetNext($entityId, $limit)
+    public function test_get_next($entityId, $limit)
     {
         /** @var SortableEntity[] $entities */
         $entities = [];
-        for ($i = 1; $i <= 30; ++$i) {
-            $entities[$i] = new SortableEntityWithChangedField();
+        for ($i = 1; $i <= 30; $i++) {
+            $entities[$i] = new SortableEntityWithChangedField;
             $entities[$i]->save();
         }
         /** @var SortableEntity $entity */
@@ -334,17 +326,16 @@ class SortableTraitWithChangedFieldTest extends SortableTestBase
         foreach ($next as $ent) {
             $this->assertEquals($startId, $ent->id);
             $curr = $ent;
-            ++$startId;
+            $startId++;
         }
     }
 
-    
     #[DataProvider('getPreviousNextEntityProvider')]
-    public function testDefaultsPrevious($entityId, $limit)
+    public function test_defaults_previous($entityId, $limit)
     {
         $entities = [];
-        for ($i = 1; $i <= 30; ++$i) {
-            $entities[$i] = new SortableEntityWithChangedField();
+        for ($i = 1; $i <= 30; $i++) {
+            $entities[$i] = new SortableEntityWithChangedField;
             $entities[$i]->save();
         }
         /** @var SortableEntity $entity */
@@ -353,18 +344,17 @@ class SortableTraitWithChangedFieldTest extends SortableTestBase
         $expectedEntities = $entity->getPrevious(0);
         $previous = $entity->getPrevious();
         $this->assertEquals($expectedEntities->count(), $previous->count());
-        for ($i = 0; $i < $previous->count(); ++$i) {
+        for ($i = 0; $i < $previous->count(); $i++) {
             $this->assertEquals($expectedEntities->offsetGet($i)->id, $previous->offsetGet($i)->id);
         }
     }
 
-    
     #[DataProvider('getPreviousNextEntityProvider')]
-    public function testDefaultsNext($entityId, $limit)
+    public function test_defaults_next($entityId, $limit)
     {
         $entities = [];
-        for ($i = 1; $i <= 30; ++$i) {
-            $entities[$i] = new SortableEntityWithChangedField();
+        for ($i = 1; $i <= 30; $i++) {
+            $entities[$i] = new SortableEntityWithChangedField;
             $entities[$i]->save();
         }
         /** @var SortableEntity $entity */
@@ -373,7 +363,7 @@ class SortableTraitWithChangedFieldTest extends SortableTestBase
         $expectedEntities = $entity->getNext(0);
         $next = $entity->getNext();
         $this->assertEquals($expectedEntities->count(), $next->count());
-        for ($i = 0; $i < $next->count(); ++$i) {
+        for ($i = 0; $i < $next->count(); $i++) {
             $this->assertEquals($expectedEntities->offsetGet($i)->id, $next->offsetGet($i)->id);
         }
     }

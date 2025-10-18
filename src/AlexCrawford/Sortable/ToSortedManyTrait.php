@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class MorphToSortedManyTrait.
  *
  * @method Model orderBy($column, $direction = 'asc')
+ *
  * @traitUses Illuminate\Database\Eloquent\Model
  */
 trait ToSortedManyTrait
@@ -25,9 +26,8 @@ trait ToSortedManyTrait
     /**
      * Attach a model to the parent.
      *
-     * @param mixed $id
-     * @param array $attributes
-     * @param bool  $touch
+     * @param  mixed  $id
+     * @param  bool  $touch
      */
     public function attach($id, array $attributes = [], $touch = true)
     {
@@ -39,8 +39,8 @@ trait ToSortedManyTrait
     /**
      * Moves $entity before $positionEntity.
      *
-     * @param Model $entity         What to move
-     * @param Model $positionEntity Where to move
+     * @param  Model  $entity  What to move
+     * @param  Model  $positionEntity  Where to move
      */
     public function moveBefore($entity, $positionEntity)
     {
@@ -50,8 +50,8 @@ trait ToSortedManyTrait
     /**
      * Moves $entity after $positionEntity.
      *
-     * @param Model $entity         What to move
-     * @param Model $positionEntity Where to move
+     * @param  Model  $entity  What to move
+     * @param  Model  $positionEntity  Where to move
      */
     public function moveAfter($entity, $positionEntity)
     {
@@ -59,19 +59,19 @@ trait ToSortedManyTrait
     }
 
     /**
-     * @param string $action
-     * @param Model  $entity
-     * @param Model  $positionEntity
+     * @param  string  $action
+     * @param  Model  $entity
+     * @param  Model  $positionEntity
      */
     public function move($action, $entity, $positionEntity)
     {
         $positionColumn = $this->getOrderColumnName();
-        
+
         // Guard: don't move an entity to itself
         if ($entity->pivot->$positionColumn === $positionEntity->pivot->$positionColumn) {
             return;
         }
-        
+
         $entityPosition = $positionEntity->pivot->$positionColumn;
 
         if ($action === 'moveBefore') {
@@ -87,11 +87,6 @@ trait ToSortedManyTrait
     }
 
     /**
-     * @param $left
-     * @param $right
-     * @param $leftIncluded
-     * @param $rightIncluded
-     *
      * @return \Illuminate\Database\Query\Builder
      */
     protected function queryBetween($left, $right, $leftIncluded = false, $rightIncluded = false)
@@ -117,12 +112,13 @@ trait ToSortedManyTrait
         if ($max === null) {
             return Rank::forEmptySequence()->get();
         }
-        return Rank::after(Rank::fromString((string)$max))->get();
+
+        return Rank::after(Rank::fromString((string) $max))->get();
     }
 
     /**
-     * @param string $prev
-     * @param string $next
+     * @param  string  $prev
+     * @param  string  $next
      * @return mixed
      */
     public static function getNewPosition($prev, $next = ''): string
@@ -131,16 +127,17 @@ trait ToSortedManyTrait
             if ($next === null || $next === '') {
                 return Rank::forEmptySequence()->get();
             }
-            return Rank::before(Rank::fromString((string)$next))->get();
+
+            return Rank::before(Rank::fromString((string) $next))->get();
         }
-        
+
         if ($next === null || $next === '') {
-            return Rank::after(Rank::fromString((string)$prev))->get();
+            return Rank::after(Rank::fromString((string) $prev))->get();
         }
-        
+
         return Rank::betweenRanks(
-            Rank::fromString((string)$prev),
-            Rank::fromString((string)$next)
+            Rank::fromString((string) $prev),
+            Rank::fromString((string) $next)
         )->get();
     }
 
@@ -157,9 +154,8 @@ trait ToSortedManyTrait
     /**
      * Sync the intermediate tables with a list of IDs or collection of models.
      *
-     * @param \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|array $ids
-     * @param bool                                                                          $detaching
-     *
+     * @param  \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|array  $ids
+     * @param  bool  $detaching
      * @return array
      */
     public function sync($ids, $detaching = true)
@@ -174,8 +170,7 @@ trait ToSortedManyTrait
     /**
      * Set the columns on the pivot table to retrieve.
      *
-     * @param array|mixed $columns
-     *
+     * @param  array|mixed  $columns
      * @return $this
      */
     abstract public function withPivot($columns);
@@ -190,9 +185,8 @@ trait ToSortedManyTrait
     /**
      * Detach models from the relationship.
      *
-     * @param mixed $ids
-     * @param bool  $touch
-     *
+     * @param  mixed  $ids
+     * @param  bool  $touch
      * @return int
      */
     abstract public function detach($ids = null, $touch = true);

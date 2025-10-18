@@ -1,6 +1,6 @@
 <?php
-use PHPUnit\Framework\Attributes\DataProvider;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 
 require_once 'stubs/SortableEntityWithSpecificDatabase.php';
 require_once 'stubs/M2mEntity.php';
@@ -8,33 +8,33 @@ require_once 'stubs/M2mRelatedEntity.php';
 
 class SortableControllerSpecificDatabaseTest extends Orchestra\Testbench\TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->loadMigrationsFrom([
             '--database' => 'testbench',
-            '--path' => realpath(__DIR__ . '/migrations'),
+            '--path' => realpath(__DIR__.'/migrations'),
         ]);
 
-        for ($i = 1; $i <= 30; ++$i) {
-            $entities[$i] = new SortableEntityWithSpecificDatabase();
+        for ($i = 1; $i <= 30; $i++) {
+            $entities[$i] = new SortableEntityWithSpecificDatabase;
             $entities[$i]->save();
         }
 
-        $entity = new M2mEntity();
+        $entity = new M2mEntity;
         $entity->save();
         $relatedEntities = [];
-        for ($i = 1; $i <= 30; ++$i) {
-            $relatedEntity = new M2mRelatedEntity();
+        for ($i = 1; $i <= 30; $i++) {
+            $relatedEntity = new M2mRelatedEntity;
             $entity->relatedEntities()->save($relatedEntity);
             $relatedEntities[$i] = $relatedEntity;
         }
 
-        $entity = new M2mEntity();
+        $entity = new M2mEntity;
         $entity->save();
         $relatedEntities = [];
-        for ($i = 1; $i <= 30; ++$i) {
-            $relatedEntity = new M2mRelatedEntity();
+        for ($i = 1; $i <= 30; $i++) {
+            $relatedEntity = new M2mRelatedEntity;
             $entity->relatedEntities()->save($relatedEntity);
             $relatedEntities[$i] = $relatedEntity;
         }
@@ -42,7 +42,7 @@ class SortableControllerSpecificDatabaseTest extends Orchestra\Testbench\TestCas
 
     protected function getEnvironmentSetUp($app)
     {
-        $app['path.base'] = __DIR__ . '/../src';
+        $app['path.base'] = __DIR__.'/../src';
 
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('app.debug', true);
@@ -79,12 +79,12 @@ class SortableControllerSpecificDatabaseTest extends Orchestra\Testbench\TestCas
         $app['router']->post('sort', '\AlexCrawford\Sortable\SortableController@sort');
     }
 
-    public function testOK()
+    public function test_ok()
     {
         $this->assertEquals(1, 1);
     }
 
-    public function testControllerWithoutParams()
+    public function test_controller_without_params()
     {
         $response = $this->call('POST', 'sort');
         $response->assertStatus(200);
@@ -108,9 +108,8 @@ class SortableControllerSpecificDatabaseTest extends Orchestra\Testbench\TestCas
         $this->assertTrue(property_exists($failed->id, 'Required'));
     }
 
-    
     #[DataProvider('validParamsProvider')]
-    public function testControllerWithValidParams($parameters)
+    public function test_controller_with_valid_params($parameters)
     {
         $response = $this->call('POST', 'sort', $parameters);
         $responseData = $this->parseJSON($response);
@@ -118,9 +117,8 @@ class SortableControllerSpecificDatabaseTest extends Orchestra\Testbench\TestCas
         $this->assertTrue($responseData->success);
     }
 
-    
     #[DataProvider('validParamsM2mProvider')]
-    public function testControllerM2mWithValidParams($parameters)
+    public function test_controller_m2m_with_valid_params($parameters)
     {
         $response = $this->call('POST', 'sort', $parameters);
         $responseData = $this->parseJSON($response);
@@ -128,9 +126,8 @@ class SortableControllerSpecificDatabaseTest extends Orchestra\Testbench\TestCas
         $this->assertTrue($responseData->success);
     }
 
-    
     #[DataProvider('invalidParamsProvider')]
-    public function testControllerWithInvalidParams($parameters, $error)
+    public function test_controller_with_invalid_params($parameters, $error)
     {
         $response = $this->call('POST', 'sort', $parameters);
         $responseData = $this->parseJSON($response);
@@ -169,9 +166,8 @@ class SortableControllerSpecificDatabaseTest extends Orchestra\Testbench\TestCas
         }
     }
 
-    
     #[DataProvider('invalidM2mParamsProvider')]
-    public function testM2mControllerWithInvalidParams($parameters, $error)
+    public function test_m2m_controller_with_invalid_params($parameters, $error)
     {
         $response = $this->call('POST', 'sort', $parameters);
         $responseData = $this->parseJSON($response);
@@ -214,8 +210,7 @@ class SortableControllerSpecificDatabaseTest extends Orchestra\Testbench\TestCas
     }
 
     /**
-     * @param \Symfony\Component\HttpFoundation\Response $response
-     *
+     * @param  \Symfony\Component\HttpFoundation\Response  $response
      * @return mixed
      */
     protected function parseJSON($response)
