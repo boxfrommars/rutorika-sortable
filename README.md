@@ -488,6 +488,17 @@ vendor/bin/pint --test       # Check only (don't modify)
 vendor/bin/phpstan analyse   # Run type safety checks
 ```
 
+**Code Coverage (Xdebug):**
+
+```bash
+docker run --volume $PWD:/project --rm --user $(id -u):$(id -g) alexcrawford-sortable vendor/bin/phpunit --coverage-text
+```
+
+Current code coverage:
+- **Lines:** 84.43% (206/244)
+- **Methods:** 76.19% (32/42)
+- **Classes:** 55.56% (5/9)
+
 **Running All Tests:**
 
 ```bash
