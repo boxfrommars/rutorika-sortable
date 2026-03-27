@@ -11,24 +11,26 @@ Install package through Composer
 ```bash
 composer require rutorika/sortable
 ```
+
 ### Version Compatibility
 
- Laravel   | Rutorika Sortable
-:----------------|:----------
- 4               | 1.2.x (branch laravel4)
- <=5.3           | 3.2.x
- 5.4             | 3.4.x
- 5.5             | 4.2.x
- 5.7             | 4.7.x
- 6.0             | 6.0.x
- 7.x, 8.x        | 8.x.x
- 9.x, 10.x, 11.x, 12.x | 9.x.x
+| Laravel                     | Rutorika Sortable       |
+| :-------------------------- | :---------------------- |
+| 4                           | 1.2.x (branch laravel4) |
+| <=5.3                       | 3.2.x                   |
+| 5.4                         | 3.4.x                   |
+| 5.5                         | 4.2.x                   |
+| 5.7                         | 4.7.x                   |
+| 6.0                         | 6.0.x                   |
+| 7.x, 8.x                    | 8.x.x                   |
+| 9.x, 10.x, 11.x, 12.x, 13.x | 9.x.x                   |
 
 ## Sortable Trait
 
 Adds sortable behavior to Eloquent (Laravel) models
 
 ### Usage
+
 Add `position` field to your model (see below how to change this name):
 
 ```php
@@ -42,7 +44,6 @@ public function up()
 }
 ```
 
-
 Add `\Rutorika\Sortable\SortableTrait` to your Eloquent model.
 
 ```php
@@ -53,6 +54,7 @@ class Article extends Model
 ```
 
 if you want to use custom column name for position, set `$sortableField`:
+
 ```php
 class Article extends Model
 {
@@ -101,17 +103,21 @@ YourModel::deleting(function ($model) {
     $model->next()->decrement('position');
 });
 ```
- > You need rutorika-sortable >=2.3 to use `->next()`
+
+> You need rutorika-sortable >=2.3 to use `->next()`
 
 ### Sortable groups
 
 if you want group entity ordering by field, add to your model
+
 ```php
 protected static $sortableGroupField = 'fieldName';
 ```
+
 now moving and ordering will be encapsulated by this field.
 
 If you want group entity ordering by many fields, use as an array:
+
 ```php
 protected static $sortableGroupField = ['fieldName1','fieldName2'];
 ```
@@ -134,7 +140,7 @@ post_tag
     tag_id
 ```
 
-and you want to order *tags* for each *post*
+and you want to order _tags_ for each _post_
 
 Add `position` column to the pivot table (you can use any name you want, but `position` is used by default)
 
@@ -223,6 +229,7 @@ class Post extends Model {
 Also this package provides `\Rutorika\Sortable\SortableController`, which handle requests to sort entities
 
 ### Usage
+
 Add the service provider to `config/app.php`
 
 ```php
@@ -292,6 +299,7 @@ entityName:articles
 id:3
 positionEntityId:14
 ```
+
 then the article with id 3 will be moved after the article with id 14.
 
 ### jQuery UI sortable example
@@ -302,15 +310,17 @@ Template
 
 ```html
 <table class="table table-striped table-hover">
-    <tbody class="sortable" data-entityname="articles">
+  <tbody class="sortable" data-entityname="articles">
     @foreach ($articles as $article)
     <tr data-itemId="{{{ $article->id }}}">
-        <td class="sortable-handle"><span class="glyphicon glyphicon-sort"></span></td>
-        <td class="id-column">{{{ $article->id }}}</td>
-        <td>{{{ $article->title }}}</td>
+      <td class="sortable-handle">
+        <span class="glyphicon glyphicon-sort"></span>
+      </td>
+      <td class="id-column">{{{ $article->id }}}</td>
+      <td>{{{ $article->title }}}</td>
     </tr>
     @endforeach
-    </tbody>
+  </tbody>
 </table>
 ```
 
@@ -318,83 +328,83 @@ Template for many to many ordering
 
 ```html
 <table class="table table-striped table-hover">
-    <tbody class="sortable" data-entityname="posts">
+  <tbody class="sortable" data-entityname="posts">
     @foreach ($post->tags as $tag)
     <tr data-itemId="{{ $tag->id }}" data-parentId="{{ $post->id }}">
-        <td class="sortable-handle"><span class="glyphicon glyphicon-sort"></span></td>
-        <td class="id-column">{{ $tag->id }}</td>
-        <td>{{ $tag->title }}</td>
+      <td class="sortable-handle">
+        <span class="glyphicon glyphicon-sort"></span>
+      </td>
+      <td class="id-column">{{ $tag->id }}</td>
+      <td>{{ $tag->title }}</td>
     </tr>
     @endforeach
-    </tbody>
+  </tbody>
 </table>
 ```
 
-
 ```js
-    /**
-     *
-     * @param type string 'insertAfter' or 'insertBefore'
-     * @param entityName
-     * @param id
-     * @param positionId
-     */
-    var changePosition = function(requestData){
-        $.ajax({
-            'url': '/sort',
-            'type': 'POST',
-            'data': requestData,
-            'success': function(data) {
-                if (data.success) {
-                    console.log('Saved!');
-                } else {
-                    console.error(data.errors);
-                }
-            },
-            'error': function(){
-                console.error('Something wrong!');
-            }
-        });
-    };
+/**
+ *
+ * @param type string 'insertAfter' or 'insertBefore'
+ * @param entityName
+ * @param id
+ * @param positionId
+ */
+var changePosition = function (requestData) {
+  $.ajax({
+    url: "/sort",
+    type: "POST",
+    data: requestData,
+    success: function (data) {
+      if (data.success) {
+        console.log("Saved!");
+      } else {
+        console.error(data.errors);
+      }
+    },
+    error: function () {
+      console.error("Something wrong!");
+    },
+  });
+};
 
-    $(document).ready(function(){
-        var $sortableTable = $('.sortable');
-        if ($sortableTable.length > 0) {
-            $sortableTable.sortable({
-                handle: '.sortable-handle',
-                axis: 'y',
-                update: function(a, b){
+$(document).ready(function () {
+  var $sortableTable = $(".sortable");
+  if ($sortableTable.length > 0) {
+    $sortableTable.sortable({
+      handle: ".sortable-handle",
+      axis: "y",
+      update: function (a, b) {
+        var entityName = $(this).data("entityname");
+        var $sorted = b.item;
 
-                    var entityName = $(this).data('entityname');
-                    var $sorted = b.item;
+        var $previous = $sorted.prev();
+        var $next = $sorted.next();
 
-                    var $previous = $sorted.prev();
-                    var $next = $sorted.next();
-
-                    if ($previous.length > 0) {
-                        changePosition({
-                            parentId: $sorted.data('parentid'),
-                            type: 'moveAfter',
-                            entityName: entityName,
-                            id: $sorted.data('itemid'),
-                            positionEntityId: $previous.data('itemid')
-                        });
-                    } else if ($next.length > 0) {
-                        changePosition({
-                            parentId: $sorted.data('parentid'),
-                            type: 'moveBefore',
-                            entityName: entityName,
-                            id: $sorted.data('itemid'),
-                            positionEntityId: $next.data('itemid')
-                        });
-                    } else {
-                        console.error('Something wrong!');
-                    }
-                },
-                cursor: "move"
-            });
+        if ($previous.length > 0) {
+          changePosition({
+            parentId: $sorted.data("parentid"),
+            type: "moveAfter",
+            entityName: entityName,
+            id: $sorted.data("itemid"),
+            positionEntityId: $previous.data("itemid"),
+          });
+        } else if ($next.length > 0) {
+          changePosition({
+            parentId: $sorted.data("parentid"),
+            type: "moveBefore",
+            entityName: entityName,
+            id: $sorted.data("itemid"),
+            positionEntityId: $next.data("itemid"),
+          });
+        } else {
+          console.error("Something wrong!");
         }
+      },
+      cursor: "move",
     });
+  }
+});
 ```
 
 ## Development
@@ -403,4 +413,3 @@ Template for many to many ordering
 sudo docker build -t rutorika-sortable .
 sudo docker run --volume $PWD:/project --rm --interactive --tty --user $(id -u):$(id -g) rutorika-sortable vendor/bin/phpunit
 ```
-
